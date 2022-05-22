@@ -29,16 +29,19 @@ class CharacterInfo:
             responses = await asyncio.gather(*x)
             for response in responses:
                 results.append(await response.json())
-        for index in results:
-            name = index["name"]
-            rating = int(format(index['mythic_plus_scores_by_season'][0]["segments"]["all"]["score"], ".0f"))
-            tank_r = int(format(index['mythic_plus_scores_by_season'][0]["segments"]["tank"]["score"], ".0f"))
-            dps_r = int(format(index['mythic_plus_scores_by_season'][0]["segments"]["dps"]["score"], ".0f"))
-            heal_r = int(format(index['mythic_plus_scores_by_season'][0]["segments"]["healer"]["score"], ".0f"))
-            player_url = index["profile_url"]
-            if rating != 0:
-                show.append({"Character Name": name, "Total": rating, "Tank": tank_r, "DPS": dps_r,
-                             "Heal": heal_r, "Player Armory": player_url})
+        try:  # TODO if no such character anymore to remove him from DB and pop msg first time when had been deleted
+            for index in results:
+                name = index["name"]
+                rating = int(format(index['mythic_plus_scores_by_season'][0]["segments"]["all"]["score"], ".0f"))
+                tank_r = int(format(index['mythic_plus_scores_by_season'][0]["segments"]["tank"]["score"], ".0f"))
+                dps_r = int(format(index['mythic_plus_scores_by_season'][0]["segments"]["dps"]["score"], ".0f"))
+                heal_r = int(format(index['mythic_plus_scores_by_season'][0]["segments"]["healer"]["score"], ".0f"))
+                player_url = index["profile_url"]
+                if rating != 0:
+                    show.append({"Character Name": name, "Total": rating, "Tank": tank_r, "DPS": dps_r,
+                                 "Heal": heal_r, "Player Armory": player_url})
+        except KeyError:
+            pass
         return show
 
     def check_if_correct_cadd(self, info, channel_id):
