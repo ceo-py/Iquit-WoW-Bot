@@ -10,38 +10,38 @@ class CharacterInfo:
     def __init__(self):
         self.raider_io_info = []
 
-    def get_data_from_rio(self, channel_id, session):
+    def get_data_from_rio(self, player_info, session):
         self.raider_io_info = []
-        data_base = db_.connect_db(channel_id)
-        for show in data_base.find({}):
+        for show in player_info.find({}):
             region, realm, name = show["Region"], show["Realm"], show["Character Name"]
             self.raider_io_info.append(session.get(f'https://raider.io/api/v1/characters/profile?region={region}&realm'
                                                    f'={realm}&name={name}&fields=mythic_plus_recent_runs,covenant,gear,'
                                                    f'raid_progression,mythic_plus_scores_by_season%3Aseason-sl-3',
                                                    ssl=False))
+
         return self.raider_io_info
 
     async def get_data_for_rank(self, channel_id):
         results = []
         show = []
+        data_base = db_.connect_db(channel_id)
         async with aiohttp.ClientSession() as session:
-            x = ci.get_data_from_rio(channel_id, session)
+            x = ci.get_data_from_rio(data_base, session)
             responses = await asyncio.gather(*x)
             for response in responses:
                 results.append(await response.json())
-        try:  # TODO if no such character anymore to remove him from DB and pop msg first time when had been deleted
+# TODO if no such character anymore to remove him from DB and pop msg first time when had been deleted
             for index in results:
-                name = index["name"]
-                rating = int(format(index['mythic_plus_scores_by_season'][0]["segments"]["all"]["score"], ".0f"))
-                tank_r = int(format(index['mythic_plus_scores_by_season'][0]["segments"]["tank"]["score"], ".0f"))
-                dps_r = int(format(index['mythic_plus_scores_by_season'][0]["segments"]["dps"]["score"], ".0f"))
-                heal_r = int(format(index['mythic_plus_scores_by_season'][0]["segments"]["healer"]["score"], ".0f"))
-                player_url = index["profile_url"]
-                if rating != 0:
-                    show.append({"Character Name": name, "Total": rating, "Tank": tank_r, "DPS": dps_r,
-                                 "Heal": heal_r, "Player Armory": player_url})
-        except KeyError:
-            pass
+                if "error" not in index:
+                    name = index["name"]
+                    rating = int(format(index['mythic_plus_scores_by_season'][0]["segments"]["all"]["score"], ".0f"))
+                    tank_r = int(format(index['mythic_plus_scores_by_season'][0]["segments"]["tank"]["score"], ".0f"))
+                    dps_r = int(format(index['mythic_plus_scores_by_season'][0]["segments"]["dps"]["score"], ".0f"))
+                    heal_r = int(format(index['mythic_plus_scores_by_season'][0]["segments"]["healer"]["score"], ".0f"))
+                    player_url = index["profile_url"]
+                    if rating != 0:
+                        show.append({"Character Name": name, "Total": rating, "Tank": tank_r, "DPS": dps_r,
+                                     "Heal": heal_r, "Player Armory": player_url})
         return show
 
     def check_if_correct_cadd(self, info, channel_id):
