@@ -2,10 +2,10 @@ import requests
 import os
 from requests_html import HTMLSession
 from dotenv import load_dotenv
+load_dotenv()
 
 
 def weather_check(arg):
-    load_dotenv()
     with requests.get(
             f"http://api.openweathermap.org/data/2.5/weather?q={arg}&appid={os.getenv('API_WEATHER')}&units=metric"
     ) as x:
@@ -17,7 +17,6 @@ def weather_check(arg):
 
 
 def ask_question(args):
-    load_dotenv()
     query = '+'.join(args)
     with requests.get(
             f"https://api.wolframalpha.com/v1/result?appid={os.getenv('API_ASK_Q')}={query}%3F") as response:
