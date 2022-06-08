@@ -5,7 +5,7 @@ from discord_buttons_plugin import *
 from other_commands import weather_check, ask_question, get_info_token, get_affixes
 from data_base_info import DataBaseInfo
 from character_info import CharacterInfo
-from sorting_ranks import RankCharacterDispley
+from sorting_ranks import RankCharacterDisplay
 # from api_calls_db import APICALLDB
 from discord.ext import commands
 
@@ -14,7 +14,7 @@ from discord.ext import commands
 # api_ = APICALLDB()
 char_db = DataBaseInfo()
 char_info = CharacterInfo()
-char_display = RankCharacterDispley()
+char_display = RankCharacterDisplay()
 client = commands.Bot(command_prefix="!", help_command=None)
 load_dotenv()
 TOKEN = os.getenv("TOKEN")
@@ -42,9 +42,8 @@ async def rank(ctx):
         )
         embed.set_thumbnail(url="https://graphly.io/wp-content/uploads/leaderboards-podium-star.jpg")
 
-        data_db = await char_info.get_data_for_rank(cnl_id)
-        data_db = char_display.sorting_db(data_db, "Total")
-        data_db = char_display.get_all_chars(data_db)
+        data_db_data = await char_info.get_data_for_rank(cnl_id)
+        data_db = rank_data(data_db_data, "Total")
         embed.add_field(name="**:regional_indicator_t::regional_indicator_o::regional_indicator_p: :nine:**",
                         value=f"{data_db[1]}\n{data_db[2]}\n"
                               f"{data_db[3]}", inline=True)
@@ -56,21 +55,15 @@ async def rank(ctx):
                         inline=True)
         embed.add_field(name=":regional_indicator_t::regional_indicator_o::regional_indicator_p: :three:",
                         value="**Ranking by roles:**", inline=False)
-        data_db = await char_info.get_data_for_rank(cnl_id)
-        data_db = char_display.sorting_db(data_db, "DPS")
-        data_db = char_display.get_other_ranks(data_db, "DPS")
+        data_db = rank_data(data_db_data, "DPS")
         embed.add_field(name=":crossed_swords:",
                         value=f":first_place:{data_db[1]}\n:second_place:{data_db[2]}\n:third_place:{data_db[3]}",
                         inline=True)
-        data_db = await char_info.get_data_for_rank(cnl_id)
-        data_db = char_display.sorting_db(data_db, "Heal")
-        data_db = char_display.get_other_ranks(data_db, "Heal")
+        data_db = rank_data(data_db_data, "Heal")
         embed.add_field(name=":heart:",
                         value=f":first_place:{data_db[1]}\n:second_place:{data_db[2]}\n:third_place:{data_db[3]}",
                         inline=True)
-        data_db = await char_info.get_data_for_rank(cnl_id)
-        data_db = char_display.sorting_db(data_db, "Tank")
-        data_db = char_display.get_other_ranks(data_db, "Tank")
+        data_db = rank_data(data_db_data, "Tank")
         embed.add_field(name=":shield:",
                         value=f":first_place:{data_db[1]}\n:second_place:{data_db[2]}\n:third_place:{data_db[3]}",
                         inline=True)
@@ -273,6 +266,13 @@ def check_right_channel(ctx):
     if str(ctx.channel) == DISCORD_CHANNEL_NAME:
         return True, str(ctx.guild.id), str(ctx.channel.id)
     return False, 0, 0
+
+
+def rank_data(data_base, type_of_rank):
+    data_db = char_display.sorting_db(data_base, type_of_rank)
+    if type_of_rank != "Total":
+        return char_display.get_other_ranks(data_db, type_of_rank)
+    return char_display.get_all_chars(data_db)
 
 
 ## buttons_commands
