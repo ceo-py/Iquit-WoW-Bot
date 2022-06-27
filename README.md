@@ -1,5 +1,7 @@
 A little bot that i made so we can use it with my friends and check our progress among other useful information about WOW.
+
 Commands:
+
 
 !cadd {region} {realm} {character name} {your nickname in discord, wow etc..} {class}
 With that command you can add characters to the bot then you can use that information to see the raider io rank you have and how it comperes to your friends.
