@@ -1,7 +1,7 @@
 A little bot that i made so we can use it with my friends and check our progress among other useful information about WOW.
 
 
-You can test the bot functionalyty here - > https://discord.gg/gCcfWpMCgE
+You can test the bot functionality here - > https://discord.gg/gCcfWpMCgE
 
 Commands:
 
