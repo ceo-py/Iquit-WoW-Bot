@@ -33,7 +33,7 @@ This is a quick check that you don't need to type {region} {realm} {character na
 
 **!token {region}**
 
-With this command you`ll be able to see token prices in the region you ask. If for some reason the price is not showing check with only !token!
+With this command you`ll be able to see token prices in the region you ask. 
 
 ![alt text](https://preview.redd.it/fo0ehrpcgwl71.png?width=681&format=png&auto=webp&s=26d45b61ff1d946585f0ed3bfd81faca756a72fc)
 
