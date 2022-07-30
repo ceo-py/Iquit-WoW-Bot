@@ -94,6 +94,8 @@ class CharacterInfo:
                     break
             else:
                 return
+        else:
+                return
         nrun = "0"
         with requests.get(
                 f'https://raider.io/api/v1/characters/profile?region={region}&realm={realm}&name={name}&fields'
