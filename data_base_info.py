@@ -4,12 +4,14 @@ from urllib.parse import quote_plus
 from dotenv import load_dotenv
 
 
+load_dotenv()
+
+
 class DataBaseInfo:
     def __init__(self):
         self.db_info = None
 
-    def connect_db(self, id_channel, msg_check=False):
-        load_dotenv()
+    def connect_db(self, id_channel, msg_check=False):   
         self.db_info = None
         username = quote_plus(os.getenv("DB_USER_NAME"))
         password = quote_plus(os.getenv("DB_PASSWORD"))
