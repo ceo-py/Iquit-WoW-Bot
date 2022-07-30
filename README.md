@@ -54,7 +54,7 @@ With that you can ask simple questions and get answers.
 For more information about commands you can always use !help.
 The bot will only respond in **"iquit-bot"** channel.
 Installation:
-1. From here you can invite the bot to your discord sever - https://discord.com/api/oauth2/authorize?client_id=859492463918972930&permissions=0&scope=bot
+1. From here you can invite the bot to your discord server - https://discord.com/api/oauth2/authorize?client_id=859492463918972930&permissions=0&scope=bot
 2. After that create text channel iquit-bot
 
     ![alt text](https://preview.redd.it/33k6h2fknwl71.png?width=294&format=png&auto=webp&s=0d3510bb3beb37e6476edcb2ebd3297b131bbb0d)
