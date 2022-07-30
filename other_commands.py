@@ -2,6 +2,8 @@ import requests
 import os
 from requests_html import HTMLSession
 from dotenv import load_dotenv
+
+
 load_dotenv()
 
 
