@@ -6,12 +6,9 @@ from other_commands import weather_check, ask_question, get_info_token, get_affi
 from data_base_info import DataBaseInfo
 from character_info import CharacterInfo
 from sorting_ranks import RankCharacterDispley
-# from api_calls_db import APICALLDB
 from discord.ext import commands
-# from discord import embeds
 
 
-# api_ = APICALLDB()
 char_db = DataBaseInfo()
 char_info = CharacterInfo()
 char_display = RankCharacterDispley()
@@ -19,7 +16,6 @@ client = commands.Bot(command_prefix="!", help_command=None)
 load_dotenv()
 TOKEN = os.getenv("TOKEN")
 DISCORD_CHANNEL_NAME = "iquit-bot"
-# DISCORD_CHANNEL_NAME = "test-robot"
 buttons = ButtonsClient(client)
 
 
@@ -35,9 +31,6 @@ async def rank(ctx):
     if cnl_id:
         embed = discord.Embed(
             title="Mythic+ Rankings SL Season 3 - Leaderboard",
-            # description="This is current score from added characters, if you want to compere yours type `!cadd region realm name yournickname class`, "
-            #             "example `!cadd eu draenor ceomerlin ceo warlock`. That way you will add your character into the list, then you can ask for `!check ceo warlock` dont need to type"
-            #             " everything like `!check eu draenor ceomerlin`",
             colour=discord.Colour.blue()
         )
         embed.set_thumbnail(url="https://graphly.io/wp-content/uploads/leaderboards-podium-star.jpg")
