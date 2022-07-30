@@ -3,9 +3,12 @@ import json
 import os
 from dotenv import load_dotenv
 
+load_dotenv()
+
+
 class APICALLDB:
     def __init__(self):
-        load_dotenv()
+        
         self.api_url = "https://data.mongodb-api.com/app/data-ussei/endpoint/data/beta/action/find"
         self.headers = {
             'Content-Type': 'application/json',
