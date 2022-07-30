@@ -60,8 +60,7 @@ class CharacterInfo:
         return show
 
     def check_if_correct_cadd(self, info, channel_id):
-        region, realm, character_name, nickname, class_ = info[0].lower(), info[1].lower(), info[2].lower(), info[
-            3].lower(), info[4].lower()
+        region, realm, character_name, nickname, class_ = [x.lower() for x in info]
         with requests.get(
                 f'https://raider.io/api/v1/characters/profile?region={region}&realm={realm}&name={character_name}'
                 '&fields=mythic_plus_recent_runs,covenant,gear,raid_progression,'
