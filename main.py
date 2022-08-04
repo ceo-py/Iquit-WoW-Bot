@@ -6,9 +6,13 @@ from other_commands import weather_check, ask_question, get_info_token, get_affi
 from data_base_info import DataBaseInfo
 from character_info import CharacterInfo
 from sorting_ranks import RankCharacterDispley
+# from api_calls_db import APICALLDB
 from discord.ext import commands
+# from discord import embeds
 
 
+# api_ = APICALLDB()
+SEASON = 4
 char_db = DataBaseInfo()
 char_info = CharacterInfo()
 char_display = RankCharacterDispley()
@@ -16,6 +20,7 @@ client = commands.Bot(command_prefix="!", help_command=None)
 load_dotenv()
 TOKEN = os.getenv("TOKEN")
 DISCORD_CHANNEL_NAME = "iquit-bot"
+# DISCORD_CHANNEL_NAME = "test-robot"
 buttons = ButtonsClient(client)
 
 
@@ -30,7 +35,10 @@ async def rank(ctx):
     cnl_id = await msg_check(ctx)
     if cnl_id:
         embed = discord.Embed(
-            title="Mythic+ Rankings SL Season 3 - Leaderboard",
+            title=f"Mythic+ Rankings SL Season {SEASON} - Leaderboard",
+            # description="This is current score from added characters, if you want to compere yours type `!cadd region realm name yournickname class`, "
+            #             "example `!cadd eu draenor ceomerlin ceo warlock`. That way you will add your character into the list, then you can ask for `!check ceo warlock` dont need to type"
+            #             " everything like `!check eu draenor ceomerlin`",
             colour=discord.Colour.blue()
         )
         embed.set_thumbnail(url="https://graphly.io/wp-content/uploads/leaderboards-podium-star.jpg")
@@ -70,14 +78,14 @@ async def rank(ctx):
         embed.add_field(name="This Week Affixes",
                         value=f"[**{get_affixes()}**](https://mplus.subcreation.net/index.html)", inline=False)
         embed.add_field(name="World Top Ranks",
-                        value="[**Mythic+ Rankings for All Classes & Roles (SL Season 3)**]("
-                              "https://raider.io/mythic-plus-character-rankings/season-sl-3/world/all/all)\n "
-                              "[**Mythic+ Rankings for All Tanks (SL Season 3)**]("
-                              "https://raider.io/mythic-plus-character-rankings/season-sl-3/world/all/tank)\n "
-                              "[**Mythic+ Rankings for All Healers (SL Season 3)**]("
-                              "https://raider.io/mythic-plus-character-rankings/season-sl-3/world/all/healer)\n "
-                              "[**Mythic+ Rankings for All DPS (SL Season 3)**]("
-                              "https://raider.io/mythic-plus-character-rankings/season-sl-3/world/all/dps)",
+                        value=f"[**Mythic+ Rankings for All Classes & Roles (SL Season {SEASON})**]("
+                              f"https://raider.io/mythic-plus-character-rankings/season-sl-{SEASON}/world/all/all)\n "
+                              f"[**Mythic+ Rankings for All Tanks (SL Season {SEASON})**]("
+                              f"https://raider.io/mythic-plus-character-rankings/season-sl-{SEASON}/world/all/tank)\n "
+                              f"[**Mythic+ Rankings for All Healers (SL Season {SEASON})**]("
+                              f"https://raider.io/mythic-plus-character-rankings/season-sl-{SEASON}/world/all/healer)\n "
+                              f"[**Mythic+ Rankings for All DPS (SL Season {SEASON})**]("
+                              f"https://raider.io/mythic-plus-character-rankings/season-sl-{SEASON}/world/all/dps)",
                         inline=False)
         await ctx.send(embed=embed)
         await discord_buttons_rank(cnl_id)
