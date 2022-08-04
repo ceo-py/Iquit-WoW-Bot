@@ -5,7 +5,7 @@ from discord_buttons_plugin import *
 from other_commands import weather_check, ask_question, get_info_token, get_affixes
 from data_base_info import DataBaseInfo
 from character_info import CharacterInfo
-from sorting_ranks import RankCharacterDispley
+from sorting_ranks import RankCharacterDisplay
 # from api_calls_db import APICALLDB
 from discord.ext import commands
 # from discord import embeds
@@ -15,7 +15,7 @@ from discord.ext import commands
 SEASON = 4
 char_db = DataBaseInfo()
 char_info = CharacterInfo()
-char_display = RankCharacterDispley()
+char_display = RankCharacterDisplay()
 client = commands.Bot(command_prefix="!", help_command=None)
 load_dotenv()
 TOKEN = os.getenv("TOKEN")
