@@ -8,18 +8,20 @@ from character_info import CharacterInfo
 from sorting_ranks import RankCharacterDisplay
 # from api_calls_db import APICALLDB
 from discord.ext import commands
-
 # from discord import embeds
 
+
 # api_ = APICALLDB()
+SEASON = 1
+EXPANSION = "DF"
 char_db = DataBaseInfo()
 char_info = CharacterInfo()
 char_display = RankCharacterDisplay()
 client = commands.Bot(command_prefix="!", help_command=None)
 load_dotenv()
 TOKEN = os.getenv("TOKEN")
-# DISCORD_CHANNEL_NAME = "iquit-bot"
-DISCORD_CHANNEL_NAME = "test-robot"
+DISCORD_CHANNEL_NAME = "iquit-bot"
+# DISCORD_CHANNEL_NAME = "test-robot"
 buttons = ButtonsClient(client)
 
 
@@ -34,7 +36,7 @@ async def rank(ctx):
     cnl_id = await msg_check(ctx)
     if cnl_id:
         embed = discord.Embed(
-            title="Mythic+ Rankings SL Season 3 - Leaderboard",
+            title=f"Mythic+ Rankings {EXPANSION} Season {SEASON} - Leaderboard",
             # description="This is current score from added characters, if you want to compere yours type `!cadd region realm name yournickname class`, "
             #             "example `!cadd eu draenor ceomerlin ceo warlock`. That way you will add your character into the list, then you can ask for `!check ceo warlock` dont need to type"
             #             " everything like `!check eu draenor ceomerlin`",
@@ -42,8 +44,9 @@ async def rank(ctx):
         )
         embed.set_thumbnail(url="https://graphly.io/wp-content/uploads/leaderboards-podium-star.jpg")
 
-        data_db_data = await char_info.get_data_for_rank(cnl_id)
-        data_db = rank_data(data_db_data, "Total")
+        data_db = await char_info.get_data_for_rank(cnl_id)
+        data_db = char_display.sorting_db(data_db, "Total")
+        data_db = char_display.get_all_chars(data_db)
         embed.add_field(name="**:regional_indicator_t::regional_indicator_o::regional_indicator_p: :nine:**",
                         value=f"{data_db[1]}\n{data_db[2]}\n"
                               f"{data_db[3]}", inline=True)
@@ -55,67 +58,79 @@ async def rank(ctx):
                         inline=True)
         embed.add_field(name=":regional_indicator_t::regional_indicator_o::regional_indicator_p: :three:",
                         value="**Ranking by roles:**", inline=False)
-        data_db = rank_data(data_db_data, "DPS")
+        data_db = await char_info.get_data_for_rank(cnl_id)
+        data_db = char_display.sorting_db(data_db, "DPS")
+        data_db = char_display.get_other_ranks(data_db, "DPS")
         embed.add_field(name=":crossed_swords:",
                         value=f":first_place:{data_db[1]}\n:second_place:{data_db[2]}\n:third_place:{data_db[3]}",
                         inline=True)
-        data_db = rank_data(data_db_data, "Heal")
+        data_db = await char_info.get_data_for_rank(cnl_id)
+        data_db = char_display.sorting_db(data_db, "Heal")
+        data_db = char_display.get_other_ranks(data_db, "Heal")
         embed.add_field(name=":heart:",
                         value=f":first_place:{data_db[1]}\n:second_place:{data_db[2]}\n:third_place:{data_db[3]}",
                         inline=True)
-        data_db = rank_data(data_db_data, "Tank")
+        data_db = await char_info.get_data_for_rank(cnl_id)
+        data_db = char_display.sorting_db(data_db, "Tank")
+        data_db = char_display.get_other_ranks(data_db, "Tank")
         embed.add_field(name=":shield:",
                         value=f":first_place:{data_db[1]}\n:second_place:{data_db[2]}\n:third_place:{data_db[3]}",
                         inline=True)
         embed.add_field(name="This Week Affixes",
                         value=f"[**{get_affixes()}**](https://mplus.subcreation.net/index.html)", inline=False)
         embed.add_field(name="World Top Ranks",
-                        value="[**Mythic+ Rankings for All Classes & Roles (SL Season 3)**]("
-                              "https://raider.io/mythic-plus-character-rankings/season-sl-3/world/all/all)\n "
-                              "[**Mythic+ Rankings for All Tanks (SL Season 3)**]("
-                              "https://raider.io/mythic-plus-character-rankings/season-sl-3/world/all/tank)\n "
-                              "[**Mythic+ Rankings for All Healers (SL Season 3)**]("
-                              "https://raider.io/mythic-plus-character-rankings/season-sl-3/world/all/healer)\n "
-                              "[**Mythic+ Rankings for All DPS (SL Season 3)**]("
-                              "https://raider.io/mythic-plus-character-rankings/season-sl-3/world/all/dps)",
+                        value=f"[**Mythic+ Rankings for All Classes & Roles ({EXPANSION} Season {SEASON})**]("
+                              f"https://raider.io/mythic-plus-character-rankings/season-{EXPANSION.lower()}-{SEASON}/world/all/all)\n "
+                              f"[**Mythic+ Rankings for All Tanks ({EXPANSION} Season {SEASON})**]("
+                              f"https://raider.io/mythic-plus-character-rankings/season-{EXPANSION.lower()}-{SEASON}/world/all/tank)\n "
+                              f"[**Mythic+ Rankings for All Healers ({EXPANSION} Season {SEASON})**]("
+                              f"https://raider.io/mythic-plus-character-rankings/season-{EXPANSION.lower()}-{SEASON}/world/all/healer)\n "
+                              f"[**Mythic+ Rankings for All DPS ({EXPANSION} Season {SEASON})**]("
+                              f"https://raider.io/mythic-plus-character-rankings/season-{EXPANSION.lower()}-{SEASON}/world/all/dps)",
                         inline=False)
         await ctx.send(embed=embed)
         await discord_buttons_rank(cnl_id)
 
 
-# @client.command()
-# async def check(ctx, arg1, arg2, *args):
-#     cnl_id = await msg_check(ctx)
-#     if cnl_id:
-#         #to do check nick in db
-#         embed = discord.Embed(
-#             title=str(score) + " - Best Mythic+ Score",
-#             description=f"[Character Link]({purl}) :link: "f"[Armory Profile](https://worldofwarcraft.com/en-{rio_character.region}/character/{rio_character.region}/{rio_character.realm}/{rio_character.name})\n"
-#                         f"[Simulate on RaidBots](https://www.raidbots.com/simbot/quick?region={rio_character.region}&realm={rio_character.realm}&name={rio_character.name}) :link: "
-#                         f"[Warcraft Logs Profile](https://www.warcraftlogs.com/character/{rio_character.region}/{rio_character.realm}/{rio_character.name})",
-#             colour=discord.Colour.blue()
-#         )
-#         embed.set_thumbnail(url=tmbn)
-#         embed.set_author(name='{}, {}, {}, {}, {} ILVL'.format(name, spec, c, cname, str(renown_level), str(ilvl)),
-#                          icon_url=class_icon)
-#         embed.add_field(name=":shield:", value=tank, inline=True)
-#         embed.add_field(name=":crossed_swords:", value=dps, inline=True)
-#         embed.add_field(name=":green_heart:", value=healer, inline=True)
-#         embed.add_field(name="Sanctum of Domination Normal", value="{}" "/10".format(str(nprog)), inline=True)
-#         embed.add_field(name="Heroic", value="{}" "/10".format(str(hprog)), inline=True)
-#         embed.add_field(name="Mythic", value="{}" "/10".format(str(mprog)), inline=True)
-#         embed.add_field(name="Sepulcher of the First Ones Normal", value="{}" "/11".format(str(nsprog)),
-#                         inline=True)
-#         embed.add_field(name="Heroic", value="{}" "/11".format(str(hsprog)), inline=True)
-#         embed.add_field(name="Mythic", value="{}" "/11".format(str(msprog)), inline=True)
-#         # embed.add_field(name="Character Link", value=purl)
-#         embed.add_field(name="Last Finished Dungeon", value="{}" "".format(str(lfinish)), inline=False)
-#         embed.add_field(name="Key Level", value="{}" "".format(str(keylevel)), inline=True)
-#         embed.add_field(name="Key Upgrade", value="{}" "".format(str(keyup)), inline=True)
-#         embed.add_field(name="Points", value="{}" "".format(str(rscore)), inline=True)
-#         embed.add_field(name="Current Affixes",
-#                         value="[**{}**](https://mplus.subcreation.net/index.html)".format(affix), inline=False)
-#         await msg_send.send(embed=embed)
+@client.command()
+async def check(ctx, *args):
+    cnl_id = await msg_check(ctx)
+    if cnl_id:
+        try:
+            tmbn, name, spec, c, cname, ilvl, class_icon, tank, dps, healer, nprog, hprog, mprog, nsprog, hsprog, msprog, lfinish, keylevel, \
+            keyup, rscore, player_region, player_realm, player_name,score, purl = await char_info.check_single_character(args, cnl_id)
+            embed = discord.Embed(
+                title=str(score) + " - Best Mythic+ Score",
+                description=f"[Character Link]({purl}) :link: "f"[Armory Profile](https://worldofwarcraft.com/en-{player_region}/character/{player_region}/{player_realm}/{player_name})\n"
+                            f"[Simulate on RaidBots](https://www.raidbots.com/simbot/quick?region={player_region}&realm={player_realm}&name={player_name}) :link: "
+                            f"[Warcraft Logs Profile](https://www.warcraftlogs.com/character/{player_region}/{player_realm}/{player_name})",
+                colour=discord.Colour.blue()
+            )
+            embed.set_thumbnail(url=tmbn)
+            embed.set_author(name=f'{name}, {spec}, {c}, {cname}, {ilvl} ILVL', icon_url=class_icon)
+            embed.add_field(name=":shield:", value=tank, inline=True)
+            embed.add_field(name=":crossed_swords:", value=dps, inline=True)
+            embed.add_field(name=":green_heart:", value=healer, inline=True)
+            embed.add_field(name="Sanctum of Domination Normal", value=f"{nprog} /10", inline=True)
+            embed.add_field(name="Heroic", value=f"{hprog} /10", inline=True)
+            embed.add_field(name="Mythic", value=f"{mprog} /10", inline=True)
+            embed.add_field(name="Sepulcher of the First Ones Normal", value=f"{nsprog} /11", inline=True)
+            embed.add_field(name="Heroic", value=f"{hsprog} /11", inline=True)
+            embed.add_field(name="Mythic", value=f"{msprog} /11", inline=True)
+            embed.add_field(name="Last Finished Dungeon", value=f"{lfinish}", inline=False)
+            embed.add_field(name="Key Level", value=f"{keylevel}", inline=True)
+            embed.add_field(name="Key Upgrade", value=f"{keyup}", inline=True)
+            embed.add_field(name="Points", value=f"{rscore}", inline=True)
+            embed.add_field(name="Current Affixes",
+                            value=f"[**{get_affixes()}**](https://mplus.subcreation.net/index.html)", inline=False)
+            await ctx.send(embed=embed)
+        except TypeError:
+            await ctx.send("Not valid information, check what you type! The Right format is `region` `realm` `character name` or `character nickname` `class`."
+                           "You can use `!help` for more information or check the examples below:"
+                           "```!check eu draenor ceomerlin```"
+                           "```!check ceo warlock```"
+                           "second example can be used if character is already in the data base if its not use the first one!")
+
 
 
 @client.command()
@@ -268,13 +283,6 @@ def check_right_channel(ctx):
     return False, 0, 0
 
 
-def rank_data(data_base, type_of_rank):
-    data_db = char_display.sorting_db(data_base, type_of_rank)
-    if type_of_rank != "Total":
-        return char_display.get_other_ranks(data_db, type_of_rank)
-    return char_display.get_all_chars(data_db)
-
-
 ## buttons_commands
 
 
@@ -289,6 +297,7 @@ async def b_all_chars(ctx):
     cnl_id = await msg_check(ctx)
     if cnl_id:
         await ctx.reply(content=f"```TOP Total\n{await button_info_display('Total', cnl_id)}```", flags=MessageFlags().EPHEMERAL)
+
 
 
 @buttons.click
