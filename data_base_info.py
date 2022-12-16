@@ -7,17 +7,27 @@ from dotenv import load_dotenv
 load_dotenv()
 
 
-class DataBaseInfo:
-    __DB_SINGLETON = []
+def db_connection():
+    username = quote_plus(os.getenv("DB_USER_NAME"))
+    password = quote_plus(os.getenv("DB_PASSWORD"))
+    uri = f"mongodb+srv://{username}:{password}@cluster0.1sxtc.mongodb.net/?retryWrites=true&w=majority"
+    return pymongo.MongoClient(uri)
+
+
+class Singleton:
+    _instance = None
+
+    def __new__(cls):
+        if not cls._instance:
+
+            cls._instance = super().__new__(cls)
+        return cls._instance
+
+
+class DataBaseInfo(Singleton):
 
     def __init__(self):
-        if not DataBaseInfo.__DB_SINGLETON:
-            username = quote_plus(os.getenv("DB_USER_NAME"))
-            password = quote_plus(os.getenv("DB_PASSWORD"))
-            uri = f"mongodb+srv://{username}:{password}@cluster0.1sxtc.mongodb.net/?retryWrites=true&w=majority"
-            DataBaseInfo.__DB_SINGLETON.append(pymongo.MongoClient(uri))
-
-        self.client = DataBaseInfo.__DB_SINGLETON[0]
+        self.client = db_connection()
 
     def connect_db(self, id_channel, msg_check=False):
         if msg_check:
