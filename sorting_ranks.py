@@ -1,8 +1,7 @@
 class RankCharacterDisplay:
     @staticmethod
     def sorting_db(data_characters, how_to_sort):
-        data_characters = sorted(data_characters, key=lambda x: -x[f"{how_to_sort}"])
-        return data_characters
+        return sorted(data_characters, key=lambda x: -x[f"{how_to_sort}"])
 
     @staticmethod
     def get_all_chars(data_info):
