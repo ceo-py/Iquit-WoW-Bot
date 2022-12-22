@@ -3,22 +3,25 @@ import os
 from requests_html import HTMLSession
 from dotenv import load_dotenv
 
-
 load_dotenv()
 
 
 def weather_check(arg):
+
     with requests.get(
             f"http://api.openweathermap.org/data/2.5/weather?q={arg}&appid={os.getenv('API_WEATHER')}&units=metric"
     ) as x:
-        t = format(x.json().get("main").get('temp'), ".1f")
-        t_min = format(x.json().get("main").get('temp_min'), ".0f")
-        t_max = format(x.json().get("main").get('temp_max'), ".0f")
-        feels_like = format(x.json().get("main").get('feels_like'), ".1f")
-        return t, t_min, t_max, feels_like
+        x = x.json()
+        t = x["main"]["temp"]
+        t_min = x["main"]["temp_min"]
+        t_max = x["main"]["temp_max"]
+        feels_like = x["main"]["feels_like"]
+        type_of_weather = x["weather"][0]["main"]
+        return t, t_min, t_max, feels_like, type_of_weather
 
 
 def ask_question(args):
+    load_dotenv()
     query = '+'.join(args)
     with requests.get(
             f"https://api.wolframalpha.com/v1/result?appid={os.getenv('API_ASK_Q')}={query}%3F") as response:
@@ -49,3 +52,16 @@ def get_affixes():
     with requests.get(
             f'''https://raider.io/api/v1/mythic-plus/affixes?region=eu&locale=en''') as af:
         return af.json().get('title')
+
+
+def get_wow_cutoff():
+    with requests.get(
+            f'''https://raider.io/api/v1/mythic-plus/season-cutoffs?season=season-df-1&region=eu''') as x:
+        data = x.json()
+        top0_1 = data['cutoffs']['graphData']['p999']['data'][0]['y']
+        top0_1_name = data['cutoffs']['graphData']['p999']['name']
+        top1 = data['cutoffs']['graphData']['p990']['data'][0]['y']
+        top1_name = data['cutoffs']['graphData']['p990']['name']
+        top10 = data['cutoffs']['graphData']['p900']['data'][0]['y']
+        top10_name = data['cutoffs']['graphData']['p900']['name']
+    return (top0_1, top0_1_name), (top1, top1_name), (top10, top10_name)

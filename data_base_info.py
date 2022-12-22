@@ -35,6 +35,12 @@ class DataBaseInfo(Singleton):
 
         return self.client["WOW"][f"Channel id {id_channel}"]
 
+    def players(self, id_channel):
+        return self.client["WOW"][f"Channel id {id_channel}"]
+
+    def buttons(self):
+        return self.client["WOW"]["Buttons"]
+
     def add_character_to_db(self, *info):
         region, realm, character_name, player_nickname, class_, id_channel = info
         self.client["WOW"][f"Channel id {id_channel}"].insert_one({f"Region": region, "Realm": realm, "Character Name": character_name,

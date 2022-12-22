@@ -22,19 +22,20 @@ class_icona = {
 
 
 class CharacterInfo:
-    def __init__(self):
-        self.raider_io_info = []
 
-    def get_data_from_rio(self, player_info, session):
-        self.raider_io_info = []
+    @staticmethod
+    def get_data_from_rio(player_info, session):
+        raider_io_info = []
         for show in player_info.find({}):
             region, realm, name = show["Region"], show["Realm"], show["Character Name"]
-            self.raider_io_info.append(session.get(f'https://raider.io/api/v1/characters/profile?region={region}&realm={realm}&name={name}&fields'
+            raider_io_info.append(session.get(
+                f'https://raider.io/api/v1/characters/profile?region={region}&realm={realm}&name={name}&fields'
                 f'=mythic_plus_recent_runs,covenant,gear,raid_progression,mythic_plus_scores_by_season%3Acurrent'))
 
-        return self.raider_io_info
+        return raider_io_info
 
-    async def get_data_for_rank(self, channel_id: str):
+    @staticmethod
+    async def get_data_for_rank(channel_id: str):
         results = []
         show = []
         data_base = db_.connect_db(channel_id)
@@ -57,7 +58,8 @@ class CharacterInfo:
                                      "Heal": heal_r, "Player Armory": player_url})
         return show
 
-    def check_if_correct_cadd(self, info, channel_id):
+    @staticmethod
+    def check_if_correct_cadd(info, channel_id):
         region, realm, character_name, nickname, class_ = [x.lower() for x in info]
         with requests.get(
                 f'https://raider.io/api/v1/characters/profile?region={region}&realm={realm}&name={character_name}'
@@ -66,31 +68,31 @@ class CharacterInfo:
             if x.status_code != 200:
                 return "Not valid information, check what you type! The Right format is:```!cadd eu draenor " \
                        "ceomerlin ceo warlock```"
-        player_info = db_.connect_db(channel_id).find(
-            {"Region": region, "Realm": realm, "Character Name": character_name})
-        try:
-            player_info[0]
-        except IndexError:
-            db_.add_character_to_db(region, realm, character_name, nickname, class_, channel_id)
-            return f"```{character_name.capitalize()} has been added to the Data Base!```"
-        return f"```{character_name.capitalize()} already exist in the Data Base as:" \
-               f"\n{player_info[0]['Region']} {player_info[0]['Realm']} {player_info[0]['Character Name']} " \
-               f"{player_info[0]['Player Nickname']} {player_info[0]['Class']}```"
 
-    async def check_single_character(self, info, channel_id):
+        player_info = db_.connect_db(channel_id).find_one(
+            {"$and": [{"Region": region, "Realm": realm, "Character Name": character_name}]})
+        if player_info:
+            return f"```{character_name.capitalize()} already exist in the Data Base as:" \
+                   f"\n{player_info['Region']} {player_info['Realm']} {player_info['Character Name']} " \
+                   f"{player_info['Player Nickname']} {player_info['Class']}```"
+
+        db_.add_character_to_db(region, realm, character_name, nickname, class_, channel_id)
+        return f"```{character_name.capitalize()} has been added to the Data Base!```"
+
+    @staticmethod
+    async def check_single_character(info, channel_id):
         if len(info) == 3:
             region, realm, name = info
         elif len(info) == 2:
             data_base = db_.connect_db(channel_id)
             nickname, player_class = info
-            for show in data_base.find({}):
-                db_region, db_realm, db_name, db_nickname, db_class = show["Region"], show["Realm"], \
-                                    show["Character Name"], show["Player Nickname"], show["Class"]
-                if db_nickname == nickname and player_class == db_class:
-                    region, realm, name = db_region, db_realm, db_name
-                    break
+            player_found = data_base.find_one({"$and": [{"Player Nickname": nickname}, {"Class": player_class}]})
+
+            if player_found:
+                region, realm, name = player_found["Region"], player_found["Realm"], player_found["Character Name"]
             else:
                 return
+
         nrun = "0"
         with requests.get(
                 f'https://raider.io/api/v1/characters/profile?region={region}&realm={realm}&name={name}&fields'
@@ -98,37 +100,34 @@ class CharacterInfo:
                 x:
             if x.status_code != 200:
                 return
-            name = x.json().get('name')
-            c = x.json().get('class')
-            spec = x.json().get('active_spec_name')
-            tmbn = x.json().get("thumbnail_url")
-            ilvl = x.json().get('gear').get('item_level_equipped')
-            purl = x.json().get('profile_url')
-            nprog = x.json().get('raid_progression').get('sanctum-of-domination').get('normal_bosses_killed')
-            hprog = x.json().get('raid_progression').get('sanctum-of-domination').get('heroic_bosses_killed')
-            mprog = x.json().get('raid_progression').get('sanctum-of-domination').get('mythic_bosses_killed')
-            nsprog = x.json().get('raid_progression').get('sepulcher-of-the-first-ones').get('normal_bosses_killed')
-            hsprog = x.json().get('raid_progression').get('sepulcher-of-the-first-ones').get('heroic_bosses_killed')
-            msprog = x.json().get('raid_progression').get('sepulcher-of-the-first-ones').get('mythic_bosses_killed')
-            score = x.json().get('mythic_plus_scores_by_season')[0].get('scores').get('all')
+            x = x.json()
+            name = x["name"]
+            c = x['class']
+            spec = x['active_spec_name']
+            tmbn = x["thumbnail_url"]
+            ilvl = x['gear']['item_level_equipped']
+            purl = x['profile_url']
+            vault_prog_normal = x['raid_progression']['vault-of-the-incarnates']['normal_bosses_killed']
+            vault_prog_heroic = x['raid_progression']['vault-of-the-incarnates']['heroic_bosses_killed']
+            vault_prog_mythic = x['raid_progression']['vault-of-the-incarnates']['mythic_bosses_killed']
+            score = x['mythic_plus_scores_by_season'][0]['scores']['all']
             if str(score) == str(nrun):
                 lfinish = "None"
                 keylevel = "0"
                 keyup = "0"
                 rscore = "0"
             else:
-                lfinish = x.json().get('mythic_plus_recent_runs')[0].get('dungeon')
-                keylevel = x.json().get('mythic_plus_recent_runs')[0].get('mythic_level')
-                keyup = x.json().get('mythic_plus_recent_runs')[0].get('num_keystone_upgrades')
-                rscore = x.json().get('mythic_plus_recent_runs')[0].get('score')
-            cname = x.json().get('covenant').get('name')
-            # renown_level = x.json().get('covenant').get("renown_level")
-            tank = x.json().get('mythic_plus_scores_by_season')[0].get('scores').get('tank')
-            dps = x.json().get('mythic_plus_scores_by_season')[0].get('scores').get('dps')
-            healer = x.json().get('mythic_plus_scores_by_season')[0].get('scores').get("healer")
+                lfinish = x['mythic_plus_recent_runs'][0]['dungeon']
+                keylevel = x['mythic_plus_recent_runs'][0]['mythic_level']
+                keyup = x['mythic_plus_recent_runs'][0]['num_keystone_upgrades']
+                rscore = x['mythic_plus_recent_runs'][0]['score']
+            cname = x['covenant']['name']
+            tank = x['mythic_plus_scores_by_season'][0]['scores']['tank']
+            dps = x['mythic_plus_scores_by_season'][0]['scores']['dps']
+            healer = x['mythic_plus_scores_by_season'][0]['scores']["healer"]
             class_icon = class_icona[c]
-        return tmbn, name, spec, c, cname, ilvl, class_icon, tank, dps, healer, nprog, hprog, mprog, nsprog, \
-               hsprog, msprog, lfinish, keylevel, keyup, rscore, region, realm,  name, score, purl
+        return tmbn, name, spec, c, cname, ilvl, class_icon, tank, dps, healer, vault_prog_normal, vault_prog_heroic, vault_prog_mythic, \
+               lfinish, keylevel, keyup, rscore, region, realm, name, score, purl
 
 
 ci = CharacterInfo()
