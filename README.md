@@ -6,11 +6,11 @@ You can test the bot functionality here - > https://discord.gg/gCcfWpMCgE
 Commands:
 
 
-**!cadd {region} {realm} {character name} {your nickname in discord, wow etc..} {class}**
+**!add**
 
-With that command you can add characters to the bot then you can use that information to see the raider io rank you have and how it comperes to your friends.
+With that command you can add characters to the bot then you can use that information to see the raider io rank you have and how it comperes to your friends. Click on the button and fill up the fields with information.
 
-![alt text](https://preview.redd.it/4ir7myz8gwl71.png?width=428&format=png&auto=webp&s=b7460204149171164aaa32132819c31daed446bd)
+![alt text](https://cdn.discordapp.com/attachments/983670671647313930/1055864102142083154/image.png)
 
 
 **!rank**
