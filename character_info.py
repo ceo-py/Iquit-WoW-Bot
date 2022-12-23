@@ -60,24 +60,24 @@ class CharacterInfo:
 
     @staticmethod
     def check_if_correct_cadd(info, channel_id):
-        region, realm, character_name, nickname, class_ = [x.lower() for x in info]
+        region, realm, character_name, nickname, class_ = [x.value.lower() for x in info]
         with requests.get(
                 f'https://raider.io/api/v1/characters/profile?region={region}&realm={realm}&name={character_name}'
                 '&fields=mythic_plus_recent_runs,covenant,gear,raid_progression,'
                 'mythic_plus_scores_by_season%3Acurrent') as x:
             if x.status_code != 200:
-                return "Not valid information, check what you type! The Right format is:```!cadd eu draenor " \
-                       "ceomerlin ceo warlock```"
+                return "**Not valid information, check the **[example]" \
+                       "(https://cdn.discordapp.com/attachments/983670671647313930/1055864102142083154/image.png)"
 
         player_info = db_.connect_db(channel_id).find_one(
             {"$and": [{"Region": region, "Realm": realm, "Character Name": character_name}]})
         if player_info:
-            return f"```{character_name.capitalize()} already exist in the Data Base as:" \
+            return f"```{character_name.capitalize()} already exist in the database as:" \
                    f"\n{player_info['Region']} {player_info['Realm']} {player_info['Character Name']} " \
                    f"{player_info['Player Nickname']} {player_info['Class']}```"
 
         db_.add_character_to_db(region, realm, character_name, nickname, class_, channel_id)
-        return f"```{character_name.capitalize()} has been added to the Data Base!```"
+        return f"```{character_name.capitalize()} has been added to the database!```"
 
     @staticmethod
     async def check_single_character(info, channel_id):

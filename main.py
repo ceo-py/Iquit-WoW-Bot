@@ -1,5 +1,6 @@
 import discord
 import os
+from discord import ui
 from dotenv import load_dotenv
 from other_commands import weather_check, ask_question, get_info_token, get_affixes, get_wow_cutoff
 from data_base_info import DataBaseInfo
@@ -12,7 +13,6 @@ EXPANSION = "DF"
 char_db = DataBaseInfo()
 char_info = CharacterInfo()
 char_display = RankCharacterDisplay()
-intents = discord.Intents.all()
 load_dotenv()
 TOKEN = os.getenv("TOKEN")
 DISCORD_CHANNEL_NAME = "iquit-bot"
@@ -20,13 +20,13 @@ DISCORD_CHANNEL_NAME = "iquit-bot"
 
 class PersistentViewBot(commands.Bot):
     def __init__(self):
-        intents = discord.Intents.default()
-        intents.message_content = True
+        intents = discord.Intents.all()
 
-        super().__init__(command_prefix="?", help_command=None, intents=intents)
+        super().__init__(command_prefix="!", help_command=None, intents=intents)
 
     async def setup_hook(self) -> None:
-        self.add_view(Buttons())
+        self.add_view(ButtonsCharacterStatistics())
+        self.add_view(AddCharacterButton())
 
 
 client = PersistentViewBot()
@@ -93,7 +93,7 @@ async def rank(ctx):
                               f"[**Mythic+ Rankings for All DPS ({EXPANSION} Season {SEASON})**]("
                               f"https://raider.io/mythic-plus-character-rankings/season-{EXPANSION.lower()}-{SEASON}/world/all/dps)",
                         inline=False)
-        view = Buttons()
+        view = ButtonsCharacterStatistics()
         await ctx.send(embed=embed, view=view)
 
 
@@ -137,15 +137,10 @@ async def check(ctx, *args):
 
 
 @client.command()
-async def cadd(ctx, *c_data_input):
+async def add(ctx):
     cnl_id = await msg_check(ctx)
     if cnl_id:
-        if len(c_data_input) != 5:
-            await ctx.send(
-                "Not valid information, check what you type! The Right format is:```!cadd eu draenor ceomerlin ceo "
-                "warlock```")
-            return
-        await ctx.send(char_info.check_if_correct_cadd(c_data_input, cnl_id))
+        await ctx.send(view=AddCharacterButton())
 
 
 @client.command()
@@ -160,41 +155,37 @@ async def help(ctx):
             url="https://cdn.discordapp.com/attachments/880059629252534292/880060565190500423/iq.png")
         embed.add_field(name="**!check region realm character name**",
                         value="[Example](https://cdn.discordapp.com/attachments/880059629252534292/880077926505250846"
-                              "/check.png) `!check eu draenor ceomerlin` with this command "
+                              "/check.png)\n `!check eu draenor ceomerlin` with this command "
                               "you are going to see that character current progress in raids, raider IO, last timed "
                               "key and more.\n :arrow_down: ",
                         inline=False)
-        embed.add_field(name="**!cadd region realm character name your nick name character class**",
-                        value="Example `!cadd eu draenor ceomerlin ceo warlock` with this command you are going to add"
-                              "that character into the list. Ones that is done you can use quick [`!check ceo "
-                              "warlock`](https://cdn.discordapp.com/attachments/880059629252534292/880077999880409088"
-                              "/qcheck.png) "
-                              "over typing `!cadd eu draenor ceomerlin` command and "
-                              "that character will enter into the rank system where you can see where you rank "
-                              "compere to your friends and other people that you add to the list. "
-                              "The last two argumets in this example `!cadd eu draenor ceomerlin ceo warlock`, "
-                              "`ceo warlock` are completely free to type what you like that you can "
-                              "remember easy.\n :arrow_down: ", inline=False)
+        embed.add_field(name="**!add**",
+                        value="[Example](https://cdn.discordapp.com/attachments/983670671647313930/1055864102142083154/image.png)\n"
+                              "In the popup menu add the needed information. Correct format is region, realm, "
+                              "character name, your nick name, character class. That character will enter into the rank system "
+                              "where you can see where you rank compere to your friends and other people that you add to the server database."
+                              " \n :arrow_down: ",
+                        inline=False)
         embed.add_field(name="**!rank**",
                         value="[Example](https://cdn.discordapp.com/attachments/880059629252534292/880064020525223956"
-                              "/rank.png) `!rank` with that command every character that "
+                              "/rank.png)\n `!rank` with that command every character that "
                               "you add already to the list with `!cadd` command will be compere and ranked by raider "
                               "IO with total section dont matter the role and separate "
                               " ranks for DPS, Healers and Tanks.\n :arrow_down: ", inline=False)
         embed.add_field(name="**!token region**",
                         value="[Example](https://cdn.discordapp.com/attachments/880059629252534292/880153278111961108"
-                              "/token.png) `!token eu`, `!token us`, `!token china`, `!token korea`, `!token taiwan` "
+                              "/token.png)\n `!token eu`, `!token us`, `!token china`, `!token korea`, `!token taiwan` "
                               " with that command you can check token prices in every region.\n :arrow_down: ",
                         inline=False)
         embed.add_field(name="**!weather city**",
                         value="[Example](https://cdn.discordapp.com/attachments/880059629252534292/880154617730703390"
-                              "/weather.png) `!weather sofia` "
+                              "/weather.png)\n `!weather sofia` "
                               "with that command you can check the weather in your city or where you want.\n "
                               ":arrow_down: ",
                         inline=False)
         embed.add_field(name="**!ask question**",
                         value="[Example](https://cdn.discordapp.com/attachments/880059629252534292/880155463759581194"
-                              "/ask.png) `!ask 2+2`, `!ask capital bulgaria`, `!ask next nba game` "
+                              "/ask.png)\n `!ask 2+2`, `!ask capital bulgaria`, `!ask next nba game` "
                               "with that command you can ask simple questions like you ask your google or amazon "
                               "assistance.",
                         inline=False)
@@ -287,7 +278,7 @@ def check_right_channel(ctx):
     return False, 0, 0
 
 
-class Buttons(discord.ui.View):
+class ButtonsCharacterStatistics(discord.ui.View):
     def __init__(self):
         super().__init__(timeout=None)
 
@@ -310,6 +301,28 @@ class Buttons(discord.ui.View):
     async def tank(self, button: discord.ui.Button, interaction: discord.Interaction):
         await button.response.send_message(
             f"```TOP Tanks\n{await button_info_display('Tank', str(button.channel.id))}```", ephemeral=True)
+
+
+class AddCharacterButton(discord.ui.View):
+    def __init__(self):
+        super().__init__(timeout=None)
+
+    @discord.ui.button(label="Add character to server database", style=discord.ButtonStyle.red, custom_id="5")
+    async def add_character(self, button: discord.ui.Button, interaction: discord.Interaction):
+        await button.response.send_modal(AddCharacterModal())
+
+
+class AddCharacterModal(ui.Modal, title="Character Information"):
+    region = ui.TextInput(label='Region Name', placeholder="US, EU, KR, TW, CN", max_length=2)
+    realm = ui.TextInput(label='Realm Name', placeholder="Kazzak, Draenor, etc", max_length=26)
+    character_name = ui.TextInput(label='Character Name', placeholder="In game character name", max_length=12)
+    nickname = ui.TextInput(label='Your Nickname', placeholder="Nickname", max_length=12)
+    character_class = ui.TextInput(label='Your Character Class', placeholder="Your character class", max_length=12)
+
+    async def on_submit(self, interaction: discord.Interaction) -> None:
+        data = (self.region, self.realm, self.character_name, self.nickname, self.character_class)
+        await interaction.response.send_message(char_info.check_if_correct_cadd(data, interaction.channel_id),
+                                                ephemeral=True)
 
 
 async def button_info_display(type_of_info, channel_id):
