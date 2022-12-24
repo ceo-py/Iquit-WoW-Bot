@@ -22,7 +22,7 @@ class PersistentViewBot(commands.Bot):
     def __init__(self):
         intents = discord.Intents.all()
 
-        super().__init__(command_prefix="!", help_command=None, intents=intents)
+        super().__init__(command_prefix="?", help_command=None, intents=intents)
 
     async def setup_hook(self) -> None:
         self.add_view(ButtonsCharacterStatistics())
@@ -42,19 +42,28 @@ async def on_ready():
 async def rank(ctx):
     cnl_id = await msg_check(ctx)
     if cnl_id:
+        backup = None
         embed = discord.Embed(
             title=f"Mythic+ Rankings {EXPANSION} Season {SEASON} - Leaderboard",
             colour=discord.Colour.blue()
         )
         embed.set_thumbnail(url="https://graphly.io/wp-content/uploads/leaderboards-podium-star.jpg")
 
-        data_db = await char_info.get_data_for_rank(cnl_id)
+        data_db = await char_info.get_data_for_rank(cnl_id, backup)
+        if not data_db:
+            backup = "Yes"
+            data_db = await char_info.get_data_for_rank(cnl_id, backup)
 
         total = char_display.get_all_chars(char_display.sorting_db(data_db, "Total"))
-        top_cut_offs = "\n".join(f"{name} - {rating:.1f}" for rating, name in get_wow_cutoff())
-        embed.add_field(name="**Mythic+ Rating Cutoffs**",
-                        value=f"```"
-                              f"{top_cut_offs}```", inline=False)
+        if not backup:
+            top_cut_offs = "\n".join(f"{name} - {rating:.1f}" for rating, name in get_wow_cutoff())
+            embed.add_field(name="**Mythic+ Rating Cutoffs**",
+                            value=f"```"
+                                  f"{top_cut_offs}```", inline=False)
+        else:
+            embed.add_field(name="**This is backup version**",
+                            value=f"```"
+                                  f"Raider IO is not working at the moment```", inline=False)
 
         embed.add_field(name="**:regional_indicator_t::regional_indicator_o::regional_indicator_p: :nine:**",
                         value=f"{total[1]}\n{total[2]}\n"
@@ -81,8 +90,10 @@ async def rank(ctx):
         embed.add_field(name=":shield:",
                         value=f":first_place:{tank[1]}\n:second_place:{tank[2]}\n:third_place:{tank[3]}",
                         inline=True)
-        embed.add_field(name="This Week Affixes",
-                        value=f"[**{get_affixes()}**](https://mplus.subcreation.net/index.html)", inline=False)
+        if not backup:
+            embed.add_field(name="This Week Affixes",
+                            value=f"[**{get_affixes()}**](https://mplus.subcreation.net/index.html)", inline=False)
+
         embed.add_field(name="World Top Ranks",
                         value=f"[**Mythic+ Rankings for All Classes & Roles ({EXPANSION} Season {SEASON})**]("
                               f"https://raider.io/mythic-plus-character-rankings/season-{EXPANSION.lower()}-{SEASON}/world/all/all)\n "
@@ -325,8 +336,8 @@ class AddCharacterModal(ui.Modal, title="Character Information"):
                                                 ephemeral=True)
 
 
-async def button_info_display(type_of_info, channel_id):
-    data_db = await char_info.get_data_for_rank(channel_id)
+async def button_info_display(type_of_info, channel_id, backup=None):
+    data_db = await char_info.get_data_for_rank(channel_id, backup)
     data_db = char_display.sorting_db(data_db, f"{type_of_info}")
     return char_display.button_rank_result(data_db, f"{type_of_info}")
 

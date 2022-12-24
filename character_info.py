@@ -28,29 +28,39 @@ class_icona = {
 class CharacterInfo:
 
     @staticmethod
-    def get_data_from_rio(player_info, session):
+    def get_data_from_rio(player_info, session, backup):
         raider_io_info = []
         for show in player_info.find({}):
             region, realm, name = show["Region"], show["Realm"], show["Character Name"]
-
-            raider_io_info.append(session.get(ci.raider_io_api_url(region, realm, name)))
+            if not backup:
+                raider_io_info.append(session.get(ci.raider_io_api_url(region, realm, name)))
+            else:
+                raider_io_info.append(session.get(ci.battle_net_api_url(region, realm, name)))
 
         return raider_io_info
 
     @staticmethod
-    async def get_data_for_rank(channel_id: str):
+    async def get_data_for_rank(channel_id: str, backup):
         results = []
         show = []
         data_base = db_.connect_db(channel_id)
         async with aiohttp.ClientSession() as session:
-            x = ci.get_data_from_rio(data_base, session)
+            x = ci.get_data_from_rio(data_base, session, backup)
             responses = await asyncio.gather(*x)
             for response in responses:
-                results.append(await response.json())
+                try:
+                    results.append(await response.json())
+                except :
+                    return
+
             # TODO if no such character anymore to remove him from DB and pop msg first time when has been deleted
             for index in results:
                 if "error" not in index:
-                    name, rating, tank_r, dps_r, heal_r, player_url = ci.raider_io_api(index)
+                    if not backup:
+                        name, rating, tank_r, dps_r, heal_r, player_url = ci.raider_io_api(index)
+                    else:
+                        name, rating, tank_r, dps_r, heal_r, player_url = ci.battle_net_api(index)
+
                     if rating != 0:
                         show.append({"Character Name": name, "Total": rating, "Tank": tank_r, "DPS": dps_r,
                                      "Heal": heal_r, "Player Armory": player_url})
