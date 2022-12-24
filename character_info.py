@@ -2,6 +2,10 @@ import aiohttp
 import asyncio
 import requests
 from data_base_info import DataBaseInfo
+from dotenv import load_dotenv
+import os
+
+load_dotenv()
 
 db_ = DataBaseInfo()
 
@@ -28,9 +32,8 @@ class CharacterInfo:
         raider_io_info = []
         for show in player_info.find({}):
             region, realm, name = show["Region"], show["Realm"], show["Character Name"]
-            raider_io_info.append(session.get(
-                f'https://raider.io/api/v1/characters/profile?region={region}&realm={realm}&name={name}&fields'
-                f'=mythic_plus_recent_runs,covenant,gear,raid_progression,mythic_plus_scores_by_season%3Acurrent'))
+
+            raider_io_info.append(session.get(ci.raider_io_api_url(region, realm, name)))
 
         return raider_io_info
 
@@ -47,16 +50,39 @@ class CharacterInfo:
             # TODO if no such character anymore to remove him from DB and pop msg first time when has been deleted
             for index in results:
                 if "error" not in index:
-                    name = index["name"]
-                    rating = int(format(index['mythic_plus_scores_by_season'][0]["segments"]["all"]["score"], ".0f"))
-                    tank_r = int(format(index['mythic_plus_scores_by_season'][0]["segments"]["tank"]["score"], ".0f"))
-                    dps_r = int(format(index['mythic_plus_scores_by_season'][0]["segments"]["dps"]["score"], ".0f"))
-                    heal_r = int(format(index['mythic_plus_scores_by_season'][0]["segments"]["healer"]["score"], ".0f"))
-                    player_url = index["profile_url"]
+                    name, rating, tank_r, dps_r, heal_r, player_url = ci.raider_io_api(index)
                     if rating != 0:
                         show.append({"Character Name": name, "Total": rating, "Tank": tank_r, "DPS": dps_r,
                                      "Heal": heal_r, "Player Armory": player_url})
         return show
+
+    @staticmethod
+    def raider_io_api_url(region, realm, name):
+        return f'https://raider.io/api/v1/characters/profile?region={region}&realm={realm}&name={name}&fields' \
+               f'=mythic_plus_recent_runs,covenant,gear,raid_progression,mythic_plus_scores_by_season%3Acurrent'
+
+    @staticmethod
+    def battle_net_api_url(region, realm, name):
+        return f'https://{region}.api.blizzard.com/profile/wow/character/{realm}/{name}/mythic-keystone-profile?' \
+                f'namespace=profile-{region}&locale=en_{region.upper()}&access_token={os.getenv("BATTLE_NET_API")}'
+
+    @staticmethod
+    def raider_io_api(data_json):
+        name = data_json["name"]
+        rating = int(format(data_json['mythic_plus_scores_by_season'][0]["segments"]["all"]["score"], ".0f"))
+        tank_r = int(format(data_json['mythic_plus_scores_by_season'][0]["segments"]["tank"]["score"], ".0f"))
+        dps_r = int(format(data_json['mythic_plus_scores_by_season'][0]["segments"]["dps"]["score"], ".0f"))
+        heal_r = int(format(data_json['mythic_plus_scores_by_season'][0]["segments"]["healer"]["score"], ".0f"))
+        player_url = data_json["profile_url"]
+        return name, rating, tank_r, dps_r, heal_r, player_url
+
+    @staticmethod
+    def battle_net_api(data_json):
+        name = data_json['character']['name']
+        rating = int(f"{data_json['current_mythic_rating']['rating']:.0f}")
+        tank_r, dps_r, heal_r = 0, 0, 0
+        player_url = f"https://worldofwarcraft.com/en-gb/character/eu/{data_json['character']['realm']['slug']}/{name}"
+        return name, rating, tank_r, dps_r, heal_r, player_url
 
     @staticmethod
     def check_if_correct_cadd(info, channel_id):
