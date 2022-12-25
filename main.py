@@ -1,21 +1,12 @@
 import discord
-import os
-from discord import ui
-from dotenv import load_dotenv
+from buttons.button_add_character import AddCharacterButton
+from buttons.buttons_stats_total_dps_heal_tank import ButtonsCharacterStatistics, char_info, char_display
 from other_commands import weather_check, ask_question, get_info_token, get_affixes, get_wow_cutoff
-from data_base_info import DataBaseInfo
-from character_info import CharacterInfo
-from sorting_ranks import RankCharacterDisplay
+from validations.validations import Validation, os
 from discord.ext import commands
 
 SEASON = 1
 EXPANSION = "DF"
-char_db = DataBaseInfo()
-char_info = CharacterInfo()
-char_display = RankCharacterDisplay()
-load_dotenv()
-TOKEN = os.getenv("TOKEN")
-DISCORD_CHANNEL_NAME = "iquit-bot"
 
 
 class PersistentViewBot(commands.Bot):
@@ -38,44 +29,67 @@ async def on_ready():
     print("Ready")
 
 
+async def backup_message(ctx, embed, characters_information: list):
+    embed.set_thumbnail(
+        url='https://cdn.discordapp.com/attachments/983670671647313930/1056581663230021822/'
+        'kisspng-road-signs-in-singapore-warning-sign-traffic-sign-caution-signs-5a8b35b0afe937.'
+        '9224424515190726887205.png')
+    total = char_display.get_all_chars(char_display.sorting_db(characters_information, "Total"))
+
+    embed.add_field(name="**This is backup version**",
+                    value=f"```"
+                          f"Raider IO is not working at the moment```", inline=False)
+
+    embed.add_field(name="**:regional_indicator_t::regional_indicator_o::regional_indicator_p: :nine:**",
+                    value=f"{total[1]}\n{total[2]}\n"
+                          f"{total[3]}", inline=True)
+    embed.add_field(name=":arrow_down_small:",
+                    value=f"{total[4]}\n{total[5]}\n{total[6]}",
+                    inline=True)
+    embed.add_field(name=":arrow_down_small:",
+                    value=f"{total[7]}\n{total[8]}\n{total[9]}",
+                    inline=True)
+    await ctx.send(embed=embed)
+
+
 @client.command()
 async def rank(ctx):
-    cnl_id = await msg_check(ctx)
+    cnl_id = await Validation.msg_check(ctx)
     if cnl_id:
-        backup = None
         embed = discord.Embed(
             title=f"Mythic+ Rankings {EXPANSION} Season {SEASON} - Leaderboard",
             colour=discord.Colour.blue()
         )
-        embed.set_thumbnail(url="https://graphly.io/wp-content/uploads/leaderboards-podium-star.jpg")
+        embed.set_thumbnail(
+            url="https://cdn.discordapp.com/attachments/983670671647313930/1056575707259613204/Winners-podium-on-transparent-background-PNG.png")
 
-        data_db = await char_info.get_data_for_rank(cnl_id, backup)
+        data_db = await char_info.get_data_for_rank(cnl_id, None)
         if not data_db:
-            backup = "Yes"
-            data_db = await char_info.get_data_for_rank(cnl_id, backup)
+            data_db = await char_info.get_data_for_rank(cnl_id, "Yes")
+            return await backup_message(ctx, embed, data_db)
 
         total = char_display.get_all_chars(char_display.sorting_db(data_db, "Total"))
-        if not backup:
-            top_cut_offs = "\n".join(f"{name} - {rating:.1f}" for rating, name in get_wow_cutoff())
-            embed.add_field(name="**Mythic+ Rating Cutoffs**",
-                            value=f"```"
-                                  f"{top_cut_offs}```", inline=False)
-        else:
-            embed.add_field(name="**This is backup version**",
-                            value=f"```"
-                                  f"Raider IO is not working at the moment```", inline=False)
+
+        top_cut_offs = "\n".join(f"{name} - {rating:.1f}" for rating, name in get_wow_cutoff())
+        embed.add_field(name="**Mythic+ Rating Cutoffs**",
+                        value=f"```"
+                              f"{top_cut_offs}```", inline=False)
 
         embed.add_field(name="**:regional_indicator_t::regional_indicator_o::regional_indicator_p: :nine:**",
                         value=f"{total[1]}\n{total[2]}\n"
                               f"{total[3]}", inline=True)
+
         embed.add_field(name=":arrow_down_small:",
                         value=f"{total[4]}\n{total[5]}\n{total[6]}",
                         inline=True)
+
         embed.add_field(name=":arrow_down_small:",
                         value=f"{total[7]}\n{total[8]}\n{total[9]}",
                         inline=True)
+
         embed.add_field(name=":regional_indicator_t::regional_indicator_o::regional_indicator_p: :three:",
                         value="**Ranking by roles:**", inline=False)
+
         dps = char_display.get_other_ranks(char_display.sorting_db(data_db, "DPS"), "DPS")
         embed.add_field(name=":crossed_swords:",
                         value=f":first_place:{dps[1]}\n:second_place:{dps[2]}\n:third_place:{dps[3]}",
@@ -90,9 +104,9 @@ async def rank(ctx):
         embed.add_field(name=":shield:",
                         value=f":first_place:{tank[1]}\n:second_place:{tank[2]}\n:third_place:{tank[3]}",
                         inline=True)
-        if not backup:
-            embed.add_field(name="This Week Affixes",
-                            value=f"[**{get_affixes()}**](https://mplus.subcreation.net/index.html)", inline=False)
+
+        embed.add_field(name="This Week Affixes",
+                        value=f"[**{get_affixes()}**](https://mplus.subcreation.net/index.html)", inline=False)
 
         embed.add_field(name="World Top Ranks",
                         value=f"[**Mythic+ Rankings for All Classes & Roles ({EXPANSION} Season {SEASON})**]("
@@ -110,7 +124,7 @@ async def rank(ctx):
 
 @client.command()
 async def check(ctx, *args):
-    cnl_id = await msg_check(ctx)
+    cnl_id = await Validation.msg_check(ctx)
     if cnl_id:
         try:
             tmbn, name, spec, c, cname, ilvl, class_icon, tank, dps, healer, c_raid_normal, c_raid_heroic, c_raid_mythic, lfinish, keylevel, \
@@ -149,14 +163,14 @@ async def check(ctx, *args):
 
 @client.command()
 async def add(ctx):
-    cnl_id = await msg_check(ctx)
+    cnl_id = await Validation.msg_check(ctx)
     if cnl_id:
         await ctx.send(view=AddCharacterButton())
 
 
 @client.command()
 async def help(ctx):
-    cnl_id = await msg_check(ctx)
+    cnl_id = await Validation.msg_check(ctx)
     if cnl_id:
         embed = discord.Embed(
             title="Help Center For Iquit Commands",
@@ -205,7 +219,7 @@ async def help(ctx):
 
 @client.command()
 async def weather(ctx, arg1=None):
-    cnl_id = await msg_check(ctx)
+    cnl_id = await Validation.msg_check(ctx)
     if cnl_id:
         if arg1 is None:
             await ctx.send(
@@ -226,7 +240,7 @@ async def weather(ctx, arg1=None):
 
 @client.command()
 async def ask(ctx, *args):
-    cnl_id = await msg_check(ctx)
+    cnl_id = await Validation.msg_check(ctx)
     if cnl_id:
         if not args:
             await ctx.send(
@@ -245,7 +259,7 @@ async def ask(ctx, *args):
 
 @client.command()
 async def token(ctx, region=None):
-    cnl_id = await msg_check(ctx)
+    cnl_id = await Validation.msg_check(ctx)
     if cnl_id:
         if region is None:
             await ctx.send(
@@ -268,78 +282,4 @@ async def token(ctx, region=None):
         await ctx.send(embed=embed)
 
 
-async def msg_check(ctx):
-    right_channel, msg_send, cnl_id = check_right_channel(ctx)
-    if not right_channel:
-        await ctx.author.send(
-            f"Not Right Channel make sure you create text channel - **{DISCORD_CHANNEL_NAME}**, and send your commands "
-            f"there!")
-        return
-    channel_data_ = char_db.connect_db(cnl_id, msg_check=True).find({"Channel Id": cnl_id})
-    try:
-        channel_data_[0]["Channel Id"]
-    except IndexError:
-        char_db.save_msg_id(msg_send, cnl_id)
-    return cnl_id
-
-
-def check_right_channel(ctx):
-    if str(ctx.channel) == DISCORD_CHANNEL_NAME:
-        return True, str(ctx.guild.id), str(ctx.channel.id)
-    return False, 0, 0
-
-
-class ButtonsCharacterStatistics(discord.ui.View):
-    def __init__(self):
-        super().__init__(timeout=None)
-
-    @discord.ui.button(label="All Total Rank!", style=discord.ButtonStyle.blurple, custom_id="1")
-    async def total(self, button: discord.ui.Button, interaction: discord.Interaction):
-        await button.response.send_message(
-            f"```TOP Total\n{await button_info_display('Total', str(button.channel.id))}```", ephemeral=True)
-
-    @discord.ui.button(label="All Dps Ranks!", style=discord.ButtonStyle.green, custom_id="2")
-    async def dps(self, button: discord.ui.Button, interaction: discord.Interaction):
-        await button.response.send_message(
-            f"```TOP DPS\n{await button_info_display('DPS', str(button.channel.id))}```", ephemeral=True)
-
-    @discord.ui.button(label="All Healer Ranks!", style=discord.ButtonStyle.red, custom_id="3")
-    async def heal(self, button: discord.ui.Button, interaction: discord.Interaction):
-        await button.response.send_message(
-            f"```TOP Healers\n{await button_info_display('Heal', str(button.channel.id))}```", ephemeral=True)
-
-    @discord.ui.button(label="All Tank Ranks!", style=discord.ButtonStyle.gray, custom_id="4")
-    async def tank(self, button: discord.ui.Button, interaction: discord.Interaction):
-        await button.response.send_message(
-            f"```TOP Tanks\n{await button_info_display('Tank', str(button.channel.id))}```", ephemeral=True)
-
-
-class AddCharacterButton(discord.ui.View):
-    def __init__(self):
-        super().__init__(timeout=None)
-
-    @discord.ui.button(label="Add character to server database", style=discord.ButtonStyle.red, custom_id="5")
-    async def add_character(self, button: discord.ui.Button, interaction: discord.Interaction):
-        await button.response.send_modal(AddCharacterModal())
-
-
-class AddCharacterModal(ui.Modal, title="Character Information"):
-    region = ui.TextInput(label='Region Name', placeholder="US, EU, KR, TW, CN", max_length=2)
-    realm = ui.TextInput(label='Realm Name', placeholder="Kazzak, Draenor, etc", max_length=26)
-    character_name = ui.TextInput(label='Character Name', placeholder="In game character name", max_length=12)
-    nickname = ui.TextInput(label='Your Nickname', placeholder="Nickname", max_length=12)
-    character_class = ui.TextInput(label='Your Character Class', placeholder="Your character class", max_length=12)
-
-    async def on_submit(self, interaction: discord.Interaction) -> None:
-        data = (self.region, self.realm, self.character_name, self.nickname, self.character_class)
-        await interaction.response.send_message(char_info.check_if_correct_cadd(data, interaction.channel_id),
-                                                ephemeral=True)
-
-
-async def button_info_display(type_of_info, channel_id, backup=None):
-    data_db = await char_info.get_data_for_rank(channel_id, backup)
-    data_db = char_display.sorting_db(data_db, f"{type_of_info}")
-    return char_display.button_rank_result(data_db, f"{type_of_info}")
-
-
-client.run(TOKEN)
+client.run(os.getenv("TOKEN"))

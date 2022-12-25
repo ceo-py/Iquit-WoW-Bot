@@ -1,13 +1,9 @@
 import aiohttp
 import asyncio
 import requests
-from data_base_info import DataBaseInfo
+from database.database import db_, os
 from dotenv import load_dotenv
 import os
-
-load_dotenv()
-
-db_ = DataBaseInfo()
 
 class_icona = {
     "Warrior": "https://static.wikia.nocookie.net/wowpedia/images/8/83/Inv_sword_27.png/revision/latest/scale-to-width-down/18?cb=20060923064316",
@@ -28,21 +24,35 @@ class_icona = {
 class CharacterInfo:
 
     @staticmethod
+    def get_battle_net_token() -> str:
+        data = {
+            "grant_type": "client_credentials"
+        }
+
+        return requests.post("https://oauth.battle.net/token",
+                             auth=(os.getenv('BATTLE_CLIENT_ID'), os.getenv('BATTLE_CLIENT_SECRET')),
+                             data=data).json()["access_token"]
+
+    @staticmethod
     def get_data_from_rio(player_info, session, backup):
         raider_io_info = []
+        if backup:
+            token = ci.get_battle_net_token()
+
         for show in player_info.find({}):
             region, realm, name = show["Region"], show["Realm"], show["Character Name"]
+
             if not backup:
                 raider_io_info.append(session.get(ci.raider_io_api_url(region, realm, name)))
+
             else:
-                raider_io_info.append(session.get(ci.battle_net_api_url(region, realm, name)))
+                raider_io_info.append(session.get(ci.battle_net_api_url(region, realm, name, token)))
 
         return raider_io_info
 
     @staticmethod
-    async def get_data_for_rank(channel_id: str, backup):
-        results = []
-        show = []
+    async def get_data_for_rank(channel_id: str, backup) -> list:
+        results, show = [], []
         data_base = db_.connect_db(channel_id)
         async with aiohttp.ClientSession() as session:
             x = ci.get_data_from_rio(data_base, session, backup)
@@ -50,7 +60,7 @@ class CharacterInfo:
             for response in responses:
                 try:
                     results.append(await response.json())
-                except :
+                except:
                     return
 
             # TODO if no such character anymore to remove him from DB and pop msg first time when has been deleted
@@ -72,9 +82,9 @@ class CharacterInfo:
                f'=mythic_plus_recent_runs,covenant,gear,raid_progression,mythic_plus_scores_by_season%3Acurrent'
 
     @staticmethod
-    def battle_net_api_url(region, realm, name):
+    def battle_net_api_url(region, realm, name, token):
         return f'https://{region}.api.blizzard.com/profile/wow/character/{realm}/{name}/mythic-keystone-profile?' \
-                f'namespace=profile-{region}&locale=en_{region.upper()}&access_token={os.getenv("BATTLE_NET_API")}'
+               f'namespace=profile-{region}&locale=en_{region.upper()}&access_token={token}'
 
     @staticmethod
     def raider_io_api(data_json):
@@ -130,40 +140,40 @@ class CharacterInfo:
                 return
 
         nrun = "0"
-        with requests.get(
-                f'https://raider.io/api/v1/characters/profile?region={region}&realm={realm}&name={name}&fields'
-                f'=mythic_plus_recent_runs,covenant,gear,raid_progression,mythic_plus_scores_by_season%3Acurrent') as \
+        with requests.get(ci.raider_io_api_url(region, realm, name)) as \
                 x:
             if x.status_code != 200:
                 return
-            x = x.json()
-            name = x["name"]
-            c = x['class']
-            spec = x['active_spec_name']
-            tmbn = x["thumbnail_url"]
-            ilvl = x['gear']['item_level_equipped']
-            purl = x['profile_url']
-            vault_prog_normal = x['raid_progression']['vault-of-the-incarnates']['normal_bosses_killed']
-            vault_prog_heroic = x['raid_progression']['vault-of-the-incarnates']['heroic_bosses_killed']
-            vault_prog_mythic = x['raid_progression']['vault-of-the-incarnates']['mythic_bosses_killed']
-            score = x['mythic_plus_scores_by_season'][0]['scores']['all']
-            if str(score) == str(nrun):
-                lfinish = "None"
-                keylevel = "0"
-                keyup = "0"
-                rscore = "0"
-            else:
-                lfinish = x['mythic_plus_recent_runs'][0]['dungeon']
-                keylevel = x['mythic_plus_recent_runs'][0]['mythic_level']
-                keyup = x['mythic_plus_recent_runs'][0]['num_keystone_upgrades']
-                rscore = x['mythic_plus_recent_runs'][0]['score']
-            cname = x['covenant']['name']
-            tank = x['mythic_plus_scores_by_season'][0]['scores']['tank']
-            dps = x['mythic_plus_scores_by_season'][0]['scores']['dps']
-            healer = x['mythic_plus_scores_by_season'][0]['scores']["healer"]
-            class_icon = class_icona[c]
+
+        x = x.json()
+        name = x["name"]
+        c = x['class']
+        spec = x['active_spec_name']
+        tmbn = x["thumbnail_url"]
+        ilvl = x['gear']['item_level_equipped']
+        purl = x['profile_url']
+        vault_prog_normal = x['raid_progression']['vault-of-the-incarnates']['normal_bosses_killed']
+        vault_prog_heroic = x['raid_progression']['vault-of-the-incarnates']['heroic_bosses_killed']
+        vault_prog_mythic = x['raid_progression']['vault-of-the-incarnates']['mythic_bosses_killed']
+        score = x['mythic_plus_scores_by_season'][0]['scores']['all']
+        if str(score) == str(nrun):
+            lfinish = "None"
+            keylevel = "0"
+            keyup = "0"
+            rscore = "0"
+        else:
+            lfinish = x['mythic_plus_recent_runs'][0]['dungeon']
+            keylevel = x['mythic_plus_recent_runs'][0]['mythic_level']
+            keyup = x['mythic_plus_recent_runs'][0]['num_keystone_upgrades']
+            rscore = x['mythic_plus_recent_runs'][0]['score']
+        cname = x['covenant']['name']
+        tank = x['mythic_plus_scores_by_season'][0]['scores']['tank']
+        dps = x['mythic_plus_scores_by_season'][0]['scores']['dps']
+        healer = x['mythic_plus_scores_by_season'][0]['scores']["healer"]
+        class_icon = class_icona[c]
+
         return tmbn, name, spec, c, cname, ilvl, class_icon, tank, dps, healer, vault_prog_normal, vault_prog_heroic, vault_prog_mythic, \
-               lfinish, keylevel, keyup, rscore, region, realm, name, score, purl
+           lfinish, keylevel, keyup, rscore, region, realm, name, score, purl
 
 
 ci = CharacterInfo()

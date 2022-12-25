@@ -50,3 +50,4 @@ class DataBaseInfo(Singleton):
     def save_msg_id(self, server_id, channel_id):
         self.client["WOW"]["Buttons"].insert_one({"Server Id": server_id, "Channel Id": channel_id})
 
+db_ = DataBaseInfo()
