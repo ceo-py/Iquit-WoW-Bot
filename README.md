@@ -25,9 +25,18 @@ With that, you'll be able to see every character that you added in the bot with 
 !check {region} {realm} {character name}
 ```
 
-![alt text](https://cdn.discordapp.com/attachments/983670671647313930/1058492785579266169/image.png)
+![alt text](https://cdn.discordapp.com/attachments/983670671647313930/1058499360758960158/image.png)
 
 With that command, you'll be able to see more detail information about the character you ask for.
+
+```code
+!check {nickname} {class}
+```
+
+This is a quick check that you don't need to type {region} {realm} {character name} this will only work if you already add that character into the bot by **!add {region} {realm} {character name} {your nickname in discord, wow etc..} {class}**. If the character is not added to the bot, you can simply use then full check by **!check {region} {realm} {character name}**
+![alt text](https://preview.redd.it/bcx6f5ybgwl71.png?width=668&format=png&auto=webp&s=11246511f815473c2f1f78454c8d428dd22d4015)
+
+
 
 
 ```code
@@ -42,16 +51,6 @@ You can always stop it or change the time interval by giving new number. Keep in
 !stop_update
 ```
 This will stop auto update check for RIO.
-
-
-
-
-```code
-!check {nickname} {class}
-```
-
-This is a quick check that you don't need to type {region} {realm} {character name} this will only work if you already add that character into the bot by **!add {region} {realm} {character name} {your nickname in discord, wow etc..} {class}**. If the character is not added to the bot, you can simply use then full check by **!check {region} {realm} {character name}**
-![alt text](https://preview.redd.it/bcx6f5ybgwl71.png?width=668&format=png&auto=webp&s=11246511f815473c2f1f78454c8d428dd22d4015)
 
 
 ```code
