@@ -7,7 +7,6 @@ load_dotenv()
 
 
 def weather_check(arg):
-
     with requests.get(
             f"http://api.openweathermap.org/data/2.5/weather?q={arg}&appid={os.getenv('API_WEATHER')}&units=metric"
     ) as x:
@@ -65,3 +64,41 @@ def get_wow_cutoff():
         top10 = data['cutoffs']['graphData']['p900']['data'][0]['y']
         top10_name = data['cutoffs']['graphData']['p900']['name']
     return (top0_1, top0_1_name), (top1, top1_name), (top10, top10_name)
+
+
+def emojis(char_name: str) -> str:
+    emojis_data = {"evoker": "<:evoker:1058463307348054087>",
+                   "warrior": "<:warrior:1058463593617703034>",
+                   "shaman": "<:shaman:1058463886707273729>",
+                   "demon hunter": "<:demonhunter:1058464098758693034>",
+                   "warlock": "<:warlock:1058464246092005456>",
+                   "druid": "<:druid:1058464381622558910>",
+                   "mage": "<:mage:1058464565379211304>",
+                   "death knight": "<:deathknight:1058464682542903418>",
+                   "rouge": "<:rogue:1058464885790482593>",
+                   "hunter": "<:hunter:1058464998046838834>",
+                   "paladin": "<:paladin:1058465116477214893>",
+                   "priest": "<:priest:1058465325877842032>",
+                   "monk": "<:monk:1058465435957338192>",
+                   "tank": "<:Tankrole:1058479529158529124>",
+                   "healer": "<:Healerrole:1058479567616090222>",
+                   "dps": "<:DPSrole:1058479594438668468>",
+                   "total": "<:Totalrole:1058488589459136512>"
+                   }
+    return emojis_data.get(char_name, "None")
+
+
+async def compere_char_now_with_db(data: list, id_channel: str, db) -> list:
+    result = []
+    for show in data:
+        char_db_information = await db.find_character_in_db(id_channel, Character_Name=show["Character Name"].lower())
+
+        if show["Total"] > char_db_information["Total Rating"]:
+            result.append(
+                f"{emojis(show['Class'])} **{show['Character Name'].capitalize()}** gain {abs(show['Total'] - char_db_information['Total Rating'])} "
+                f"rating reaching **__{show['Total']}__** !")
+            show.popitem()
+            show.popitem()
+            await db.update_character_info(id_channel, *show.values())
+
+    return result

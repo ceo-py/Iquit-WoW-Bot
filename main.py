@@ -1,9 +1,10 @@
 import discord
 from buttons.button_add_character import AddCharacterButton
-from buttons.buttons_stats_total_dps_heal_tank import ButtonsCharacterStatistics, char_info, char_display
-from other_commands import weather_check, ask_question, get_info_token, get_affixes, get_wow_cutoff
+from buttons.buttons_stats_total_dps_heal_tank import ButtonsCharacterStatistics, char_info, char_display, db_
+from other_commands import weather_check, ask_question, get_info_token, get_affixes, get_wow_cutoff, \
+    compere_char_now_with_db, emojis
 from validations.validations import Validation, os
-from discord.ext import commands
+from discord.ext import commands, tasks
 
 SEASON = 1
 EXPANSION = "DF"
@@ -32,8 +33,8 @@ async def on_ready():
 async def backup_message(ctx, embed, characters_information: list):
     embed.set_thumbnail(
         url='https://cdn.discordapp.com/attachments/983670671647313930/1056581663230021822/'
-        'kisspng-road-signs-in-singapore-warning-sign-traffic-sign-caution-signs-5a8b35b0afe937.'
-        '9224424515190726887205.png')
+            'kisspng-road-signs-in-singapore-warning-sign-traffic-sign-caution-signs-5a8b35b0afe937.'
+            '9224424515190726887205.png')
     total = char_display.get_all_chars(char_display.sorting_db(characters_information, "Total"))
 
     embed.add_field(name="**This is backup version**",
@@ -91,17 +92,17 @@ async def rank(ctx):
                         value="**Ranking by roles:**", inline=False)
 
         dps = char_display.get_other_ranks(char_display.sorting_db(data_db, "DPS"), "DPS")
-        embed.add_field(name=":crossed_swords:",
+        embed.add_field(name=f"{emojis('dps')}",
                         value=f":first_place:{dps[1]}\n:second_place:{dps[2]}\n:third_place:{dps[3]}",
                         inline=True)
 
         heal = char_display.get_other_ranks(char_display.sorting_db(data_db, "Heal"), "Heal")
-        embed.add_field(name=":heart:",
+        embed.add_field(name=f"{emojis('healer')}",
                         value=f":first_place:{heal[1]}\n:second_place:{heal[2]}\n:third_place:{heal[3]}",
                         inline=True)
 
         tank = char_display.get_other_ranks(char_display.sorting_db(data_db, "Tank"), "Tank")
-        embed.add_field(name=":shield:",
+        embed.add_field(name=f"{emojis('tank')}",
                         value=f":first_place:{tank[1]}\n:second_place:{tank[2]}\n:third_place:{tank[3]}",
                         inline=True)
 
@@ -166,6 +167,35 @@ async def add(ctx):
     cnl_id = await Validation.msg_check(ctx)
     if cnl_id:
         await ctx.send(view=AddCharacterButton())
+
+
+async def show_updated_characters(ctx, data: list) -> None:
+    if data:
+        await ctx.send("\n".join(data))
+
+
+@tasks.loop(seconds=0)
+async def task_loop(ctx):
+    id_channel = str(ctx.channel.id)
+    data_db = await char_info.get_data_for_rank(id_channel, None)
+    result = await compere_char_now_with_db(data_db, id_channel, db_)
+    await show_updated_characters(ctx, result)
+
+
+@client.command()
+async def update(ctx, time_value):
+    task_loop.change_interval(hours=float(time_value))
+    if task_loop.next_iteration:
+        task_loop.cancel()
+    await ctx.send(
+        f"```It's set on every {time_value}h to check if there is rating change on every character in the server!```")
+    task_loop.start(ctx)
+
+
+@client.command()
+async def stop_update(ctx):
+    await ctx.send(f"```Auto update is canceled!```")
+    task_loop.cancel()
 
 
 @client.command()

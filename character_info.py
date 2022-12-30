@@ -2,8 +2,6 @@ import aiohttp
 import asyncio
 import requests
 from database.database import db_, os
-from dotenv import load_dotenv
-import os
 
 class_icona = {
     "Warrior": "https://static.wikia.nocookie.net/wowpedia/images/8/83/Inv_sword_27.png/revision/latest/scale-to-width-down/18?cb=20060923064316",
@@ -17,7 +15,7 @@ class_icona = {
     "Hunter": "https://static.wikia.nocookie.net/wowpedia/images/e/e7/Inv_weapon_bow_07.png/revision/latest/scale-to-width-down/18?cb=20060923072423",
     "Paladin": "https://static.wikia.nocookie.net/wowpedia/images/6/6c/Ability_thunderbolt.png/revision/latest/scale-to-width-down/18?cb=20180824003802",
     "Priest": "https://static.wikia.nocookie.net/wowpedia/images/3/3c/Inv_staff_30.png/revision/latest/scale-to-width-down/18?cb=20061011185352",
-    "Monk": "https://static.wikia.nocookie.net/wowpedia/images/2/24/Ui-charactercreate-classes_monk.png/revision/latest/scale-to-width-down/64?cb=20111203164429"
+    "Monk": "https://static.wikia.nocookie.net/wowpedia/images/e/e2/ClassIcon_monk.png"
 }
 
 
@@ -67,13 +65,14 @@ class CharacterInfo:
             for index in results:
                 if "error" not in index:
                     if not backup:
-                        name, rating, tank_r, dps_r, heal_r, player_url = ci.raider_io_api(index)
+                        name, rating, tank_r, dps_r, heal_r, player_url, char_class = ci.raider_io_api(index)
                     else:
-                        name, rating, tank_r, dps_r, heal_r, player_url = ci.battle_net_api(index)
+                        name, rating, tank_r, dps_r, heal_r, player_url, char_class = ci.battle_net_api(index)
 
                     if rating != 0:
-                        show.append({"Character Name": name, "Total": rating, "Tank": tank_r, "DPS": dps_r,
-                                     "Heal": heal_r, "Player Armory": player_url})
+                        show.append(
+                            {"Character Name": name, "Total": rating, "DPS": dps_r, "Heal": heal_r, "Tank": tank_r,
+                             "Player Armory": player_url, "Class": char_class})
         return show
 
     @staticmethod
@@ -89,12 +88,18 @@ class CharacterInfo:
     @staticmethod
     def raider_io_api(data_json):
         name = data_json["name"]
+        char_class = data_json["class"].lower()
         rating = int(format(data_json['mythic_plus_scores_by_season'][0]["segments"]["all"]["score"], ".0f"))
         tank_r = int(format(data_json['mythic_plus_scores_by_season'][0]["segments"]["tank"]["score"], ".0f"))
         dps_r = int(format(data_json['mythic_plus_scores_by_season'][0]["segments"]["dps"]["score"], ".0f"))
         heal_r = int(format(data_json['mythic_plus_scores_by_season'][0]["segments"]["healer"]["score"], ".0f"))
         player_url = data_json["profile_url"]
-        return name, rating, tank_r, dps_r, heal_r, player_url
+        return name, rating, tank_r, dps_r, heal_r, player_url, char_class
+
+    @staticmethod
+    def character_change_information(channel_id, name, rating, dps_r, heal_r, tank_r):
+
+        db_.update_character_info(channel_id, name, rating, dps_r, heal_r, tank_r)
 
     @staticmethod
     def battle_net_api(data_json):
@@ -102,10 +107,10 @@ class CharacterInfo:
         rating = int(f"{data_json['current_mythic_rating']['rating']:.0f}")
         tank_r, dps_r, heal_r = 0, 0, 0
         player_url = f"https://worldofwarcraft.com/en-gb/character/eu/{data_json['character']['realm']['slug']}/{name}"
-        return name, rating, tank_r, dps_r, heal_r, player_url
+        return name, rating, tank_r, dps_r, heal_r, player_url, "None"
 
     @staticmethod
-    def check_if_correct_cadd(info, channel_id):
+    async def check_if_correct_cadd(info, channel_id):
         region, realm, character_name, nickname, class_ = [x.value.lower() for x in info]
         with requests.get(
                 f'https://raider.io/api/v1/characters/profile?region={region}&realm={realm}&name={character_name}'
@@ -115,8 +120,8 @@ class CharacterInfo:
                 return "**Not valid information, check the **[example]" \
                        "(https://cdn.discordapp.com/attachments/983670671647313930/1055864102142083154/image.png)"
 
-        player_info = db_.connect_db(channel_id).find_one(
-            {"$and": [{"Region": region, "Realm": realm, "Character Name": character_name}]})
+        player_info = await db_.find_character_in_db(channel_id, Region=region, Realm=realm,
+                                                     Character_Name=character_name)
         if player_info:
             return f"```{character_name.capitalize()} already exist in the database as:" \
                    f"\n{player_info['Region']} {player_info['Realm']} {player_info['Character Name']} " \
@@ -130,9 +135,8 @@ class CharacterInfo:
         if len(info) == 3:
             region, realm, name = info
         elif len(info) == 2:
-            data_base = db_.connect_db(channel_id)
             nickname, player_class = info
-            player_found = data_base.find_one({"$and": [{"Player Nickname": nickname}, {"Class": player_class}]})
+            player_found = await db_.find_character_in_db(channel_id, Player_Nickname=nickname, Class=player_class)
 
             if player_found:
                 region, realm, name = player_found["Region"], player_found["Realm"], player_found["Character Name"]
@@ -173,7 +177,7 @@ class CharacterInfo:
         class_icon = class_icona[c]
 
         return tmbn, name, spec, c, cname, ilvl, class_icon, tank, dps, healer, vault_prog_normal, vault_prog_heroic, vault_prog_mythic, \
-           lfinish, keylevel, keyup, rscore, region, realm, name, score, purl
+               lfinish, keylevel, keyup, rscore, region, realm, name, score, purl
 
 
 ci = CharacterInfo()
