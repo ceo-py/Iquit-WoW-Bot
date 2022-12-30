@@ -20,7 +20,6 @@ def weather_check(arg):
 
 
 def ask_question(args):
-    load_dotenv()
     query = '+'.join(args)
     with requests.get(
             f"https://api.wolframalpha.com/v1/result?appid={os.getenv('API_ASK_Q')}={query}%3F") as response:
@@ -97,8 +96,6 @@ async def compere_char_now_with_db(data: list, id_channel: str, db) -> list:
             result.append(
                 f"{emojis(show['Class'])} **{show['Character Name'].capitalize()}** gain {abs(show['Total'] - char_db_information['Total Rating'])} "
                 f"rating reaching **__{show['Total']}__** !")
-            show.popitem()
-            show.popitem()
-            await db.update_character_info(id_channel, *show.values())
+            await db.update_character_info(id_channel, *show.values()[-2])
 
     return result
