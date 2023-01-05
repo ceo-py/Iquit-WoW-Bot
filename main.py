@@ -2,7 +2,7 @@ import discord
 from buttons.button_add_character import AddCharacterButton
 from buttons.buttons_stats_total_dps_heal_tank import ButtonsCharacterStatistics, char_info, char_display, db_
 from other_commands import weather_check, ask_question, get_info_token, get_affixes, get_wow_cutoff, \
-    compere_char_now_with_db, emojis
+    compere_char_now_with_db, emojis, get_all_channels_id
 from validations.validations import Validation, os
 from discord.ext import commands, tasks
 
@@ -14,7 +14,7 @@ class PersistentViewBot(commands.Bot):
     def __init__(self):
         intents = discord.Intents.all()
 
-        super().__init__(command_prefix="?", help_command=None, intents=intents)
+        super().__init__(command_prefix="!", help_command=None, intents=intents)
 
     async def setup_hook(self) -> None:
         self.add_view(ButtonsCharacterStatistics())
@@ -175,27 +175,30 @@ async def show_updated_characters(ctx, data: list) -> None:
 
 
 @tasks.loop(seconds=0)
-async def task_loop(ctx):
-    id_channel = str(ctx.channel.id)
-    data_db = await char_info.get_data_for_rank(id_channel, None)
-    result = await compere_char_now_with_db(data_db, id_channel, db_)
-    await show_updated_characters(ctx, result)
+async def task_loop():
+    all_channels_ids = get_all_channels_id(client)
+
+    for id_channel in all_channels_ids:
+
+        try:
+            data_db = await char_info.get_data_for_rank(id_channel, None)
+        except:
+            break
+
+        result = await compere_char_now_with_db(data_db, id_channel, db_)
+        ctx = client.get_channel(int(id_channel))
+        await show_updated_characters(ctx, [x['output'] for x in result])
 
 
 @client.command()
 async def update(ctx, time_value):
-    task_loop.change_interval(hours=float(time_value))
-    if task_loop.next_iteration:
-        task_loop.cancel()
-    await ctx.send(
-        f"```It's set on every {time_value}h to check if there is rating change on every character in the server!```")
-    task_loop.start(ctx)
-
-
-@client.command()
-async def stop_update(ctx):
-    await ctx.send(f"```Auto update is canceled!```")
-    task_loop.cancel()
+    if str(ctx.author) == os.getenv("OWNER"):
+        task_loop.change_interval(hours=float(time_value))
+        if task_loop.next_iteration:
+            task_loop.cancel()
+        await ctx.send(
+            f"```It's set on every {time_value}h to check if there is rating change on every character in the server!```")
+        task_loop.start()
 
 
 @client.command()

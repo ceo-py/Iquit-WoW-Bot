@@ -38,19 +38,12 @@ This is a quick check that you don't need to type {region} {realm} {character na
 
 
 
-
-```code
-!update {hour}
+```text
+server auto update on every two hours
 ```
-![alt text](https://cdn.discordapp.com/attachments/983670671647313930/1058496609341673563/image.png)
-This command will trigger auto check if someone in your server upgrade he's RIO from last check. The number __hour__ represent time intervals on the checks.
-You can always stop it or change the time interval by giving new number. Keep in mind that time interval starts when you execute the command.
+Every two hours if there is rating change on any of the characters in the discord server you will be notified.
+![alt text](https://cdn.discordapp.com/attachments/983670671647313930/1060516253996945428/image.png)
 
-
-```code
-!stop_update
-```
-This will stop auto update check for RIO.
 
 
 ```code

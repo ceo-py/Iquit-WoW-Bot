@@ -93,9 +93,15 @@ async def compere_char_now_with_db(data: list, id_channel: str, db) -> list:
         char_db_information = await db.find_character_in_db(id_channel, Character_Name=show["Character Name"].lower())
 
         if show["Total"] > char_db_information["Total Rating"]:
-            result.append(
+            result.append({"output":
                 f"{emojis(show['Class'])} **{show['Character Name'].capitalize()}** gain {abs(show['Total'] - char_db_information['Total Rating'])} "
-                f"rating reaching **__{show['Total']}__** !")
-            await db.update_character_info(id_channel, *show.values()[-2])
+                f"rating reaching **__{show['Total']}__** !", "score": abs(show['Total'] - char_db_information['Total Rating'])})
+            show.popitem()
+            show.popitem()
+            # await db.update_character_info(id_channel, *show.values())
 
-    return result
+    return sorted(result, key=lambda x: -x['score'])
+
+
+def get_all_channels_id(client) -> list:
+    return [channel.id for server in client.guilds for channel in server.channels if channel.name == os.getenv("DISCORD_CHANNEL_NAME")]
