@@ -121,6 +121,7 @@ async def rank(ctx):
                         inline=False)
         view = ButtonsCharacterStatistics()
         await ctx.send(embed=embed, view=view)
+        await compere_char_now_with_db(data_db, cnl_id, db_)
 
 
 @client.command()
