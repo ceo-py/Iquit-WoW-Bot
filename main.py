@@ -272,8 +272,10 @@ async def task_loop():
 
         try:
             data_db = await char_info.get_data_for_rank(id_channel, None)
+            if not data_db:
+                continue
         except:
-            break
+            continue
 
         result = await compere_char_now_with_db(data_db, id_channel, db_)
         ctx = client.get_channel(int(id_channel))
