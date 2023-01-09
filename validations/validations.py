@@ -2,7 +2,6 @@ from database.database import db_, os
 
 
 class Validation:
-
     @staticmethod
     def check_right_channel(ctx):
         if str(ctx.channel) == os.getenv("DISCORD_CHANNEL_NAME"):
@@ -15,10 +14,13 @@ class Validation:
         if not right_channel:
             await ctx.author.send(
                 f"Not Right Channel make sure you create text channel - **{os.getenv('DISCORD_CHANNEL_NAME')}**, and send your commands "
-                f"there!")
+                f"there!"
+            )
             return
 
-        channel_data_ = db_.connect_db(cnl_id, msg_check=True).find_one({"Channel Id": cnl_id})
+        channel_data_ = db_.connect_db(cnl_id, msg_check=True).find_one(
+            {"Channel Id": cnl_id}
+        )
         if not channel_data_:
             db_.save_msg_id(msg_send, cnl_id)
 

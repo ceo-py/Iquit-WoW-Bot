@@ -15,21 +15,20 @@ class_icona = {
     "Hunter": "https://static.wikia.nocookie.net/wowpedia/images/e/e7/Inv_weapon_bow_07.png/revision/latest/scale-to-width-down/18?cb=20060923072423",
     "Paladin": "https://static.wikia.nocookie.net/wowpedia/images/6/6c/Ability_thunderbolt.png/revision/latest/scale-to-width-down/18?cb=20180824003802",
     "Priest": "https://static.wikia.nocookie.net/wowpedia/images/3/3c/Inv_staff_30.png/revision/latest/scale-to-width-down/18?cb=20061011185352",
-    "Monk": "https://static.wikia.nocookie.net/wowpedia/images/e/e2/ClassIcon_monk.png"
+    "Monk": "https://static.wikia.nocookie.net/wowpedia/images/e/e2/ClassIcon_monk.png",
 }
 
 
 class CharacterInfo:
-
     @staticmethod
     def get_battle_net_token() -> str:
-        data = {
-            "grant_type": "client_credentials"
-        }
+        data = {"grant_type": "client_credentials"}
 
-        return requests.post("https://oauth.battle.net/token",
-                             auth=(os.getenv('BATTLE_CLIENT_ID'), os.getenv('BATTLE_CLIENT_SECRET')),
-                             data=data).json()["access_token"]
+        return requests.post(
+            "https://oauth.battle.net/token",
+            auth=(os.getenv("BATTLE_CLIENT_ID"), os.getenv("BATTLE_CLIENT_SECRET")),
+            data=data,
+        ).json()["access_token"]
 
     @staticmethod
     def get_data_from_rio(player_info, session, backup):
@@ -41,10 +40,14 @@ class CharacterInfo:
             region, realm, name = show["Region"], show["Realm"], show["Character Name"]
 
             if not backup:
-                raider_io_info.append(session.get(ci.raider_io_api_url(region, realm, name)))
+                raider_io_info.append(
+                    session.get(ci.raider_io_api_url(region, realm, name))
+                )
 
             else:
-                raider_io_info.append(session.get(ci.battle_net_api_url(region, realm, name, token)))
+                raider_io_info.append(
+                    session.get(ci.battle_net_api_url(region, realm, name, token))
+                )
 
         return raider_io_info
 
@@ -65,34 +68,90 @@ class CharacterInfo:
             for index in results:
                 if "error" not in index:
                     if not backup:
-                        name, rating, tank_r, dps_r, heal_r, player_url, char_class = ci.raider_io_api(index)
+                        (
+                            name,
+                            rating,
+                            tank_r,
+                            dps_r,
+                            heal_r,
+                            player_url,
+                            char_class,
+                        ) = ci.raider_io_api(index)
                     else:
-                        name, rating, tank_r, dps_r, heal_r, player_url, char_class = ci.battle_net_api(index)
+                        (
+                            name,
+                            rating,
+                            tank_r,
+                            dps_r,
+                            heal_r,
+                            player_url,
+                            char_class,
+                        ) = ci.battle_net_api(index)
 
                     if rating != 0:
                         show.append(
-                            {"Character Name": name, "Total": rating, "DPS": dps_r, "Heal": heal_r, "Tank": tank_r,
-                             "Player Armory": player_url, "Class": char_class})
+                            {
+                                "Character Name": name,
+                                "Total": rating,
+                                "DPS": dps_r,
+                                "Heal": heal_r,
+                                "Tank": tank_r,
+                                "Player Armory": player_url,
+                                "Class": char_class,
+                            }
+                        )
         return show
 
     @staticmethod
     def raider_io_api_url(region, realm, name):
-        return f'https://raider.io/api/v1/characters/profile?region={region}&realm={realm}&name={name}&fields' \
-               f'=mythic_plus_recent_runs,covenant,gear,raid_progression,mythic_plus_scores_by_season%3Acurrent'
+        return (
+            f"https://raider.io/api/v1/characters/profile?region={region}&realm={realm}&name={name}&fields"
+            f"=mythic_plus_recent_runs,covenant,gear,raid_progression,mythic_plus_scores_by_season%3Acurrent"
+        )
 
     @staticmethod
     def battle_net_api_url(region, realm, name, token):
-        return f'https://{region}.api.blizzard.com/profile/wow/character/{realm}/{name}/mythic-keystone-profile?' \
-               f'namespace=profile-{region}&locale=en_{region.upper()}&access_token={token}'
+        return (
+            f"https://{region}.api.blizzard.com/profile/wow/character/{realm}/{name}/mythic-keystone-profile?"
+            f"namespace=profile-{region}&locale=en_{region.upper()}&access_token={token}"
+        )
 
     @staticmethod
     def raider_io_api(data_json):
         name = data_json["name"]
         char_class = data_json["class"].lower()
-        rating = int(format(data_json['mythic_plus_scores_by_season'][0]["segments"]["all"]["score"], ".0f"))
-        tank_r = int(format(data_json['mythic_plus_scores_by_season'][0]["segments"]["tank"]["score"], ".0f"))
-        dps_r = int(format(data_json['mythic_plus_scores_by_season'][0]["segments"]["dps"]["score"], ".0f"))
-        heal_r = int(format(data_json['mythic_plus_scores_by_season'][0]["segments"]["healer"]["score"], ".0f"))
+        rating = int(
+            format(
+                data_json["mythic_plus_scores_by_season"][0]["segments"]["all"][
+                    "score"
+                ],
+                ".0f",
+            )
+        )
+        tank_r = int(
+            format(
+                data_json["mythic_plus_scores_by_season"][0]["segments"]["tank"][
+                    "score"
+                ],
+                ".0f",
+            )
+        )
+        dps_r = int(
+            format(
+                data_json["mythic_plus_scores_by_season"][0]["segments"]["dps"][
+                    "score"
+                ],
+                ".0f",
+            )
+        )
+        heal_r = int(
+            format(
+                data_json["mythic_plus_scores_by_season"][0]["segments"]["healer"][
+                    "score"
+                ],
+                ".0f",
+            )
+        )
         player_url = data_json["profile_url"]
         return name, rating, tank_r, dps_r, heal_r, player_url, char_class
 
@@ -103,7 +162,7 @@ class CharacterInfo:
 
     @staticmethod
     def battle_net_api(data_json):
-        name = data_json['character']['name']
+        name = data_json["character"]["name"]
         rating = int(f"{data_json['current_mythic_rating']['rating']:.0f}")
         tank_r, dps_r, heal_r = 0, 0, 0
         player_url = f"https://worldofwarcraft.com/en-gb/character/eu/{data_json['character']['realm']['slug']}/{name}"
@@ -111,23 +170,33 @@ class CharacterInfo:
 
     @staticmethod
     async def check_if_correct_cadd(info, channel_id):
-        region, realm, character_name, nickname, class_ = [x.value.lower() for x in info]
+        region, realm, character_name, nickname, class_ = [
+            x.value.lower() for x in info
+        ]
         with requests.get(
-                f'https://raider.io/api/v1/characters/profile?region={region}&realm={realm}&name={character_name}'
-                '&fields=mythic_plus_recent_runs,covenant,gear,raid_progression,'
-                'mythic_plus_scores_by_season%3Acurrent') as x:
+            f"https://raider.io/api/v1/characters/profile?region={region}&realm={realm}&name={character_name}"
+            "&fields=mythic_plus_recent_runs,covenant,gear,raid_progression,"
+            "mythic_plus_scores_by_season%3Acurrent"
+        ) as x:
             if x.status_code != 200:
-                return "**Not valid information, check the **[example]" \
-                       "(https://cdn.discordapp.com/attachments/983670671647313930/1055864102142083154/image.png)"
+                return (
+                    "**Not valid information, check the **[example]"
+                    "(https://cdn.discordapp.com/attachments/983670671647313930/1055864102142083154/image.png)"
+                )
 
-        player_info = await db_.find_character_in_db(channel_id, Region=region, Realm=realm,
-                                                     Character_Name=character_name)
+        player_info = await db_.find_character_in_db(
+            channel_id, Region=region, Realm=realm, Character_Name=character_name
+        )
         if player_info:
-            return f"```{character_name.capitalize()} already exist in the database as:" \
-                   f"\n{player_info['Region']} {player_info['Realm']} {player_info['Character Name']} " \
-                   f"{player_info['Player Nickname']} {player_info['Class']}```"
+            return (
+                f"```{character_name.capitalize()} already exist in the database as:"
+                f"\n{player_info['Region']} {player_info['Realm']} {player_info['Character Name']} "
+                f"{player_info['Player Nickname']} {player_info['Class']}```"
+            )
 
-        db_.add_character_to_db(region, realm, character_name, nickname, class_, channel_id)
+        db_.add_character_to_db(
+            region, realm, character_name, nickname, class_, channel_id
+        )
         return f"```{character_name.capitalize()} has been added to the database!```"
 
     @staticmethod
@@ -136,48 +205,81 @@ class CharacterInfo:
             region, realm, name = info
         elif len(info) == 2:
             nickname, player_class = info
-            player_found = await db_.find_character_in_db(channel_id, Player_Nickname=nickname, Class=player_class)
+            player_found = await db_.find_character_in_db(
+                channel_id, Player_Nickname=nickname, Class=player_class
+            )
 
             if player_found:
-                region, realm, name = player_found["Region"], player_found["Realm"], player_found["Character Name"]
+                region, realm, name = (
+                    player_found["Region"],
+                    player_found["Realm"],
+                    player_found["Character Name"],
+                )
             else:
                 return
 
         nrun = "0"
-        with requests.get(ci.raider_io_api_url(region, realm, name)) as \
-                x:
+        with requests.get(ci.raider_io_api_url(region, realm, name)) as x:
             if x.status_code != 200:
                 return
 
         x = x.json()
         name = x["name"]
-        c = x['class']
-        spec = x['active_spec_name']
+        c = x["class"]
+        spec = x["active_spec_name"]
         tmbn = x["thumbnail_url"]
-        ilvl = x['gear']['item_level_equipped']
-        purl = x['profile_url']
-        vault_prog_normal = x['raid_progression']['vault-of-the-incarnates']['normal_bosses_killed']
-        vault_prog_heroic = x['raid_progression']['vault-of-the-incarnates']['heroic_bosses_killed']
-        vault_prog_mythic = x['raid_progression']['vault-of-the-incarnates']['mythic_bosses_killed']
-        score = x['mythic_plus_scores_by_season'][0]['scores']['all']
+        ilvl = x["gear"]["item_level_equipped"]
+        purl = x["profile_url"]
+        vault_prog_normal = x["raid_progression"]["vault-of-the-incarnates"][
+            "normal_bosses_killed"
+        ]
+        vault_prog_heroic = x["raid_progression"]["vault-of-the-incarnates"][
+            "heroic_bosses_killed"
+        ]
+        vault_prog_mythic = x["raid_progression"]["vault-of-the-incarnates"][
+            "mythic_bosses_killed"
+        ]
+        score = x["mythic_plus_scores_by_season"][0]["scores"]["all"]
         if str(score) == str(nrun):
             lfinish = "None"
             keylevel = "0"
             keyup = "0"
             rscore = "0"
         else:
-            lfinish = x['mythic_plus_recent_runs'][0]['dungeon']
-            keylevel = x['mythic_plus_recent_runs'][0]['mythic_level']
-            keyup = x['mythic_plus_recent_runs'][0]['num_keystone_upgrades']
-            rscore = x['mythic_plus_recent_runs'][0]['score']
-        cname = x['covenant']['name']
-        tank = x['mythic_plus_scores_by_season'][0]['scores']['tank']
-        dps = x['mythic_plus_scores_by_season'][0]['scores']['dps']
-        healer = x['mythic_plus_scores_by_season'][0]['scores']["healer"]
+            lfinish = x["mythic_plus_recent_runs"][0]["dungeon"]
+            keylevel = x["mythic_plus_recent_runs"][0]["mythic_level"]
+            keyup = x["mythic_plus_recent_runs"][0]["num_keystone_upgrades"]
+            rscore = x["mythic_plus_recent_runs"][0]["score"]
+        cname = x["covenant"]["name"]
+        tank = x["mythic_plus_scores_by_season"][0]["scores"]["tank"]
+        dps = x["mythic_plus_scores_by_season"][0]["scores"]["dps"]
+        healer = x["mythic_plus_scores_by_season"][0]["scores"]["healer"]
         class_icon = class_icona[c]
 
-        return tmbn, name, spec, c, cname, ilvl, class_icon, tank, dps, healer, vault_prog_normal, vault_prog_heroic, vault_prog_mythic, \
-               lfinish, keylevel, keyup, rscore, region, realm, name, score, purl
+        return (
+            tmbn,
+            name,
+            spec,
+            c,
+            cname,
+            ilvl,
+            class_icon,
+            tank,
+            dps,
+            healer,
+            vault_prog_normal,
+            vault_prog_heroic,
+            vault_prog_mythic,
+            lfinish,
+            keylevel,
+            keyup,
+            rscore,
+            region,
+            realm,
+            name,
+            score,
+            purl,
+        )
 
 
 ci = CharacterInfo()
