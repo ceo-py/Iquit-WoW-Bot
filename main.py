@@ -176,7 +176,8 @@ async def rank(ctx):
         )
         view = ButtonsCharacterStatistics()
         await ctx.send(embed=embed, view=view)
-        await compere_char_now_with_db(data_db, cnl_id, db_)
+        if data_db:
+            await compere_char_now_with_db(data_db, cnl_id, db_)
 
 
 @client.command()
@@ -270,11 +271,10 @@ async def task_loop():
 
     for id_channel in all_channels_ids:
 
-        try:
-            data_db = await char_info.get_data_for_rank(id_channel, None)
-            if not data_db:
-                continue
-        except:
+        data_db = await char_info.get_data_for_rank(id_channel, None)
+        if not data_db:
+            data_db = await char_info.get_data_for_rank(id_channel, "Yes")
+        if not data_db:
             continue
 
         result = await compere_char_now_with_db(data_db, id_channel, db_)
