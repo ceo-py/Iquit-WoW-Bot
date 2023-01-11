@@ -66,7 +66,7 @@ class CharacterInfo:
 
             # TODO if no such character anymore to remove him from DB and pop msg first time when has been deleted
             for index in results:
-                if "error" not in index:
+                if "code" not in index:
                     if not backup:
                         (
                             name,
@@ -162,8 +162,12 @@ class CharacterInfo:
 
     @staticmethod
     def battle_net_api(data_json):
+        print(data_json)
         name = data_json["character"]["name"]
-        rating = int(f"{data_json['current_mythic_rating']['rating']:.0f}")
+        if data_json['current_period']['period']['id'] == 889:
+            rating = int(f"{data_json['current_mythic_rating']['rating']:.0f}") if 'current_mythic_rating' in data_json else 0
+        else:
+            rating = 0
         tank_r, dps_r, heal_r = 0, 0, 0
         player_url = f"https://worldofwarcraft.com/en-gb/character/eu/{data_json['character']['realm']['slug']}/{name}"
         return name, rating, tank_r, dps_r, heal_r, player_url, "None"
