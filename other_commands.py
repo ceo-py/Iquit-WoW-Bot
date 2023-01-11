@@ -115,12 +115,11 @@ async def compere_char_now_with_db(data: list, id_channel: str, db) -> list:
         if show["Total"] > char_db_information["Total Rating"]:
             result.append(
                 {
-                    "output": f"{emojis(show['Class'])} **{show['Character Name'].capitalize()}** gain {abs(show['Total'] - char_db_information['Total Rating'])} "
+                    "output": f"{emojis(char_db_information['Class to display'])} **{show['Character Name'].capitalize()}** gain {abs(show['Total'] - char_db_information['Total Rating'])} "
                     f"rating reaching **__{show['Total']}__** !",
                     "score": abs(show["Total"] - char_db_information["Total Rating"]),
                 }
             )
-            show.popitem()
             show.popitem()
             await db.update_character_info(id_channel, *show.values())
 

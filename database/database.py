@@ -39,7 +39,7 @@ class DataBaseInfo(Singleton):
         return self.client["WOW"]["Buttons"]
 
     def add_character_to_db(
-        self, region, realm, character_name, player_nickname, class_, id_channel
+        self, region, realm, character_name, player_nickname, class_, char_class, id_channel
     ):
         self.client["WOW"][f"Channel id {id_channel}"].insert_one(
             {
@@ -48,6 +48,7 @@ class DataBaseInfo(Singleton):
                 "Character Name": character_name,
                 "Player Nickname": player_nickname,
                 "Class": class_,
+                "Class to display": char_class,
                 "Total Rating": 0,
                 "DPS": 0,
                 "Healer": 0,

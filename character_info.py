@@ -60,46 +60,31 @@ class CharacterInfo:
             responses = await asyncio.gather(*x)
             for response in responses:
                 try:
-                    results.append(await response.json())
+                    if response.status == 200:
+                        results.append(await response.json())
                 except:
                     return
 
-            # TODO if no such character anymore to remove him from DB and pop msg first time when has been deleted
             for index in results:
-                if "code" not in index:
-                    if not backup:
-                        (
-                            name,
-                            rating,
-                            tank_r,
-                            dps_r,
-                            heal_r,
-                            player_url,
-                            char_class,
-                        ) = ci.raider_io_api(index)
-                    else:
-                        (
-                            name,
-                            rating,
-                            tank_r,
-                            dps_r,
-                            heal_r,
-                            player_url,
-                            char_class,
-                        ) = ci.battle_net_api(index)
-
-                    if rating != 0:
-                        show.append(
-                            {
-                                "Character Name": name,
-                                "Total": rating,
-                                "DPS": dps_r,
-                                "Heal": heal_r,
-                                "Tank": tank_r,
-                                "Player Armory": player_url,
-                                "Class": char_class,
-                            }
-                        )
+                (
+                    name,
+                    rating,
+                    tank_r,
+                    dps_r,
+                    heal_r,
+                    player_url,
+                ) = ci.raider_io_api(index) if not backup else ci.battle_net_api(index)
+                if rating != 0:
+                    show.append(
+                        {
+                            "Character Name": name,
+                            "Total": rating,
+                            "DPS": dps_r,
+                            "Heal": heal_r,
+                            "Tank": tank_r,
+                            "Player Armory": player_url,
+                        }
+                    )
         return show
 
     @staticmethod
@@ -119,7 +104,6 @@ class CharacterInfo:
     @staticmethod
     def raider_io_api(data_json):
         name = data_json["name"]
-        char_class = data_json["class"].lower()
         rating = int(
             format(
                 data_json["mythic_plus_scores_by_season"][0]["segments"]["all"][
@@ -153,7 +137,7 @@ class CharacterInfo:
             )
         )
         player_url = data_json["profile_url"]
-        return name, rating, tank_r, dps_r, heal_r, player_url, char_class
+        return name, rating, tank_r, dps_r, heal_r, player_url
 
     @staticmethod
     def character_change_information(channel_id, name, rating, dps_r, heal_r, tank_r):
@@ -162,32 +146,28 @@ class CharacterInfo:
 
     @staticmethod
     def battle_net_api(data_json):
-        print(data_json)
         name = data_json["character"]["name"]
         if data_json['current_period']['period']['id'] == 889:
-            rating = int(f"{data_json['current_mythic_rating']['rating']:.0f}") if 'current_mythic_rating' in data_json else 0
+            rating = int(
+                f"{data_json['current_mythic_rating']['rating']:.0f}") if 'current_mythic_rating' in data_json else 0
         else:
             rating = 0
         tank_r, dps_r, heal_r = 0, 0, 0
         player_url = f"https://worldofwarcraft.com/en-gb/character/eu/{data_json['character']['realm']['slug']}/{name}"
-        return name, rating, tank_r, dps_r, heal_r, player_url, "None"
+        return name, rating, tank_r, dps_r, heal_r, player_url
 
     @staticmethod
     async def check_if_correct_cadd(info, channel_id):
         region, realm, character_name, nickname, class_ = [
             x.value.lower() for x in info
         ]
-        with requests.get(
-            f"https://raider.io/api/v1/characters/profile?region={region}&realm={realm}&name={character_name}"
-            "&fields=mythic_plus_recent_runs,covenant,gear,raid_progression,"
-            "mythic_plus_scores_by_season%3Acurrent"
-        ) as x:
+        with requests.get(ci.raider_io_api_url(region, realm, character_name)) as x:
             if x.status_code != 200:
                 return (
                     "**Not valid information, check the **[example]"
                     "(https://cdn.discordapp.com/attachments/983670671647313930/1055864102142083154/image.png)"
                 )
-
+            real_class = x.json()["class"].lower()
         player_info = await db_.find_character_in_db(
             channel_id, Region=region, Realm=realm, Character_Name=character_name
         )
@@ -199,7 +179,7 @@ class CharacterInfo:
             )
 
         db_.add_character_to_db(
-            region, realm, character_name, nickname, class_, channel_id
+            region, realm, character_name, nickname, class_, real_class, channel_id
         )
         return f"```{character_name.capitalize()} has been added to the database!```"
 

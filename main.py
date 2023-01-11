@@ -269,11 +269,13 @@ async def show_updated_characters(ctx, data: list) -> None:
 async def task_loop():
     all_channels_ids = get_all_channels_id(client)
 
-    for id_channel in all_channels_ids[1:]:
+    for id_channel in all_channels_ids:
 
         data_db = await char_info.get_data_for_rank(id_channel, None)
+
         if not data_db:
             data_db = await char_info.get_data_for_rank(id_channel, None)
+
             if not data_db:
                 data_db = await char_info.get_data_for_rank(id_channel, "Yes")
 
