@@ -101,6 +101,12 @@ def emojis(char_name: str) -> str:
         "healer": "<:Healerrole:1058479567616090222>",
         "dps": "<:DPSrole:1058479594438668468>",
         "total": "<:Totalrole:1058488589459136512>",
+        "green_arrow": "<a:7636greenarrowup:1065609926149410847>",
+        "plus": "<:ezgif:1065614756393783296>",
+        "loading": "<a:loading_button:1065596200667066389>",
+        "white_arrow_right": "<a:1830vegarightarrow:1065603909147693207>",
+        "white_arrow_left": "<a:8826vegaleftarrow:1065603928860925962>",
+        "player_add": "<:6332logmemberplusw:1065621500855586907>",
     }
     return emojis_data.get(char_name, "None")
 
@@ -115,8 +121,10 @@ async def compere_char_now_with_db(data: list, id_channel: str, db) -> list:
         if show["Total"] > char_db_information["Total Rating"]:
             result.append(
                 {
-                    "output": f"{emojis(char_db_information['Class to display'])} **{show['Character Name'].capitalize()}** gain {abs(show['Total'] - char_db_information['Total Rating'])} "
-                    f"rating reaching **__{show['Total']}__** !",
+                    "output": f"{emojis(char_db_information['Class to display'])} "
+                    f"**{show['Character Name'].capitalize()}** "
+                    f"{emojis('plus')}{abs(show['Total'] - char_db_information['Total Rating'])} "
+                    f"rating reaching **__{show['Total']}__**{emojis('green_arrow')}",
                     "score": abs(show["Total"] - char_db_information["Total Rating"]),
                 }
             )

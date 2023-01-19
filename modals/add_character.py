@@ -28,7 +28,7 @@ class AddCharacterModal(discord.ui.Modal, title="Character Information"):
             self.realm,
             self.character_name,
             self.nickname,
-            self.character_class
+            self.character_class,
         )
         await interaction.response.send_message(
             await char_info.check_if_correct_cadd(data, interaction.channel_id),

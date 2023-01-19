@@ -3,7 +3,7 @@ import asyncio
 import requests
 from database.database import db_, os
 
-class_icona = {
+class_icons = {
     "Warrior": "https://static.wikia.nocookie.net/wowpedia/images/8/83/Inv_sword_27.png/revision/latest/scale-to-width-down/18?cb=20060923064316",
     "Shaman": "https://static.wikia.nocookie.net/wowpedia/images/d/d9/Inv_jewelry_talisman_04.png/revision/latest/scale-to-width-down/18?cb=20060831032254",
     "Demon Hunter": "https://static.wikia.nocookie.net/wowpedia/images/e/e8/ClassIcon_demon_hunter.png/revision/latest/scale-to-width-down/26?cb=20170130100758",
@@ -66,14 +66,9 @@ class CharacterInfo:
                     return
 
             for index in results:
-                (
-                    name,
-                    rating,
-                    tank_r,
-                    dps_r,
-                    heal_r,
-                    player_url,
-                ) = ci.raider_io_api(index) if not backup else ci.battle_net_api(index)
+                (name, rating, tank_r, dps_r, heal_r, player_url,) = (
+                    ci.raider_io_api(index) if not backup else ci.battle_net_api(index)
+                )
                 if rating != 0:
                     show.append(
                         {
@@ -147,9 +142,12 @@ class CharacterInfo:
     @staticmethod
     def battle_net_api(data_json):
         name = data_json["character"]["name"]
-        if data_json['current_period']['period']['id'] == 889:
-            rating = int(
-                f"{data_json['current_mythic_rating']['rating']:.0f}") if 'current_mythic_rating' in data_json else 0
+        if data_json["current_period"]["period"]["id"] == 889:
+            rating = (
+                int(f"{data_json['current_mythic_rating']['rating']:.0f}")
+                if "current_mythic_rating" in data_json
+                else 0
+            )
         else:
             rating = 0
         tank_r, dps_r, heal_r = 0, 0, 0
@@ -238,7 +236,7 @@ class CharacterInfo:
         tank = x["mythic_plus_scores_by_season"][0]["scores"]["tank"]
         dps = x["mythic_plus_scores_by_season"][0]["scores"]["dps"]
         healer = x["mythic_plus_scores_by_season"][0]["scores"]["healer"]
-        class_icon = class_icona[c]
+        class_icon = class_icons[c]
 
         return (
             tmbn,
