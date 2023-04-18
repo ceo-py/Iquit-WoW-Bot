@@ -27,7 +27,7 @@ class PersistentViewBot(commands.Bot):
     def __init__(self):
         intents = discord.Intents.all()
 
-        super().__init__(command_prefix="!", help_command=None, intents=intents)
+        super().__init__(command_prefix="?", help_command=None, intents=intents)
 
     async def setup_hook(self) -> None:
         self.add_view(ButtonsCharacterStatistics())
@@ -158,19 +158,19 @@ async def rank(ctx):
 
         embed.add_field(
             name="This Week Affixes",
-            value=f"[**{get_affixes()}**](https://mplus.subcreation.net/index.html)",
+            value=f"[{get_affixes()}](https://mplus.subcreation.net/index.html)",
             inline=False,
         )
 
         embed.add_field(
-            name="World Top Ranks",
-            value=f"[**Mythic+ Rankings for All Classes & Roles ({EXPANSION} Season {SEASON})**]("
+            name=f"World Top Ranks Season {SEASON}",
+            value=f"[Mythic+ Rankings for All Classes & Roles ({EXPANSION})]("
             f"https://raider.io/mythic-plus-character-rankings/season-{EXPANSION.lower()}-{SEASON}/world/all/all)\n "
-            f"[**Mythic+ Rankings for All Tanks ({EXPANSION} Season {SEASON})**]("
+            f"[Mythic+ Rankings for All Tanks ({EXPANSION}]("
             f"https://raider.io/mythic-plus-character-rankings/season-{EXPANSION.lower()}-{SEASON}/world/all/tank)\n "
-            f"[**Mythic+ Rankings for All Healers ({EXPANSION} Season {SEASON})**]("
+            f"[Mythic+ Rankings for All Healers ({EXPANSION}]("
             f"https://raider.io/mythic-plus-character-rankings/season-{EXPANSION.lower()}-{SEASON}/world/all/healer)\n "
-            f"[**Mythic+ Rankings for All DPS ({EXPANSION} Season {SEASON})**]("
+            f"[Mythic+ Rankings for All DPS ({EXPANSION}]("
             f"https://raider.io/mythic-plus-character-rankings/season-{EXPANSION.lower()}-{SEASON}/world/all/dps)",
             inline=False,
         )
