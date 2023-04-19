@@ -50,12 +50,12 @@ class DataBaseInfo(Singleton):
     ):
         self.client["WOW"][f"Channel id {id_channel}"].insert_one(
             {
-                f"Region": region,
-                "Realm": realm,
-                "Character Name": character_name,
-                "Player Nickname": player_nickname,
-                "Class": class_,
-                "Class to display": char_class,
+                f"Region": region.strip(),
+                "Realm": realm.strip(),
+                "Character Name": character_name.strip(),
+                "Player Nickname": player_nickname.strip(),
+                "Class": class_.strip(),
+                "Class to display": char_class.strip(),
                 "Total Rating": 0,
                 "DPS": 0,
                 "Healer": 0,

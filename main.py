@@ -267,36 +267,42 @@ async def show_updated_characters(ctx, data: list) -> None:
 
 @tasks.loop(seconds=0)
 async def task_loop():
-    all_channels_ids = get_all_channels_id(client)
+    try:
+        all_channels_ids = get_all_channels_id(client)
 
-    for id_channel in all_channels_ids:
+        for id_channel in all_channels_ids:
 
-        data_db = await char_info.get_data_for_rank(id_channel, None)
-
-        if not data_db:
             data_db = await char_info.get_data_for_rank(id_channel, None)
 
             if not data_db:
-                data_db = await char_info.get_data_for_rank(id_channel, "Yes")
+                data_db = await char_info.get_data_for_rank(id_channel, None)
 
-        if not data_db:
-            continue
+                if not data_db:
+                    data_db = await char_info.get_data_for_rank(id_channel, "Yes")
 
-        result = await compere_char_now_with_db(data_db, id_channel, db_)
-        ctx = client.get_channel(int(id_channel))
-        await show_updated_characters(ctx, [x["output"] for x in result])
+            if not data_db:
+                continue
+
+            result = await compere_char_now_with_db(data_db, id_channel, db_)
+            ctx = client.get_channel(int(id_channel))
+            await show_updated_characters(ctx, [x["output"] for x in result])
+    except Exception as e:
+        print(e)
 
 
 @client.command()
 async def update(ctx, time_value):
-    if str(ctx.author) == os.getenv("OWNER"):
-        task_loop.change_interval(hours=float(time_value))
-        if task_loop.next_iteration:
-            task_loop.cancel()
-        await ctx.send(
-            f"```It's set on every {time_value}h to check if there is rating change on every character in the server!```"
-        )
-        task_loop.start()
+    try:
+        if str(ctx.author) == os.getenv("OWNER"):
+            task_loop.change_interval(hours=float(time_value))
+            if task_loop.next_iteration:
+                task_loop.cancel()
+            await ctx.send(
+                f"```It's set on every {time_value}h to check if there is rating change on every character in the server!```"
+            )
+            task_loop.start()
+    except Exception as e:
+        print(e)
 
 
 @client.command()
