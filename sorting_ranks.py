@@ -13,7 +13,7 @@ class RankCharacterDisplay:
 
             all_ranks[
                 pos
-            ] = f"{pos}.[{show['Character Name']}]({show['Player Armory']}):{show['Total']}"
+            ] = f"[{pos}.{show['Character Name']}:{show['Total']}]({show['Player Armory']})"
 
         return all_ranks
 
@@ -27,7 +27,7 @@ class RankCharacterDisplay:
 
             result_[
                 pos
-            ] = f"[{show['Character Name']}]({show['Player Armory']}):{show[f'{what_rank}']}"
+            ] = f"[{show['Character Name']}:{show[f'{what_rank}']}]({show['Player Armory']})"
 
         return result_
 
