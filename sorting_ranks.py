@@ -1,3 +1,6 @@
+from other_commands import generate_superscript_numbers
+
+
 class RankCharacterDisplay:
     @staticmethod
     def sorting_db(data_characters, how_to_sort):
@@ -27,7 +30,7 @@ class RankCharacterDisplay:
 
             result_[
                 pos
-            ] = f"[{show['Character Name']}:{show[f'{what_rank}']}]({show['Player Armory']})"
+            ] = f"[{show['Character Name']} {generate_superscript_numbers(show[f'{what_rank}'])}]({show['Player Armory']})"
 
         return result_
 

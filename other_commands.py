@@ -8,7 +8,7 @@ load_dotenv()
 
 def weather_check(arg):
     with requests.get(
-        f"http://api.openweathermap.org/data/2.5/weather?q={arg}&appid={os.getenv('API_WEATHER')}&units=metric"
+            f"http://api.openweathermap.org/data/2.5/weather?q={arg}&appid={os.getenv('API_WEATHER')}&units=metric"
     ) as x:
         x = x.json()
         t = x["main"]["temp"]
@@ -22,7 +22,7 @@ def weather_check(arg):
 def ask_question(args):
     query = "+".join(args)
     with requests.get(
-        f"https://api.wolframalpha.com/v1/result?appid={os.getenv('API_ASK_Q')}={query}%3F"
+            f"https://api.wolframalpha.com/v1/result?appid={os.getenv('API_ASK_Q')}={query}%3F"
     ) as response:
         return response.status_code, response.text
 
@@ -63,14 +63,14 @@ def get_info_token(region):
 # change region for afix eu us etc..
 def get_affixes():
     with requests.get(
-        f"""https://raider.io/api/v1/mythic-plus/affixes?region=eu&locale=en"""
+            f"""https://raider.io/api/v1/mythic-plus/affixes?region=eu&locale=en"""
     ) as af:
         return af.json().get("title")
 
 
 def get_wow_cutoff():
     with requests.get(
-        f"""https://raider.io/api/v1/mythic-plus/season-cutoffs?season=season-df-1&region=eu"""
+            f"""https://raider.io/api/v1/mythic-plus/season-cutoffs?season=season-df-1&region=eu"""
     ) as x:
         data = x.json()
         top0_1 = data["cutoffs"]["graphData"]["p999"]["data"][0]["y"]
@@ -121,9 +121,9 @@ async def compere_char_now_with_db(data: list, id_channel: str, db) -> list:
             result.append(
                 {
                     "output": f"{emojis(char_db_information['Class to display'])} "
-                    f"**{show['Character Name'].capitalize()}** "
-                    f"{emojis('plus')}{abs(show['Total'] - char_db_information['Total Rating'])} "
-                    f"rating reaching **__{show['Total']}__**{emojis('green_arrow')}",
+                              f"**{show['Character Name'].capitalize()}** "
+                              f"{emojis('plus')}{abs(show['Total'] - char_db_information['Total Rating'])} "
+                              f"rating reaching **__{show['Total']}__**{emojis('green_arrow')}",
                     "score": abs(show["Total"] - char_db_information["Total Rating"]),
                 }
             )
@@ -140,3 +140,11 @@ def get_all_channels_id(client) -> list:
         for channel in server.channels
         if channel.name == os.getenv("DISCORD_CHANNEL_NAME")
     ]
+
+
+def generate_superscript_numbers(numbers):
+    numbers_superscript = {
+        "0": "⁰", "1": "¹", "2": "²", "3": "³", "4": "⁴", "5": "⁵", "6": "⁶",
+        "7": "⁷", "8": "⁸", "9": "⁹"
+    }
+    return ('').join(numbers_superscript[x] for x in str(numbers))

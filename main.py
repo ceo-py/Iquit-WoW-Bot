@@ -163,7 +163,7 @@ async def rank(ctx):
         )
 
         embed.add_field(
-            name=f"World Top Ranks Season {SEASON} {EXPANSION}",
+            name=f"**World Top Ranks Season {SEASON} {EXPANSION}**",
             value=f"[Mythic+ Rankings for All Classes & Roles]"
             f"(https://raider.io/mythic-plus-character-rankings/season-{EXPANSION.lower()}-{SEASON}/world/all/all)\n "
             f"[Mythic+ Rankings for All Tanks]"
