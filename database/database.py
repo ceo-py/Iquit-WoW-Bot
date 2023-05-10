@@ -90,5 +90,13 @@ class DataBaseInfo(Singleton):
             {"Server Id": server_id, "Channel Id": channel_id}
         )
 
+    def reset_season_rating(self):
+        for channel in self.client["WOW"].list_collections():
+            if 'Channel' not in channel['name']:
+                continue
+            self.client["WOW"][channel['name']].update_many({}, {"$set": {"Total Rating": 0, "DPS": 0, "Healer": 0, "Tank": 0}})
+
 
 db_ = DataBaseInfo()
+
+

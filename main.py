@@ -19,7 +19,7 @@ from other_commands import (
 from validations.validations import Validation, os
 from discord.ext import commands, tasks
 
-SEASON = 1
+SEASON = 2
 EXPANSION = "DF"
 
 
