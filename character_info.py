@@ -212,13 +212,13 @@ class CharacterInfo:
         tmbn = x["thumbnail_url"]
         ilvl = x["gear"]["item_level_equipped"]
         purl = x["profile_url"]
-        vault_prog_normal = x["raid_progression"]["vault-of-the-incarnates"][
+        vault_prog_normal = x["raid_progression"]["aberrus-the-shadowed-crucible"][
             "normal_bosses_killed"
         ]
-        vault_prog_heroic = x["raid_progression"]["vault-of-the-incarnates"][
+        vault_prog_heroic = x["raid_progression"]["aberrus-the-shadowed-crucible"][
             "heroic_bosses_killed"
         ]
-        vault_prog_mythic = x["raid_progression"]["vault-of-the-incarnates"][
+        vault_prog_mythic = x["raid_progression"]["aberrus-the-shadowed-crucible"][
             "mythic_bosses_killed"
         ]
         score = x["mythic_plus_scores_by_season"][0]["scores"]["all"]
@@ -232,7 +232,8 @@ class CharacterInfo:
             keylevel = x["mythic_plus_recent_runs"][0]["mythic_level"]
             keyup = x["mythic_plus_recent_runs"][0]["num_keystone_upgrades"]
             rscore = x["mythic_plus_recent_runs"][0]["score"]
-        cname = x["covenant"]["name"]
+        # cname = x["covenant"]["name"]
+        cname = ""
         tank = x["mythic_plus_scores_by_season"][0]["scores"]["tank"]
         dps = x["mythic_plus_scores_by_season"][0]["scores"]["dps"]
         healer = x["mythic_plus_scores_by_season"][0]["scores"]["healer"]

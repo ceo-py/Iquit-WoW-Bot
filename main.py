@@ -225,12 +225,12 @@ async def check(ctx, *args):
             embed.add_field(name=":crossed_swords:", value=dps, inline=True)
             embed.add_field(name=":green_heart:", value=healer, inline=True)
             embed.add_field(
-                name="Vault of the Incarnates",
-                value=f"{c_raid_normal} / 8",
+                name="Aberrus, the Shadowed Crucible",
+                value=f"{c_raid_normal} / 9",
                 inline=True,
             )
-            embed.add_field(name="Heroic", value=f"{c_raid_heroic} / 8", inline=True)
-            embed.add_field(name="Mythic", value=f"{c_raid_mythic} / 8", inline=True)
+            embed.add_field(name="Heroic", value=f"{c_raid_heroic} / 9", inline=True)
+            embed.add_field(name="Mythic", value=f"{c_raid_mythic} / 9", inline=True)
             embed.add_field(
                 name="Last Finished Dungeon", value=f"{lfinish}", inline=False
             )
