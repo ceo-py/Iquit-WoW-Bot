@@ -15,6 +15,15 @@ With that command you can add characters to the bot, then you can use that infor
 
 
 ```code
+!delete_character Ceomerlin
+```
+
+With that command you can remove characters from database.
+
+![alt text](https://cdn.discordapp.com/attachments/983670671647313930/1111980276764123227/image.png)
+
+
+```code
 !rank
 ```
 
