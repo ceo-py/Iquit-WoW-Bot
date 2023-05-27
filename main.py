@@ -306,6 +306,13 @@ async def update(ctx, time_value):
 
 
 @client.command()
+async def delete_character(ctx, character_name):
+    cnl_id = await Validation.msg_check(ctx)
+    if cnl_id:
+        await ctx.send(await db_.delete_user_from_db(cnl_id, character_name))
+
+
+@client.command()
 async def help(ctx):
     cnl_id = await Validation.msg_check(ctx)
     if cnl_id:
@@ -339,6 +346,13 @@ async def help(ctx):
             "you add already to the list with `!cadd` command will be compere and ranked by raider "
             "IO with total section dont matter the role and separate "
             " ranks for DPS, Healers and Tanks.\n :arrow_down: ",
+            inline=False,
+        )
+        embed.add_field(
+            name="**!delete_character character name**",
+            value="[Example](https://cdn.discordapp.com/attachments/880059629252534292/880064020525223956"
+            "/rank.png)\n `!delete_character Ceomerlin` with that command if the character exist in the channel "
+                  "data base it will be delete. You can add it anytime using the add button.\n :arrow_down: ",
             inline=False,
         )
         embed.add_field(

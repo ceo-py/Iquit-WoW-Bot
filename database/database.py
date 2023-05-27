@@ -92,11 +92,21 @@ class DataBaseInfo(Singleton):
 
     def reset_season_rating(self):
         for channel in self.client["WOW"].list_collections():
-            if 'Channel' not in channel['name']:
+            if "Channel" not in channel["name"]:
                 continue
-            self.client["WOW"][channel['name']].update_many({}, {"$set": {"Total Rating": 0, "DPS": 0, "Healer": 0, "Tank": 0}})
+            self.client["WOW"][channel["name"]].update_many(
+                {}, {"$set": {"Total Rating": 0, "DPS": 0, "Healer": 0, "Tank": 0}}
+            )
+
+    async def delete_user_from_db(self, id_channel: str, character_name: str):
+        character_name = character_name.lower()
+        players = self.players(id_channel)
+        player_found = players.find_one({"Character Name": f"{character_name}"})
+        if not player_found:
+            return f"**{character_name.capitalize()}** was not found!"
+
+        players.delete_one({"Character Name": f"{character_name}"})
+        return f"**{character_name.capitalize()}** was successfully delete from rank data base!"
 
 
 db_ = DataBaseInfo()
-
-
