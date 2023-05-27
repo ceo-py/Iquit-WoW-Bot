@@ -15,7 +15,7 @@ With that command you can add characters to the bot, then you can use that infor
 
 
 ```code
-!delete_character Ceomerlin
+!delete_character Klirik
 ```
 
 With that command you can remove characters from database.

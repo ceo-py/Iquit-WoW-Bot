@@ -351,7 +351,7 @@ async def help(ctx):
         embed.add_field(
             name="**!delete_character character name**",
             value="[Example](https://cdn.discordapp.com/attachments/983670671647313930/1111980276764123227/"
-                  "image.png)\n `!delete_character Ceomerlin` with that command if the character exist in the channel "
+                  "image.png)\n `!delete_character Klirik` with that command if the character exist in the channel "
                   "database it will be delete. You can add it anytime using the add button.\n :arrow_down: ",
             inline=False,
         )
