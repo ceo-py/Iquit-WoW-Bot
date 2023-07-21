@@ -1,3 +1,5 @@
+import datetime
+
 import discord
 
 from typing import Literal
@@ -19,6 +21,7 @@ from other_commands import (
     get_all_channels_id,
 )
 from tree_commands.rank import TreeCommands as TC
+from tree_commands.validation import ValidationTreeCommands as VTC
 from validations.validations import Validation, os
 from discord.ext import commands, tasks
 
@@ -42,7 +45,7 @@ client = PersistentViewBot()
 
 @client.event
 async def on_ready():
-    # await client.tree.sync() # once only to sync add/remove new slash command
+    await client.tree.sync() # once only to sync add/remove new slash command
     await client.change_presence(activity=discord.Game(name="Waiting for Sunset"))
     print("Ready")
 
@@ -196,6 +199,40 @@ async def rank(interaction: discord.Interaction, role: Literal['All', 'DPS', 'He
     output = TC.generate_output(*players, top)
     await interaction.response.send_message(f'Top {top} {role} \n'
                                                 f'>>> ```cs\n{output}```')
+
+
+
+class RankSimpleLoop:
+
+    @tasks.loop()
+    async def rank_task_loop_simple(self, interaction):
+        try:
+            players = await TC.get_players(interaction, os.getenv("DISCORD_CHANNEL_NAME"), 'Total')
+            output = TC.generate_output(*players, 10)
+            ctx = client.get_channel(int(interaction.channel.id))
+            await ctx.send(f'Top 10 Total \n>>> ```cs\n{output}```')
+        except Exception as e:
+            print(e)
+
+@client.tree.command(name="rankloop", description="Auto rank loop on every x hours, range 1 - 24.")
+async def rankloop(interaction: discord.Interaction, hour: int):
+
+    if VTC.hour(hour):
+        await interaction.response.send_message(f'Right Time format is hours from 1 - 24')
+        return
+
+    if not interaction.guild:
+        await interaction.response.send_message("**This command can only be used in a server text channel.**")
+        return
+
+    rank_loop = RankSimpleLoop()
+    rank_loop.rank_task_loop_simple.change_interval(hours=hour)
+
+    if rank_loop.rank_task_loop_simple.next_iteration:
+        rank_loop.rank_task_loop_simple.cancel()
+    rank_loop.rank_task_loop_simple.start(interaction)
+
+    await interaction.response.send_message(f'**Starting from now on every {hour} hours you will receive the updates!**')
 
 
 @client.command()
