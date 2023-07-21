@@ -99,7 +99,7 @@ class DataBaseInfo(Singleton):
             )
 
     async def delete_user_from_db(self, id_channel: str, character_name: str):
-        character_name = character_name.lower()
+        character_name = character_name.lower().strip()
         players = self.players(id_channel)
         player_found = players.find_one({"Character Name": f"{character_name}"})
         if not player_found:

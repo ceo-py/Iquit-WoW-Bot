@@ -35,7 +35,7 @@ class RankCharacterDisplay:
         return result_
 
     @staticmethod
-    def button_rank_result(data_info, what_rank):
+    def button_rank_result(data_info, what_rank, top=0):
         show_result = "There are no characters with greater than 0 rating"
         show_list_result = ""
 
@@ -47,7 +47,11 @@ class RankCharacterDisplay:
                 f"{pos}.{show['Character Name']}: {show[f'{what_rank}']}\n"
             )
 
+            if top == pos:
+                break
+
         if show_list_result:
             return show_list_result
 
         return show_result
+
