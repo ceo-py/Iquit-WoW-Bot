@@ -153,9 +153,9 @@ async def compere_char_now_with_db(data: list, id_channel: str, db) -> list:
 
         pos_status_str = compere_new_with_current_position(pos, char_db_information.get("Position"))
 
-        # if any([x in pos_status_str for x in changes_pos]):
-        #     await db.update_character_info(id_channel, show['Character Name'],
-        #                                    {'Position': pos})
+        if any([x in pos_status_str for x in changes_pos]):
+            await db.update_character_info(id_channel, show['Character Name'],
+                                           {'Position': pos})
 
         if show.get("Total") >= char_db_information.get("Total Rating"):
             result.append(
@@ -166,8 +166,8 @@ async def compere_char_now_with_db(data: list, id_channel: str, db) -> list:
                               f"rating reaching **__{show['Total']}__**{emojis('green_arrow')} {pos_status_str}"
                 }
             )
-            # show.popitem()
-            # await db.update_character_info(id_channel, show.pop('Character Name'), merge_data_for_update_db(db_update_fields, show.values()))
+            show.popitem()
+            await db.update_character_info(id_channel, show.pop('Character Name'), merge_data_for_update_db(db_update_fields, show.values()))
 
     return result
 
