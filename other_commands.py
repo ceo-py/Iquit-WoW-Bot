@@ -180,7 +180,7 @@ def get_all_channels_id(client) -> list:
         channel.id: channel.id
         for server in client.guilds
         for channel in server.channels
-        if channel.name == os.getenv("DISCORD_CHANNEL_NAME")
+        if os.getenv("DISCORD_CHANNEL_NAME") in channel.name
     }
 
 

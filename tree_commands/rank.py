@@ -45,7 +45,7 @@ class TreeCommands:
     @staticmethod
     def find_db_channel_id(interaction):
         for x in interaction:
-            if os.getenv("DISCORD_CHANNEL_NAME") == x.name:
+            if os.getenv("DISCORD_CHANNEL_NAME") in x.name:
                 return x.id
 
     @staticmethod
