@@ -31,7 +31,7 @@ class PersistentViewBot(commands.Bot):
     def __init__(self):
         intents = discord.Intents.all()
 
-        super().__init__(command_prefix="!", help_command=None, intents=intents)
+        super().__init__(command_prefix="!!", help_command=None, intents=intents)
 
     async def setup_hook(self) -> None:
         self.add_view(ButtonsCharacterStatistics())
@@ -43,7 +43,7 @@ client = PersistentViewBot()
 
 @client.event
 async def on_ready():
-    await client.tree.sync() # once only to sync add/remove new slash command
+    # await client.tree.sync() # once only to sync add/remove new slash command
     await client.change_presence(activity=discord.Game(name="Waiting for Sunset"))
     print("Ready")
 
@@ -326,7 +326,8 @@ async def add(ctx):
 
 async def show_updated_characters(ctx, data: list) -> None:
     if data:
-        await ctx.send("\n".join(data))
+        print("\n".join(data))
+        # await ctx.send("\n".join(data))
 
 
 @tasks.loop(seconds=0)

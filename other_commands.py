@@ -5,6 +5,53 @@ from dotenv import load_dotenv
 
 load_dotenv()
 
+realms_data = {
+    "us": ["US", ":flag_us:"],
+    "eu": ["EU", ":flag_eu:"],
+    "china": ["China", ":flag_cn:"],
+    "korea": ["Korea", ":flag_kr:"],
+    "taiwan": ["Taiwan", ":flag_tw:"],
+}
+
+emojis_data = {
+    "evoker": "<:evoker:1058463307348054087>",
+    "warrior": "<:warrior:1058463593617703034>",
+    "shaman": "<:shaman:1058463886707273729>",
+    "demon hunter": "<:demonhunter:1058464098758693034>",
+    "warlock": "<:warlock:1058464246092005456>",
+    "druid": "<:druid:1058464381622558910>",
+    "mage": "<:mage:1058464565379211304>",
+    "death knight": "<:deathknight:1058464682542903418>",
+    "rogue": "<:rogue:1058464885790482593>",
+    "hunter": "<:hunter:1058464998046838834>",
+    "paladin": "<:paladin:1058465116477214893>",
+    "priest": "<:priest:1058465325877842032>",
+    "monk": "<:monk:1058465435957338192>",
+    "tank": "<:Tankrole:1058479529158529124>",
+    "healer": "<:Healerrole:1058479567616090222>",
+    "dps": "<:DPSrole:1058479594438668468>",
+    "total": "<:Totalrole:1058488589459136512>",
+    "green_arrow": "<a:7636greenarrowup:1065609926149410847>",
+    "plus": "<:ezgif:1065614756393783296>",
+    "loading": "<a:loading_button:1065596200667066389>",
+    "white_arrow_right": "<a:1830vegarightarrow:1065603909147693207>",
+    "white_arrow_left": "<a:8826vegaleftarrow:1065603928860925962>",
+    "player_add": "<:6332logmemberplusw:1065621500855586907>",
+}
+
+pos_description = {
+    1: 'st',
+    2: 'nd',
+    3: 'rd'
+}
+
+db_update_fields = {"Total Rating": '',
+                    "DPS": '',
+                    "Healer": '',
+                    "Tank": ''}
+
+changes_pos = ['rises', 'drops']
+
 
 def weather_check(arg):
     with requests.get(
@@ -28,13 +75,6 @@ def ask_question(args):
 
 
 def get_info_token(region):
-    realms_data = {
-        "us": ["US", ":flag_us:"],
-        "eu": ["EU", ":flag_eu:"],
-        "china": ["China", ":flag_cn:"],
-        "korea": ["Korea", ":flag_kr:"],
-        "taiwan": ["Taiwan", ":flag_tw:"],
-    }
     data_ = realms_data[region.lower()]
     region, flag_region = data_
     session = HTMLSession()
@@ -83,54 +123,53 @@ def get_wow_cutoff():
 
 
 def emojis(char_name: str) -> str:
-    emojis_data = {
-        "evoker": "<:evoker:1058463307348054087>",
-        "warrior": "<:warrior:1058463593617703034>",
-        "shaman": "<:shaman:1058463886707273729>",
-        "demon hunter": "<:demonhunter:1058464098758693034>",
-        "warlock": "<:warlock:1058464246092005456>",
-        "druid": "<:druid:1058464381622558910>",
-        "mage": "<:mage:1058464565379211304>",
-        "death knight": "<:deathknight:1058464682542903418>",
-        "rouge": "<:rogue:1058464885790482593>",
-        "hunter": "<:hunter:1058464998046838834>",
-        "paladin": "<:paladin:1058465116477214893>",
-        "priest": "<:priest:1058465325877842032>",
-        "monk": "<:monk:1058465435957338192>",
-        "tank": "<:Tankrole:1058479529158529124>",
-        "healer": "<:Healerrole:1058479567616090222>",
-        "dps": "<:DPSrole:1058479594438668468>",
-        "total": "<:Totalrole:1058488589459136512>",
-        "green_arrow": "<a:7636greenarrowup:1065609926149410847>",
-        "plus": "<:ezgif:1065614756393783296>",
-        "loading": "<a:loading_button:1065596200667066389>",
-        "white_arrow_right": "<a:1830vegarightarrow:1065603909147693207>",
-        "white_arrow_left": "<a:8826vegaleftarrow:1065603928860925962>",
-        "player_add": "<:6332logmemberplusw:1065621500855586907>",
-    }
     return emojis_data.get(char_name, "None")
 
+def sort_api_data_by_total(data):
+    return sorted(data, key=lambda x: -x["Total"])
+
+def compere_new_with_current_position(new_pos, current_pos):
+    if new_pos > current_pos:
+        status = 'rises'
+
+    elif new_pos == current_pos:
+        status = 'remains'
+
+    else:
+        status = 'drops'
+
+    return f'{status} at {new_pos}{pos_description.get(new_pos, "th")} position.'
+
+
+def merge_data_for_update_db(dict_data: dict, list_data: list) -> dict:
+    return {k: v for k, v in zip(dict_data.keys(), list_data)}
 
 async def compere_char_now_with_db(data: list, id_channel: str, db) -> list:
     result = []
-    for show in data:
+    for pos, show in enumerate(sort_api_data_by_total(data), 1):
         char_db_information = await db.find_character_in_db(
             id_channel, Character_Name=show["Character Name"].lower().strip()
         )
-        if show.get("Total") > char_db_information.get("Total Rating"):
+
+        pos_status_str = compere_new_with_current_position(pos, char_db_information.get("Position"))
+
+        # if any([x in pos_status_str for x in changes_pos]):
+        #     await db.update_character_info(id_channel, show['Character Name'],
+        #                                    {'Position': pos})
+
+        if show.get("Total") >= char_db_information.get("Total Rating"):
             result.append(
                 {
                     "output": f"{emojis(char_db_information['Class to display'])} "
                               f"**{show['Character Name'].capitalize()}** "
                               f"{emojis('plus')}{abs(show['Total'] - char_db_information['Total Rating'])} "
-                              f"rating reaching **__{show['Total']}__**{emojis('green_arrow')}",
-                    "score": abs(show["Total"] - char_db_information["Total Rating"]),
+                              f"rating reaching **__{show['Total']}__**{emojis('green_arrow')} {pos_status_str}"
                 }
             )
-            show.popitem()
-            await db.update_character_info(id_channel, *show.values())
+            # show.popitem()
+            # await db.update_character_info(id_channel, show.pop('Character Name'), merge_data_for_update_db(db_update_fields, show.values()))
 
-    return sorted(result, key=lambda x: -x["score"])
+    return result
 
 
 def get_all_channels_id(client) -> list:

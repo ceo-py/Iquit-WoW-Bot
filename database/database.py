@@ -60,6 +60,7 @@ class DataBaseInfo(Singleton):
                 "DPS": 0,
                 "Healer": 0,
                 "Tank": 0,
+                "Position": 0,
             }
         )
 
@@ -75,14 +76,11 @@ class DataBaseInfo(Singleton):
         self,
         id_channel: str,
         character_name: str,
-        total: int,
-        dps: int,
-        heal: int,
-        tank: int,
+        update_info
     ) -> None:
         self.client["WOW"][f"Channel id {id_channel}"].update_one(
             {"Character Name": character_name.lower()},
-            {"$set": {"Total Rating": total, "DPS": dps, "Healer": heal, "Tank": tank}},
+            {"$set": update_info},
         )
 
     def save_msg_id(self, server_id, channel_id):
@@ -95,7 +93,16 @@ class DataBaseInfo(Singleton):
             if "Channel" not in channel["name"]:
                 continue
             self.client["WOW"][channel["name"]].update_many(
-                {}, {"$set": {"Total Rating": 0, "DPS": 0, "Healer": 0, "Tank": 0}}
+                {}, {"$set": {"Total Rating": 0, "DPS": 0, "Healer": 0, "Tank": 0, 'Position': 0}}
+            )
+
+
+    def create_new_field(self):
+        for channel in self.client["WOW"].list_collections():
+            if "Channel" not in channel["name"]:
+                continue
+            self.client["WOW"][channel["name"]].update_many(
+                {}, {"$set": {"Position": 0}}
             )
 
     async def delete_user_from_db(self, id_channel: str, character_name: str):
