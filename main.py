@@ -1,8 +1,6 @@
 import datetime
-
 import discord
-
-from typing import Literal
+from discord import app_commands
 from buttons.button_add_character import AddCharacterButton
 from buttons.buttons_stats_total_dps_heal_tank import (
     ButtonsCharacterStatistics,
@@ -187,9 +185,9 @@ async def rank(ctx):
             await compere_char_now_with_db(data_db, cnl_id, db_)
 
 
-@client.tree.command(name="rank", description="Show top-rated players for a specific role.")
-async def rank(interaction: discord.Interaction, role: Literal['All', 'DPS', 'Heal', 'Tank'],
-               top: Literal[1, 2, 3, 4, 5, 6, 7, 8, 9, 10]):
+@client.tree.command(name="ranksimple", description="Show top-rated players for a specific role.")
+async def ranksimple(interaction: discord.Interaction, role: TC.roles(),
+               top: TC.top()):
 
     if not interaction.guild:
         await interaction.response.send_message("**This command can only be used in a server text channel.**")
@@ -197,42 +195,53 @@ async def rank(interaction: discord.Interaction, role: Literal['All', 'DPS', 'He
 
     players = await TC.get_players(interaction, os.getenv("DISCORD_CHANNEL_NAME"), role)
     output = TC.generate_output(*players, top)
-    await interaction.response.send_message(f'Top {top} {role} \n'
-                                                f'>>> ```cs\n{output}```')
-
+    await TC.message_respond_interaction(interaction, top, role, output)
 
 
 class RankSimpleLoop:
 
+    def __init__(self, role, top):
+
+        self.top = top
+        self.role = role
+
     @tasks.loop()
-    async def rank_task_loop_simple(self, interaction):
+    async def loop_simple(self, interaction):
         try:
-            players = await TC.get_players(interaction, os.getenv("DISCORD_CHANNEL_NAME"), 'Total')
-            output = TC.generate_output(*players, 10)
+            players = await TC.get_players(interaction, os.getenv("DISCORD_CHANNEL_NAME"), self.role)
+            output = TC.generate_output(*players, self.top)
             ctx = client.get_channel(int(interaction.channel.id))
-            await ctx.send(f'Top 10 Total \n>>> ```cs\n{output}```')
+            await TC.message_respond_ctx(ctx, self.top, self.role, output)
         except Exception as e:
             print(e)
 
-@client.tree.command(name="rankloop", description="Auto rank loop on every x hours, range 1 - 24.")
-async def rankloop(interaction: discord.Interaction, hour: int):
+
+@client.tree.command(name="ranksimpleloop", description=f"Scheduled daily run. NB Server Time UTC!!!")
+@app_commands.describe(hour=f"Hour range: 1-24.")
+@app_commands.describe(minute=f"Minute range: 0-59.")
+async def ranksimpleloop(interaction: discord.Interaction, hour: int, minute:int, role: TC.roles(), top: TC.top()):
 
     if VTC.hour(hour):
-        await interaction.response.send_message(f'Right Time format is hours from 1 - 24')
+        await interaction.response.send_message(f'Right format for hour is from 1 - 24')
+        return
+
+    if VTC.minute(minute):
+        await interaction.response.send_message(f'Right format for minute is from 0 - 59')
         return
 
     if not interaction.guild:
         await interaction.response.send_message("**This command can only be used in a server text channel.**")
         return
 
-    rank_loop = RankSimpleLoop()
-    rank_loop.rank_task_loop_simple.change_interval(hours=hour)
+    rsl = RankSimpleLoop(role, top)
+    rsl.loop_simple.change_interval(time=datetime.time(hour=hour, minute=minute, tzinfo=datetime.timezone.utc))
 
-    if rank_loop.rank_task_loop_simple.next_iteration:
-        rank_loop.rank_task_loop_simple.cancel()
-    rank_loop.rank_task_loop_simple.start(interaction)
+    if rsl.loop_simple.next_iteration:
+        rsl.loop_simple.cancel()
+    rsl.loop_simple.start(interaction)
 
-    await interaction.response.send_message(f'**Starting from now on every {hour} hours you will receive the updates!**')
+    await interaction.response.send_message(
+        f'**Schedule: TOP {top} {role} results daily at {hour:02}:{minute:02} UTC.**')
 
 
 @client.command()

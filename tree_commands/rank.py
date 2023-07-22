@@ -1,3 +1,5 @@
+from typing import Literal
+
 from buttons.buttons_stats_total_dps_heal_tank import char_display
 from modals.add_character import char_info
 from sorting_ranks import RankCharacterDisplay
@@ -17,3 +19,20 @@ class TreeCommands:
     @staticmethod
     def generate_output(sorted_data, role, top):
         return RankCharacterDisplay.button_rank_result(sorted_data, role, top)
+
+    @staticmethod
+    async def message_respond_interaction(interaction, top, role, output):
+        await interaction.response.send_message(f'Top {top} {role} \n'
+                                                f'>>> ```cs\n{output}```')
+
+    @staticmethod
+    async def message_respond_ctx(ctx, top, role, output):
+        await ctx.send(f'Top {top} {role} \n>>> ```cs\n{output}```')
+
+    @staticmethod
+    def roles():
+        return Literal['All', 'DPS', 'Heal', 'Tank']
+
+    @staticmethod
+    def top():
+        return Literal[1, 2, 3, 4, 5, 6, 7, 8, 9, 10]
