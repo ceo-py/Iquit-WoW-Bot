@@ -156,7 +156,7 @@ async def compere_char_now_with_db(data: list, id_channel: str, db) -> list:
                 id_channel, show["Character Name"], {"Position": pos}
             )
 
-        if show.get("Total") >= char_db_information.get("Total Rating"):
+        if show.get("Total") > char_db_information.get("Total Rating"):
             result.append(
                 {
                     "output": f"{emojis(char_db_information['Class to display'])} "
