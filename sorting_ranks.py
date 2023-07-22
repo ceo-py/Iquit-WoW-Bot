@@ -54,4 +54,3 @@ class RankCharacterDisplay:
             return show_list_result
 
         return show_result
-

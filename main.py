@@ -51,8 +51,8 @@ async def on_ready():
 async def backup_message(ctx, embed, characters_information: list):
     embed.set_thumbnail(
         url="https://cdn.discordapp.com/attachments/983670671647313930/1056581663230021822/"
-            "kisspng-road-signs-in-singapore-warning-sign-traffic-sign-caution-signs-5a8b35b0afe937."
-            "9224424515190726887205.png"
+        "kisspng-road-signs-in-singapore-warning-sign-traffic-sign-caution-signs-5a8b35b0afe937."
+        "9224424515190726887205.png"
     )
     total = char_display.get_all_chars(
         char_display.sorting_db(characters_information, "Total")
@@ -170,13 +170,13 @@ async def rank(ctx):
         embed.add_field(
             name=f"**World Top Ranks Season {SEASON} {EXPANSION}**",
             value=f"[Mythic+ Rankings for All Classes & Roles]"
-                  f"(https://raider.io/mythic-plus-character-rankings/season-{EXPANSION.lower()}-{SEASON}/world/all/all)\n "
-                  f"[Mythic+ Rankings for All Tanks]"
-                  f"(https://raider.io/mythic-plus-character-rankings/season-{EXPANSION.lower()}-{SEASON}/world/all/tank)\n "
-                  f"[Mythic+ Rankings for All Healers]"
-                  f"(https://raider.io/mythic-plus-character-rankings/season-{EXPANSION.lower()}-{SEASON}/world/all/healer)\n "
-                  f"[Mythic+ Rankings for All DPS]"
-                  f"(https://raider.io/mythic-plus-character-rankings/season-{EXPANSION.lower()}-{SEASON}/world/all/dps)",
+            f"(https://raider.io/mythic-plus-character-rankings/season-{EXPANSION.lower()}-{SEASON}/world/all/all)\n "
+            f"[Mythic+ Rankings for All Tanks]"
+            f"(https://raider.io/mythic-plus-character-rankings/season-{EXPANSION.lower()}-{SEASON}/world/all/tank)\n "
+            f"[Mythic+ Rankings for All Healers]"
+            f"(https://raider.io/mythic-plus-character-rankings/season-{EXPANSION.lower()}-{SEASON}/world/all/healer)\n "
+            f"[Mythic+ Rankings for All DPS]"
+            f"(https://raider.io/mythic-plus-character-rankings/season-{EXPANSION.lower()}-{SEASON}/world/all/dps)",
             inline=False,
         )
         view = ButtonsCharacterStatistics()
@@ -185,12 +185,15 @@ async def rank(ctx):
             await compere_char_now_with_db(data_db, cnl_id, db_)
 
 
-@client.tree.command(name="ranksimple", description="Show top-rated players for a specific role.")
-async def ranksimple(interaction: discord.Interaction, role: TC.roles(),
-               top: TC.top()):
+@client.tree.command(
+    name="ranksimple", description="Show top-rated players for a specific role."
+)
+async def ranksimple(interaction: discord.Interaction, role: TC.roles(), top: TC.top()):
 
     if not interaction.guild:
-        await interaction.response.send_message("**This command can only be used in a server text channel.**")
+        await interaction.response.send_message(
+            "**This command can only be used in a server text channel.**"
+        )
         return
 
     players = await TC.get_players(interaction, os.getenv("DISCORD_CHANNEL_NAME"), role)
@@ -199,7 +202,6 @@ async def ranksimple(interaction: discord.Interaction, role: TC.roles(),
 
 
 class RankSimpleLoop:
-
     def __init__(self, role, top):
 
         self.top = top
@@ -208,7 +210,9 @@ class RankSimpleLoop:
     @tasks.loop()
     async def loop_simple(self, interaction):
         try:
-            players = await TC.get_players(interaction, os.getenv("DISCORD_CHANNEL_NAME"), self.role)
+            players = await TC.get_players(
+                interaction, os.getenv("DISCORD_CHANNEL_NAME"), self.role
+            )
             output = TC.generate_output(*players, self.top)
             ctx = client.get_channel(int(interaction.channel.id))
             await TC.message_respond_ctx(ctx, self.top, self.role, output)
@@ -216,32 +220,78 @@ class RankSimpleLoop:
             print(e)
 
 
-@client.tree.command(name="ranksimpleloop", description=f"Scheduled daily run. NB Server Time UTC!!!")
+@client.tree.command(
+    name="ranksimpleloop", description=f"Scheduled daily run. NB Server Time UTC!!!"
+)
 @app_commands.describe(hour=f"Hour range: 1-24.")
 @app_commands.describe(minute=f"Minute range: 0-59.")
-async def ranksimpleloop(interaction: discord.Interaction, hour: int, minute:int, role: TC.roles(), top: TC.top()):
+async def ranksimpleloop(
+    interaction: discord.Interaction,
+    hour: int,
+    minute: int,
+    role: TC.roles(),
+    top: TC.top(),
+):
 
     if VTC.hour(hour):
-        await interaction.response.send_message(f'Right format for hour is from 1 - 24')
+        await interaction.response.send_message(f"Right format for hour is from 1 - 24")
         return
 
     if VTC.minute(minute):
-        await interaction.response.send_message(f'Right format for minute is from 0 - 59')
+        await interaction.response.send_message(
+            f"Right format for minute is from 0 - 59"
+        )
         return
 
     if not interaction.guild:
-        await interaction.response.send_message("**This command can only be used in a server text channel.**")
+        await interaction.response.send_message(
+            "**This command can only be used in a server text channel.**"
+        )
         return
 
     rsl = RankSimpleLoop(role, top)
-    rsl.loop_simple.change_interval(time=datetime.time(hour=hour, minute=minute, tzinfo=datetime.timezone.utc))
+    rsl.loop_simple.change_interval(
+        time=datetime.time(hour=hour, minute=minute, tzinfo=datetime.timezone.utc)
+    )
 
     if rsl.loop_simple.next_iteration:
         rsl.loop_simple.cancel()
     rsl.loop_simple.start(interaction)
 
     await interaction.response.send_message(
-        f'**Schedule: TOP {top} {role} results daily at {hour:02}:{minute:02} UTC.**')
+        f"**Schedule: TOP {top} {role} results daily at {hour:02}:{minute:02} UTC.**"
+    )
+
+
+@client.tree.command(
+    name="rankglobalsetting",
+    description="Add/Remove custom channel for global rank announcement.",
+)
+async def rankglobalsetting(
+    interaction: discord.Interaction, option: TC.custom_channel_options()
+):
+
+    if not interaction.guild:
+        await interaction.response.send_message(
+            "**This command can only be used in a server text channel.**"
+        )
+        return
+
+    output = ""
+
+    if option == "Add":
+        output = db_.add_custom_channel(
+            interaction.channel_id,
+            TC.find_db_channel_id(interaction.guild.channels),
+            interaction.channel.name,
+        )
+
+    elif option == "Remove":
+        output = db_.skip_custom_channel(
+            interaction.channel_id, interaction.channel.name
+        )
+
+    await interaction.response.send_message(output)
 
 
 @client.command()
@@ -276,9 +326,9 @@ async def check(ctx, *args):
             embed = discord.Embed(
                 title=str(score) + " - Best Mythic+ Score",
                 description=f"[Character Link]({purl}) :link: "
-                            f"[Armory Profile](https://worldofwarcraft.com/en-{player_region}/character/{player_region}/{player_realm}/{player_name})\n"
-                            f"[Simulate on RaidBots](https://www.raidbots.com/simbot/quick?region={player_region}&realm={player_realm}&name={player_name}) :link: "
-                            f"[Warcraft Logs Profile](https://www.warcraftlogs.com/character/{player_region}/{player_realm}/{player_name})",
+                f"[Armory Profile](https://worldofwarcraft.com/en-{player_region}/character/{player_region}/{player_realm}/{player_name})\n"
+                f"[Simulate on RaidBots](https://www.raidbots.com/simbot/quick?region={player_region}&realm={player_realm}&name={player_name}) :link: "
+                f"[Warcraft Logs Profile](https://www.warcraftlogs.com/character/{player_region}/{player_realm}/{player_name})",
                 colour=discord.Colour.blue(),
             )
             embed.set_thumbnail(url=tmbn)
@@ -334,7 +384,16 @@ async def task_loop():
     try:
         all_channels_ids = get_all_channels_id(client)
 
-        for id_channel in all_channels_ids:
+        custom_channels = {
+            int(x["custom id"]): int(x["db channel id"])
+            for x in list(db_.custom_channels_ids().find())
+        }
+
+        if custom_channels:
+            all_channels_ids.update(custom_channels)
+            all_channels_ids = TC.remove_channels(all_channels_ids, custom_channels)
+
+        for ctx_msg, id_channel in all_channels_ids.items():
 
             data_db = await char_info.get_data_for_rank(id_channel, None)
 
@@ -348,7 +407,7 @@ async def task_loop():
                 continue
 
             result = await compere_char_now_with_db(data_db, id_channel, db_)
-            ctx = client.get_channel(int(id_channel))
+            ctx = client.get_channel(int(ctx_msg))
             await show_updated_characters(ctx, [x["output"] for x in result])
     except Exception as e:
         print(e)
@@ -389,57 +448,57 @@ async def help(ctx):
         embed.add_field(
             name="**!check region realm character name**",
             value="[Example](https://cdn.discordapp.com/attachments/880059629252534292/880077926505250846"
-                  "/check.png)\n `!check eu draenor ceomerlin` with this command "
-                  "you are going to see that character current progress in raids, raider IO, last timed "
-                  "key and more.\n :arrow_down: ",
+            "/check.png)\n `!check eu draenor ceomerlin` with this command "
+            "you are going to see that character current progress in raids, raider IO, last timed "
+            "key and more.\n :arrow_down: ",
             inline=False,
         )
         embed.add_field(
             name="**!add**",
             value="[Example](https://cdn.discordapp.com/attachments/983670671647313930/1055864102142083154/image.png)\n"
-                  "In the popup menu add the needed information. Correct format is region, realm, "
-                  "character name, your nick name, character class. That character will enter into the rank system "
-                  "where you can see where you rank compere to your friends and other people that you add to the server database."
-                  " \n :arrow_down: ",
+            "In the popup menu add the needed information. Correct format is region, realm, "
+            "character name, your nick name, character class. That character will enter into the rank system "
+            "where you can see where you rank compere to your friends and other people that you add to the server database."
+            " \n :arrow_down: ",
             inline=False,
         )
         embed.add_field(
             name="**!rank**",
             value="[Example](https://cdn.discordapp.com/attachments/880059629252534292/880064020525223956"
-                  "/rank.png)\n `!rank` with that command every character that "
-                  "you add already to the list with `!cadd` command will be compere and ranked by raider "
-                  "IO with total section dont matter the role and separate "
-                  " ranks for DPS, Healers and Tanks.\n :arrow_down: ",
+            "/rank.png)\n `!rank` with that command every character that "
+            "you add already to the list with `!cadd` command will be compere and ranked by raider "
+            "IO with total section dont matter the role and separate "
+            " ranks for DPS, Healers and Tanks.\n :arrow_down: ",
             inline=False,
         )
         embed.add_field(
             name="**!delete_character character name**",
             value="[Example](https://cdn.discordapp.com/attachments/983670671647313930/1111980276764123227/"
-                  "image.png)\n `!delete_character Klirik` with that command if the character exist in the channel "
-                  "database it will be delete. You can add it anytime using the add button.\n :arrow_down: ",
+            "image.png)\n `!delete_character Klirik` with that command if the character exist in the channel "
+            "database it will be delete. You can add it anytime using the add button.\n :arrow_down: ",
             inline=False,
         )
         embed.add_field(
             name="**!token region**",
             value="[Example](https://cdn.discordapp.com/attachments/880059629252534292/880153278111961108"
-                  "/token.png)\n `!token eu`, `!token us`, `!token china`, `!token korea`, `!token taiwan` "
-                  " with that command you can check token prices in every region.\n :arrow_down: ",
+            "/token.png)\n `!token eu`, `!token us`, `!token china`, `!token korea`, `!token taiwan` "
+            " with that command you can check token prices in every region.\n :arrow_down: ",
             inline=False,
         )
         embed.add_field(
             name="**!weather city**",
             value="[Example](https://cdn.discordapp.com/attachments/880059629252534292/880154617730703390"
-                  "/weather.png)\n `!weather sofia` "
-                  "with that command you can check the weather in your city or where you want.\n "
-                  ":arrow_down: ",
+            "/weather.png)\n `!weather sofia` "
+            "with that command you can check the weather in your city or where you want.\n "
+            ":arrow_down: ",
             inline=False,
         )
         embed.add_field(
             name="**!ask question**",
             value="[Example](https://cdn.discordapp.com/attachments/880059629252534292/880155463759581194"
-                  "/ask.png)\n `!ask 2+2`, `!ask capital bulgaria`, `!ask next nba game` "
-                  "with that command you can ask simple questions like you ask your google or amazon "
-                  "assistance.",
+            "/ask.png)\n `!ask 2+2`, `!ask capital bulgaria`, `!ask next nba game` "
+            "with that command you can ask simple questions like you ask your google or amazon "
+            "assistance.",
             inline=False,
         )
         await ctx.send(embed=embed)
@@ -516,19 +575,19 @@ async def token(ctx, region=None):
         embed.add_field(
             name="**1 DAY**",
             value=f"***Low : {one_day_low} :moneybag:\n"
-                  f"High : {one_day_high} :moneybag:***",
+            f"High : {one_day_high} :moneybag:***",
             inline=True,
         )
         embed.add_field(
             name="**7 DAY**",
             value=f"***Low : {seven_day_low} :moneybag:\n"
-                  f"High : {seven_day_high} :moneybag:***",
+            f"High : {seven_day_high} :moneybag:***",
             inline=True,
         )
         embed.add_field(
             name="**30 DAY**",
             value=f"***Low : {thirty_day_low} :moneybag:\n"
-                  f"High : {thirty_day_high} :moneybag:***",
+            f"High : {thirty_day_high} :moneybag:***",
             inline=True,
         )
         await ctx.send(embed=embed)

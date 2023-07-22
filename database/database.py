@@ -35,8 +35,35 @@ class DataBaseInfo(Singleton):
     def players(self, id_channel):
         return self.client["WOW"][f"Channel id {id_channel}"]
 
-    def buttons(self):
-        return self.client["WOW"]["Buttons"]
+    def custom_channels_ids(self):
+        return self.client["WOW"]["custom channel add"]
+
+    def add_custom_channel(self, custom_id, db_channel_id, name):
+        channel = self.custom_channels_ids().find_one({"db channel id": db_channel_id})
+        if channel:
+            return (
+                f"Only one custom channel per server is allowed."
+                f"A custom channel with the name **'{channel['name']}'** "
+                f"already exists in this Discord server. "
+                f"In order to add another custom channel, "
+                f"you must delete the existing one first."
+            )
+
+        self.custom_channels_ids().insert_one(
+            {"custom id": custom_id, "db channel id": db_channel_id, "name": name}
+        )
+        return f"Success! The channel **'{name}'** is now registered in the database."
+
+    def skip_custom_channel(self, id_channel, name):
+        if not self.custom_channels_ids().find_one({"custom id": id_channel}):
+            return f"Deletion failed: The channel **'{name}'** is not found in the database."
+
+        self.custom_channels_ids().delete_one(
+            {
+                "custom id": id_channel,
+            }
+        )
+        return f"Deletion completed: Your custom channel **'{name}'** has been removed from the database."
 
     def add_character_to_db(
         self,
@@ -73,10 +100,7 @@ class DataBaseInfo(Singleton):
         return self.client["WOW"][f"Channel id {id_channel}"].find_one({"$and": [data]})
 
     async def update_character_info(
-        self,
-        id_channel: str,
-        character_name: str,
-        update_info
+        self, id_channel: str, character_name: str, update_info
     ) -> None:
         self.client["WOW"][f"Channel id {id_channel}"].update_one(
             {"Character Name": character_name.lower()},
@@ -93,9 +117,17 @@ class DataBaseInfo(Singleton):
             if "Channel" not in channel["name"]:
                 continue
             self.client["WOW"][channel["name"]].update_many(
-                {}, {"$set": {"Total Rating": 0, "DPS": 0, "Healer": 0, "Tank": 0, 'Position': 0}}
+                {},
+                {
+                    "$set": {
+                        "Total Rating": 0,
+                        "DPS": 0,
+                        "Healer": 0,
+                        "Tank": 0,
+                        "Position": 0,
+                    }
+                },
             )
-
 
     def create_new_field(self):
         for channel in self.client["WOW"].list_collections():

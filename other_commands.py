@@ -39,23 +39,16 @@ emojis_data = {
     "player_add": "<:6332logmemberplusw:1065621500855586907>",
 }
 
-pos_description = {
-    1: 'st',
-    2: 'nd',
-    3: 'rd'
-}
+pos_description = {1: "st", 2: "nd", 3: "rd"}
 
-db_update_fields = {"Total Rating": '',
-                    "DPS": '',
-                    "Healer": '',
-                    "Tank": ''}
+db_update_fields = {"Total Rating": "", "DPS": "", "Healer": "", "Tank": ""}
 
-changes_pos = ['rises', 'drops']
+changes_pos = ["rises", "drops"]
 
 
 def weather_check(arg):
     with requests.get(
-            f"http://api.openweathermap.org/data/2.5/weather?q={arg}&appid={os.getenv('API_WEATHER')}&units=metric"
+        f"http://api.openweathermap.org/data/2.5/weather?q={arg}&appid={os.getenv('API_WEATHER')}&units=metric"
     ) as x:
         x = x.json()
         t = x["main"]["temp"]
@@ -69,7 +62,7 @@ def weather_check(arg):
 def ask_question(args):
     query = "+".join(args)
     with requests.get(
-            f"https://api.wolframalpha.com/v1/result?appid={os.getenv('API_ASK_Q')}={query}%3F"
+        f"https://api.wolframalpha.com/v1/result?appid={os.getenv('API_ASK_Q')}={query}%3F"
     ) as response:
         return response.status_code, response.text
 
@@ -103,14 +96,14 @@ def get_info_token(region):
 # change region for afix eu us etc..
 def get_affixes():
     with requests.get(
-            f"""https://raider.io/api/v1/mythic-plus/affixes?region=eu&locale=en"""
+        f"""https://raider.io/api/v1/mythic-plus/affixes?region=eu&locale=en"""
     ) as af:
         return af.json().get("title")
 
 
 def get_wow_cutoff():
     with requests.get(
-            f"""https://raider.io/api/v1/mythic-plus/season-cutoffs?season=season-df-2&region=eu"""
+        f"""https://raider.io/api/v1/mythic-plus/season-cutoffs?season=season-df-2&region=eu"""
     ) as x:
         data = x.json()
         top0_1 = data["cutoffs"]["graphData"]["p999"]["data"][0]["y"]
@@ -125,24 +118,27 @@ def get_wow_cutoff():
 def emojis(char_name: str) -> str:
     return emojis_data.get(char_name, "None")
 
+
 def sort_api_data_by_total(data):
     return sorted(data, key=lambda x: -x["Total"])
 
+
 def compere_new_with_current_position(new_pos, current_pos):
     if new_pos > current_pos:
-        status = 'rises'
+        status = "rises"
 
     elif new_pos == current_pos:
-        status = 'remains'
+        status = "remains"
 
     else:
-        status = 'drops'
+        status = "drops"
 
     return f'{status} at {new_pos}{pos_description.get(new_pos, "th")} position.'
 
 
 def merge_data_for_update_db(dict_data: dict, list_data: list) -> dict:
     return {k: v for k, v in zip(dict_data.keys(), list_data)}
+
 
 async def compere_char_now_with_db(data: list, id_channel: str, db) -> list:
     result = []
@@ -151,39 +147,54 @@ async def compere_char_now_with_db(data: list, id_channel: str, db) -> list:
             id_channel, Character_Name=show["Character Name"].lower().strip()
         )
 
-        pos_status_str = compere_new_with_current_position(pos, char_db_information.get("Position"))
+        pos_status_str = compere_new_with_current_position(
+            pos, char_db_information.get("Position")
+        )
 
         if any([x in pos_status_str for x in changes_pos]):
-            await db.update_character_info(id_channel, show['Character Name'],
-                                           {'Position': pos})
+            await db.update_character_info(
+                id_channel, show["Character Name"], {"Position": pos}
+            )
 
         if show.get("Total") >= char_db_information.get("Total Rating"):
             result.append(
                 {
                     "output": f"{emojis(char_db_information['Class to display'])} "
-                              f"**{show['Character Name'].capitalize()}** "
-                              f"{emojis('plus')}{abs(show['Total'] - char_db_information['Total Rating'])} "
-                              f"rating reaching **__{show['Total']}__**{emojis('green_arrow')} {pos_status_str}"
+                    f"**{show['Character Name'].capitalize()}** "
+                    f"{emojis('plus')}{abs(show['Total'] - char_db_information['Total Rating'])} "
+                    f"rating reaching **__{show['Total']}__**{emojis('green_arrow')} {pos_status_str}"
                 }
             )
             show.popitem()
-            await db.update_character_info(id_channel, show.pop('Character Name'), merge_data_for_update_db(db_update_fields, show.values()))
+            await db.update_character_info(
+                id_channel,
+                show.pop("Character Name"),
+                merge_data_for_update_db(db_update_fields, show.values()),
+            )
 
     return result
 
 
 def get_all_channels_id(client) -> list:
-    return [
-        channel.id
+    return {
+        channel.id: channel.id
         for server in client.guilds
         for channel in server.channels
         if channel.name == os.getenv("DISCORD_CHANNEL_NAME")
-    ]
+    }
 
 
 def generate_superscript_numbers(numbers):
     numbers_superscript = {
-        "0": "⁰", "1": "¹", "2": "²", "3": "³", "4": "⁴", "5": "⁵", "6": "⁶",
-        "7": "⁷", "8": "⁸", "9": "⁹"
+        "0": "⁰",
+        "1": "¹",
+        "2": "²",
+        "3": "³",
+        "4": "⁴",
+        "5": "⁵",
+        "6": "⁶",
+        "7": "⁷",
+        "8": "⁸",
+        "9": "⁹",
     }
-    return ('').join(numbers_superscript[x] for x in str(numbers))
+    return ("").join(numbers_superscript[x] for x in str(numbers))

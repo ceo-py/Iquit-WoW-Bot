@@ -137,7 +137,11 @@ class CharacterInfo:
     @staticmethod
     def character_change_information(channel_id, name, rating, dps_r, heal_r, tank_r):
 
-        db_.update_character_info(channel_id, name, {"Total Rating": rating, "DPS": dps_r, "Healer": heal_r, "Tank": tank_r})
+        db_.update_character_info(
+            channel_id,
+            name,
+            {"Total Rating": rating, "DPS": dps_r, "Healer": heal_r, "Tank": tank_r},
+        )
 
     @staticmethod
     def battle_net_api(data_json):
