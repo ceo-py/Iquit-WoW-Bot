@@ -4,17 +4,17 @@ A little bot that I made, so we can use it with my friends and check our progres
 You can test the bot functionality [here](https://discord.gg/gCcfWpMCgE)
 ## Bot Command Navigation
 
-1. [!add Command - Add Characters to the Database](#add-command)
-2. [!delete_character Command - Remove Characters from the Database](#delete-character-command)
-3. [!rank Command - World of Warcraft Rating Details](#rank-command-world-of-warcraft-rating-details)
-4. [!check Command - Detailed Character Information](#check-command-detailed-character-information)
-5. [!check Command - Quick Character Information](#check-command-quick-character-information)
+1. [!add  - Add Characters to the Database](#add-command)
+2. [!delete_character - Remove Characters from the Database](#delete-character-command)
+3. [!rank - World of Warcraft Rating Details](#rank-command-world-of-warcraft-rating-details)
+4. [!check - Detailed Character Information](#check-command-detailed-character-information)
+5. [!check - Quick Character Information](#check-command-quick-character-information)
 6. [Global Server Announcement - Rating Updates](#global-server-announcement-rating-updates)
-7. [Rank Global Setting Command](#rank-global-setting-command)
-8. [RankSimple Global Command](#ranksimple-global-command)
-9. [!token Command - World of Warcraft Price Information](#token-command-world-of-warcraft-price-information)
-10. [!weather Command - Real-Time Weather Information](#weather-command)
-11. [!ask Command - Ask Questions and Get Answers](#ask-command)
+7. [/rankglobalsetting - Rank Global Setting](#rank-global-setting-command)
+8. [/ranksimple - RankSimple Global](#ranksimple-global-command)
+9. [!token - World of Warcraft Price Information](#token-command-world-of-warcraft-price-information)
+10. [!weather - Real-Time Weather Information](#weather-command)
+11. [!ask - Ask Questions and Get Answers](#ask-command)
 12. [Bot Information and Installation](#bot-information-and-installation)
 
 
