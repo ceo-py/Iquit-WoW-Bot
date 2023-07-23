@@ -2,8 +2,22 @@ A little bot that I made, so we can use it with my friends and check our progres
 
 
 You can test the bot functionality [here](https://discord.gg/gCcfWpMCgE)
+## Bot Command Navigation
 
-Commands:
+1. [!add Command - Add Characters to the Database](#add-command)
+2. [!delete_character Command - Remove Characters from the Database](#delete-character-command)
+3. [!rank Command - World of Warcraft Rating Details](#rank-command-world-of-warcraft-rating-details)
+4. [!check Command - Detailed Character Information](#check-command-detailed-character-information)
+5. [!check Command - Quick Character Information](#check-command-quick-character-information)
+6. [Global Server Announcement - Rating Updates](#global-server-announcement-rating-updates)
+7. [Rank Global Setting Command](#rank-global-setting-command)
+8. [RankSimple Global Command](#ranksimple-global-command)
+9. [!token Command - World of Warcraft Price Information](#token-command-world-of-warcraft-price-information)
+10. [!weather Command - Real-Time Weather Information](#weather-command)
+11. [!ask Command - Ask Questions and Get Answers](#ask-command)
+12. [Bot Information and Installation](#bot-information-and-installation)
+
+
 
 # Add Command
 
@@ -82,7 +96,7 @@ By using the `!delete_character` command with the appropriate character name par
 ![alt text](https://cdn.discordapp.com/attachments/983670671647313930/1111980276764123227/image.png)
 
 
-# Rank Command - World of Warcraft Rating Details
+# Rank Command World of Warcraft Rating Details
 
 The `!rank` command provides embedded information about World of Warcraft rating cutoffs for top 0.1%, top 1%, and top 10% players. It displays a leaderboard of the top 9 characters in the Discord server based on their character ratings. Additionally, it showcases the top 3 players for DPS, healers, and tanks, all ranked by character rating.
 
@@ -128,7 +142,7 @@ By using the `!rank` command, players can easily access comprehensive ranking in
 
 ![alt text](https://cdn.discordapp.com/attachments/983670671647313930/1058492082647474226/image.png)
 
-# Check Command - Detailed Character Information
+# Check Command Detailed Character Information
 
 The `!check` command allows users to retrieve comprehensive details about a World of Warcraft character through an embedded view. It requires three mandatory parameters:
 
@@ -167,7 +181,7 @@ By using the `!check` command with the appropriate parameters, players can gain 
 
 With that command, you'll be able to see more detail information about the character you ask for.
 
-# Check Command - Quick Character Information
+# Check Command Quick Character Information
 
 The `!check` command provides a swift way to access essential information about a World of Warcraft character within the Discord server. With just two parameters required:
 
@@ -201,8 +215,7 @@ The `!check` command streamlines the process of obtaining essential character in
 ![alt text](https://preview.redd.it/bcx6f5ybgwl71.png?width=668&format=png&auto=webp&s=11246511f815473c2f1f78454c8d428dd22d4015)
 
 
-
-# Global Server Announcement - Rating Updates
+# Global Server Announcement Rating Updates
 
 The Global Server Announcement is a periodic notification system that occurs every 2 hours within the Discord server. This automated process is designed to provide real-time updates on character rating progress.
 
@@ -343,7 +356,7 @@ The `/ranksimpleloop` command streamlines the process of obtaining daily rank le
 ![alt text](https://cdn.discordapp.com/attachments/983670671647313930/1132392621101289532/image.png)
 
 
-# Token Command - World of Warcraft Price Information
+# Token Command World of Warcraft Price Information
 
 The `!token` command provides users with valuable information about the current price of World of Warcraft tokens. These tokens can be used in various in-game transactions and hold significant value. The command displays token prices for three different time periods: 1 day, 7 days, and 30 days, including both the lowest and highest prices recorded during each period.
 
