@@ -82,26 +82,122 @@ By using the `!delete_character` command with the appropriate character name par
 ![alt text](https://cdn.discordapp.com/attachments/983670671647313930/1111980276764123227/image.png)
 
 
-```code
+# Rank Command - World of Warcraft Rating Details
+
+The `!rank` command provides embedded information about World of Warcraft rating cutoffs for top 0.1%, top 1%, and top 10% players. It displays a leaderboard of the top 9 characters in the Discord server based on their character ratings. Additionally, it showcases the top 3 players for DPS, healers, and tanks, all ranked by character rating.
+
+## Command Usage
+
+To use the `!rank` command, simply type the following in a Discord text channel:
+
+```
 !rank
 ```
 
-With that, you'll be able to see every character that you added in the bot with !add ranked and compare to the rest of the characters. If there are characters with 0 RIO they will not show. As an additional option, you have at the bottom to see the top 20 of every role and total.
+## Information Displayed
+
+The `!rank` command will provide the following details:
+
+- **Rating Cutoffs:**
+  World of Warcraft rating cutoffs for top 0.1%, top 1%, and top 10% players.
+
+- **Top 9 Characters:**
+  A leaderboard of the top 9 characters in the Discord server, ranked by their character ratings.
+
+- **Top 3 for DPS, Healers, and Tanks:**
+  The top 3 players for DPS, healers, and tanks, all ranked by character rating.
+
+- **Current Week Affixes:**
+  Information about the affixes active in the current week.
+
+- **World Ranks for Every Class and Role:**
+  Links to view the current world ranks for every class and role.
+
+## Note
+
+1. **Real-Time Data:**
+   The command fetches real-time rating data, ensuring the latest and most accurate information.
+
+2. **Server-Specific Leaderboard:**
+   The leaderboard displays characters within the Discord server where the command is used.
+
+3. **Class and Role Rankings:**
+   The command provides links to view the current world ranks for every class and role.
+
+By using the `!rank` command, players can easily access comprehensive ranking information, stay competitive, and track their character's performance in World of Warcraft.
+
 ![alt text](https://cdn.discordapp.com/attachments/983670671647313930/1058492082647474226/image.png)
 
-```code
-!check {region} {realm} {character name}
+# Check Command - Detailed Character Information
+
+The `!check` command allows users to retrieve comprehensive details about a World of Warcraft character through an embedded view. It requires three mandatory parameters:
+
+1. **Region:** Enter the region of the character (e.g., EU, US, etc.).
+2. **Realm:** Provide the name of the realm where the character exists.
+3. **Character Name:** Input the full name of the character.
+
+## Command Usage
+
+To use the `!check` command, type the following in a Discord text channel:
+
 ```
+!check [region] [realm] [character_name]
+```
+
+## Information Displayed
+
+The `!check` command will provide the following information about the character:
+
+- **Character Class:** The class or profession of the character.
+- **Item Level:** The character's gear item level.
+- **Covenant:** The Covenant chosen by the character.
+- **Character Link:** Quick links to view the character on WoW Armory, Raidbots, and Warcraft Logs.
+- **Raid Progression:** The character's current raid progression on Normal, Heroic, and Mythic difficulties.
+- **Dungeon Key:** The last finished dungeon key level, upgrade information, and points obtained for that dungeon.
+
+## Note
+
+1. **Real-Time Data:** The command fetches real-time character information, ensuring the latest and most accurate details.
+2. **Character Customization:** The information displayed pertains specifically to the entered character on the provided region and realm.
+3. **External Links:** Quick access to WoW Armory, Raidbots, and Warcraft Logs for more in-depth character analysis.
+
+By using the `!check` command with the appropriate parameters, players can gain valuable insights into a character's attributes, progression, and performance, aiding in strategic gameplay and improvement.
 
 ![alt text](https://cdn.discordapp.com/attachments/983670671647313930/1058499360758960158/image.png)
 
 With that command, you'll be able to see more detail information about the character you ask for.
 
-```code
-!check {nickname} {class}
+# Check Command - Quick Character Information
+
+The `!check` command provides a swift way to access essential information about a World of Warcraft character within the Discord server. With just two parameters required:
+
+1. **Nickname:** Enter the character's nickname within the server.
+2. **Class:** Specify the character's class or profession.
+
+## Command Usage
+
+To use the `!check` command for quick character info, type the following in a Discord text channel:
+
+```
+!check [nickname] [class]
 ```
 
-This is a quick check that you don't need to type {region} {realm} {character name} this will only work if you already add that character into the bot by **!add {region} {realm} {character name} {your nickname in discord, wow etc..} {class}**. If the character is not added to the bot, you can simply use then full check by **!check {region} {realm} {character name}**
+## Information Displayed
+
+The `!check` command will promptly display the following character details:
+
+- **Character Class:** The class or profession of the character.
+- **Item Level:** The character's gear item level.
+- **Covenant:** The Covenant chosen by the character.
+- **Character Link:** Quick link to view the character on WoW Armory, Raidbots, and Warcraft Logs.
+
+## Note
+
+1. **Server-Based:** The command fetches character data specifically from the Discord server, ensuring easy access to relevant information.
+2. **Simplified Query:** By providing just the nickname and class, users can swiftly retrieve essential character details without the need for additional information.
+3. **External Links:** Quick access to WoW Armory, Raidbots, and Warcraft Logs for further character exploration.
+
+The `!check` command streamlines the process of obtaining essential character information within the server, enabling users to make informed decisions and foster a cohesive World of Warcraft community.
 ![alt text](https://preview.redd.it/bcx6f5ybgwl71.png?width=668&format=png&auto=webp&s=11246511f815473c2f1f78454c8d428dd22d4015)
 
 
@@ -378,14 +474,17 @@ The `!ask` command serves as a versatile tool for obtaining quick answers to a w
 
 ![alt text](https://preview.redd.it/9yyw3n7fgwl71.png?width=534&format=png&auto=webp&s=74097e31ce9ea73f39cf07387425bf7fe78b3966)
 
+# Bot Information and Installation
 
-For more information about commands, you can always use !help.
-The bot will only respond in **"iquit-bot"** channel.
-Installation:
-1. From here you can [invite](https://discord.com/api/oauth2/authorize?client_id=859492463918972930&permissions=0&scope=bot) the bot to your discord server
-2. After that create text channel iquit-bot
+To explore more commands and features, use `!help` for comprehensive details. The bot exclusively responds in the designated "iquit-bot" channel.
+
+## Installation:
+
+1. [invite](https://discord.com/api/oauth2/authorize?client_id=859492463918972930&permissions=0&scope=bot) the bot to your Discord server.
+2. Create a text channel named "iquit-bot" for seamless interaction.
 
 ![alt text](https://preview.redd.it/33k6h2fknwl71.png?width=294&format=png&auto=webp&s=0d3510bb3beb37e6476edcb2ebd3297b131bbb0d)
 
-3. **!help** for more information about commands.
-That's it, you can enjoy it :)
+Enjoy the bot's functionalities and make the most of its features to enhance your World of Warcraft experience! 🎮🤖
+For more information about commands, you can always use !help.
+The bot will only respond in **"iquit-bot"** channel.
