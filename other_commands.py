@@ -127,11 +127,11 @@ def compere_new_with_current_position(new_pos, current_pos):
     if new_pos > current_pos:
         status = "drops"
 
-    elif new_pos == current_pos:
-        status = "remains"
+    elif new_pos < current_pos or current_pos == 0:
+        status = "rises"
 
     else:
-        status = "rises"
+        status = "remains"
 
     return f'{status} at {new_pos}{pos_description.get(new_pos, "th")} position.'
 
