@@ -101,9 +101,9 @@ def get_affixes():
         return af.json().get("title")
 
 
-def get_wow_cutoff():
+def get_wow_cutoff(region):
     with requests.get(
-        f"""https://raider.io/api/v1/mythic-plus/season-cutoffs?season=season-df-2&region=eu"""
+        f"""https://raider.io/api/v1/mythic-plus/season-cutoffs?season=season-df-2&region={region}"""
     ) as x:
         data = x.json()
         top0_1 = data["cutoffs"]["graphData"]["p999"]["data"][0]["y"]

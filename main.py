@@ -101,14 +101,18 @@ async def rank(ctx):
 
         total = char_display.get_all_chars(char_display.sorting_db(data_db, "Total"))
 
-        top_cut_offs = "\n".join(
-            f"{name} - {rating:.1f}" for rating, name in get_wow_cutoff()
-        )
-        embed.add_field(
-            name="**Mythic+ Rating Cutoffs**",
-            value=f"```" f"{top_cut_offs}```",
-            inline=False,
-        )
+
+        region = await db_.get_region(cnl_id)
+
+        if region:
+            top_cut_offs = "\n".join(
+                f"{name} - {rating:.1f}" for rating, name in get_wow_cutoff(region)
+            )
+            embed.add_field(
+                name="**Mythic+ Rating Cutoffs**",
+                value=f"```" f"{top_cut_offs}```",
+                inline=False,
+            )
 
         embed.add_field(
             name="**:regional_indicator_t::regional_indicator_o::regional_indicator_p: :nine:**",

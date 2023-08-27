@@ -147,5 +147,13 @@ class DataBaseInfo(Singleton):
         players.delete_one({"Character Name": f"{character_name}"})
         return f"**{character_name.capitalize()}** was successfully delete from rank data base!"
 
+    async def get_region(self, id_channel: str):
+        found_region = self.players(id_channel).find_one()
+
+        if not found_region:
+            return
+
+        return found_region['Region']
+
 
 db_ = DataBaseInfo()
