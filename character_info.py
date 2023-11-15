@@ -63,7 +63,8 @@ class CharacterInfo:
                     if response.status == 200:
                         results.append(await response.json())
                 except:
-                    return
+                    print(f'Error with get data rank response:\n{response}')
+                    return 'Error'
 
             for index in results:
                 (name, rating, tank_r, dps_r, heal_r, player_url,) = (

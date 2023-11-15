@@ -23,7 +23,7 @@ from tree_commands.validation import ValidationTreeCommands as VTC
 from validations.validations import Validation, os
 from discord.ext import commands, tasks
 
-SEASON = 2
+SEASON = 3
 EXPANSION = "DF"
 
 
@@ -31,7 +31,7 @@ class PersistentViewBot(commands.Bot):
     def __init__(self):
         intents = discord.Intents.all()
 
-        super().__init__(command_prefix="!", help_command=None, intents=intents)
+        super().__init__(command_prefix="?", help_command=None, intents=intents)
 
     async def setup_hook(self) -> None:
         self.add_view(ButtonsCharacterStatistics())
@@ -43,7 +43,7 @@ client = PersistentViewBot()
 
 @client.event
 async def on_ready():
-    # await client.tree.sync() # once only to sync add/remove new slash command
+    # await client.tree.sync() # once only to sync CRUD slash command
     await client.change_presence(activity=discord.Game(name="Waiting for Sunset"))
     print("Ready")
 
@@ -95,7 +95,7 @@ async def rank(ctx):
         )
 
         data_db = await char_info.get_data_for_rank(cnl_id, None)
-        if not data_db:
+        if data_db == 'Error':
             data_db = await char_info.get_data_for_rank(cnl_id, "Yes")
             return await backup_message(ctx, embed, data_db)
 
@@ -106,13 +106,13 @@ async def rank(ctx):
 
         if region:
             top_cut_offs = "\n".join(
-                f"{name} - {rating:.1f}" for rating, name in get_wow_cutoff(region)
+                f"{name} - {rating:.1f}" for rating, name in get_wow_cutoff(region, SEASON)
             )
             embed.add_field(
-                name="**Mythic+ Rating Cutoffs**",
-                value=f"```" f"{top_cut_offs}```",
-                inline=False,
-            )
+                    name="**Mythic+ Rating Cutoffs**",
+                    value=f"```" f"{top_cut_offs}```",
+                    inline=False,
+                )
 
         embed.add_field(
             name="**:regional_indicator_t::regional_indicator_o::regional_indicator_p: :nine:**",
@@ -185,8 +185,7 @@ async def rank(ctx):
         )
         view = ButtonsCharacterStatistics()
         await ctx.send(embed=embed, view=view)
-        if data_db:
-            await compere_char_now_with_db(data_db, cnl_id, db_)
+        await compere_char_now_with_db(data_db, cnl_id, db_)
 
 
 @client.tree.command(

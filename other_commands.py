@@ -101,17 +101,22 @@ def get_affixes():
         return af.json().get("title")
 
 
-def get_wow_cutoff(region):
+def get_wow_cutoff(region, season):
     with requests.get(
-        f"""https://raider.io/api/v1/mythic-plus/season-cutoffs?season=season-df-2&region={region}"""
+        f"""https://raider.io/api/v1/mythic-plus/season-cutoffs?season=season-df-{season}&region={region}"""
     ) as x:
-        data = x.json()
-        top0_1 = data["cutoffs"]["graphData"]["p999"]["data"][0]["y"]
-        top0_1_name = data["cutoffs"]["graphData"]["p999"]["name"]
-        top1 = data["cutoffs"]["graphData"]["p990"]["data"][0]["y"]
-        top1_name = data["cutoffs"]["graphData"]["p990"]["name"]
-        top10 = data["cutoffs"]["graphData"]["p900"]["data"][0]["y"]
-        top10_name = data["cutoffs"]["graphData"]["p900"]["name"]
+        try :
+            data = x.json()
+            top0_1 = data["cutoffs"]["graphData"]["p999"]["data"][0]["y"]
+            top0_1_name = data["cutoffs"]["graphData"]["p999"]["name"]
+            top1 = data["cutoffs"]["graphData"]["p990"]["data"][0]["y"]
+            top1_name = data["cutoffs"]["graphData"]["p990"]["name"]
+            top10 = data["cutoffs"]["graphData"]["p900"]["data"][0]["y"]
+            top10_name = data["cutoffs"]["graphData"]["p900"]["name"]
+        except KeyError as err:
+            print(f'There is error with cutoff Request: \n {err}\n{x}')
+            return (0, 'No Information'),
+
     return (top0_1, top0_1_name), (top1, top1_name), (top10, top10_name)
 
 
@@ -124,7 +129,7 @@ def sort_api_data_by_total(data):
 
 
 def compere_new_with_current_position(new_pos, current_pos):
-    if new_pos > current_pos:
+    if new_pos > current_pos != 0:
         status = "drops"
 
     elif new_pos < current_pos or current_pos == 0:
