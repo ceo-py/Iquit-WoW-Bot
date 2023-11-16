@@ -129,11 +129,11 @@ def sort_api_data_by_total(data):
 
 
 def compere_new_with_current_position(new_pos, current_pos):
-    if new_pos > current_pos != 0:
-        status = "drops"
-
-    elif new_pos < current_pos or current_pos == 0:
+    if new_pos < current_pos or current_pos == 0:
         status = "rises"
+
+    elif new_pos > current_pos:
+        status = "drops"
 
     else:
         status = "remains"
