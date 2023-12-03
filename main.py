@@ -50,9 +50,7 @@ async def on_ready():
 
 async def backup_message(ctx, embed, characters_information: list):
     embed.set_thumbnail(
-        url="https://cdn.discordapp.com/attachments/983670671647313930/1056581663230021822/"
-        "kisspng-road-signs-in-singapore-warning-sign-traffic-sign-caution-signs-5a8b35b0afe937."
-        "9224424515190726887205.png"
+        url="https://github.com/ceo-py/Project-Pictures/blob/main/Iquit/caution_icon.png?raw=true"
     )
     total = char_display.get_all_chars(
         char_display.sorting_db(characters_information, "Total")
@@ -91,7 +89,7 @@ async def rank(ctx):
             colour=discord.Colour.blue(),
         )
         embed.set_thumbnail(
-            url="https://cdn.discordapp.com/attachments/983670671647313930/1056575707259613204/Winners-podium-on-transparent-background-PNG.png"
+            url="https://github.com/ceo-py/Project-Pictures/blob/main/Iquit/rank_command_thumb.png?raw=true"
         )
 
         data_db = await char_info.get_data_for_rank(cnl_id, None)
@@ -446,19 +444,19 @@ async def help(ctx):
             title="Help Center For Iquit Commands", colour=discord.Colour.blue()
         )
         embed.set_thumbnail(
-            url="https://cdn.discordapp.com/attachments/880059629252534292/880060565190500423/iq.png"
+            url="https://github.com/ceo-py/Project-Pictures/blob/main/Iquit/iquit_text.png?raw=true"
         )
         embed.add_field(
             name="**!check region realm character name**",
-            value="[Example](https://cdn.discordapp.com/attachments/880059629252534292/880077926505250846"
-            "/check.png)\n `!check eu draenor ceomerlin` with this command "
+            value="[Example](https://github.com/ceo-py/Project-Pictures/blob/main/Iquit/"
+            "check_command_example.png?raw=true)\n `!check eu tarren-mill Naowhlul` with this command "
             "you are going to see that character current progress in raids, raider IO, last timed "
             "key and more.\n :arrow_down: ",
             inline=False,
         )
         embed.add_field(
             name="**!add**",
-            value="[Example](https://cdn.discordapp.com/attachments/983670671647313930/1055864102142083154/image.png)\n"
+            value="[Example](https://github.com/ceo-py/Project-Pictures/blob/main/Iquit/add_character_modal.png?raw=true)\n"
             "In the popup menu add the needed information. Correct format is region, realm, "
             "character name, your nick name, character class. That character will enter into the rank system "
             "where you can see where you rank compere to your friends and other people that you add to the server database."
@@ -467,8 +465,8 @@ async def help(ctx):
         )
         embed.add_field(
             name="**!rank**",
-            value="[Example](https://cdn.discordapp.com/attachments/880059629252534292/880064020525223956"
-            "/rank.png)\n `!rank` with that command every character that "
+            value="[Example](https://github.com/ceo-py/Project-Pictures/blob/main/Iquit/"
+            "rank_command_example.png?raw=true)\n `!rank` with that command every character that "
             "you add already to the list with `!cadd` command will be compere and ranked by raider "
             "IO with total section dont matter the role and separate "
             " ranks for DPS, Healers and Tanks.\n :arrow_down: ",
@@ -476,30 +474,30 @@ async def help(ctx):
         )
         embed.add_field(
             name="**!delete_character character name**",
-            value="[Example](https://cdn.discordapp.com/attachments/983670671647313930/1111980276764123227/"
-            "image.png)\n `!delete_character Klirik` with that command if the character exist in the channel "
+            value="[Example](https://github.com/ceo-py/Project-Pictures/blob/main/Iquit/"
+            "delete_command_example.png?raw=true)\n `!delete_character Klirik` with that command if the character exist in the channel "
             "database it will be delete. You can add it anytime using the add button.\n :arrow_down: ",
             inline=False,
         )
         embed.add_field(
             name="**!token region**",
-            value="[Example](https://cdn.discordapp.com/attachments/880059629252534292/880153278111961108"
-            "/token.png)\n `!token eu`, `!token us`, `!token china`, `!token korea`, `!token taiwan` "
+            value="[Example](https://github.com/ceo-py/Project-Pictures/blob/main/Iquit/"
+            "toke_price_example.png?raw=true)\n `!token eu`, `!token us`, `!token china`, `!token korea`, `!token taiwan` "
             " with that command you can check token prices in every region.\n :arrow_down: ",
             inline=False,
         )
         embed.add_field(
             name="**!weather city**",
-            value="[Example](https://cdn.discordapp.com/attachments/880059629252534292/880154617730703390"
-            "/weather.png)\n `!weather sofia` "
+            value="[Example](https://github.com/ceo-py/Project-Pictures/blob/main/Iquit/weather_example.png?raw=true"
+            "\n `!weather dallas` "
             "with that command you can check the weather in your city or where you want.\n "
             ":arrow_down: ",
             inline=False,
         )
         embed.add_field(
             name="**!ask question**",
-            value="[Example](https://cdn.discordapp.com/attachments/880059629252534292/880155463759581194"
-            "/ask.png)\n `!ask 2+2`, `!ask capital bulgaria`, `!ask next nba game` "
+            value="[Example](https://github.com/ceo-py/Project-Pictures/blob/main/Iquit/"
+            "ask_command_example.png?raw=true)\n `!ask 2+2`, `!ask capital bulgaria`, `!ask next nba game` "
             "with that command you can ask simple questions like you ask your google or amazon "
             "assistance.",
             inline=False,
