@@ -58,7 +58,7 @@ Upon executing this command, a pop-up will appear, prompting users to enter the 
 6. **Character Class Selection:** Select the appropriate character class from the provided options.
 
 By following the provided instructions and completing all fields accurately, users can seamlessly add their characters to the database using the `!add` command, making them eligible for comparison with other characters in the Discord community.
-![alt text](https://cdn.discordapp.com/attachments/983670671647313930/1058493214610444449/image.png)
+![alt text](https://github.com/ceo-py/Project-Pictures/blob/main/Iquit/add_character_modal.png?raw=true)
 
 
 # Delete Character Command
@@ -93,7 +93,7 @@ Replace `[character_name]` with the full name of the character that you wish to 
 
 By using the `!delete_character` command with the appropriate character name parameter, users can effectively remove characters from the bot's database, ensuring that the database remains up-to-date and accurate for future comparisons.
 
-![alt text](https://cdn.discordapp.com/attachments/983670671647313930/1111980276764123227/image.png)
+![alt text](https://github.com/ceo-py/Project-Pictures/blob/main/Iquit/delete_command_example.png?raw=true)
 
 
 # Rank Command World of Warcraft Rating Details
@@ -140,7 +140,7 @@ The `!rank` command will provide the following details:
 
 By using the `!rank` command, players can easily access comprehensive ranking information, stay competitive, and track their character's performance in World of Warcraft.
 
-![alt text](https://cdn.discordapp.com/attachments/983670671647313930/1058492082647474226/image.png)
+![alt text](https://github.com/ceo-py/Project-Pictures/blob/main/Iquit/rank_command_example.png?raw=true)
 
 # Check Command Detailed Character Information
 
@@ -177,7 +177,7 @@ The `!check` command will provide the following information about the character:
 
 By using the `!check` command with the appropriate parameters, players can gain valuable insights into a character's attributes, progression, and performance, aiding in strategic gameplay and improvement.
 
-![alt text](https://cdn.discordapp.com/attachments/983670671647313930/1058499360758960158/image.png)
+![alt text](https://github.com/ceo-py/Project-Pictures/blob/main/Iquit/check_command_example.png?raw=true)
 
 With that command, you'll be able to see more detail information about the character you ask for.
 
@@ -212,7 +212,7 @@ The `!check` command will promptly display the following character details:
 3. **External Links:** Quick access to WoW Armory, Raidbots, and Warcraft Logs for further character exploration.
 
 The `!check` command streamlines the process of obtaining essential character information within the server, enabling users to make informed decisions and foster a cohesive World of Warcraft community.
-![alt text](https://preview.redd.it/bcx6f5ybgwl71.png?width=668&format=png&auto=webp&s=11246511f815473c2f1f78454c8d428dd22d4015)
+![alt text](https://github.com/ceo-py/Project-Pictures/blob/main/Iquit/check_quick_command_example.png?raw=true)
 
 
 # Global Server Announcement Rating Updates
@@ -238,7 +238,7 @@ The Global Server Announcement is a periodic notification system that occurs eve
 2. **Data Accuracy:** The system ensures accurate and up-to-date character data from the Raider.io database.
 
 By utilizing the Global Server Announcement, players can stay informed about their character's progression and gain insights into other players' achievements in real-time, fostering a competitive and engaging community within the Discord server.
-![alt text](https://cdn.discordapp.com/attachments/983670671647313930/1060516253996945428/image.png)
+![alt text](https://github.com/ceo-py/Project-Pictures/blob/main/Iquit/global_server_announcment_example.png?raw=true)
 
 
 # Rank Global Setting Command
@@ -284,7 +284,7 @@ Replace `[option]` with either "Add" or "Remove" to perform the desired action.
    Ensure that you have the necessary permissions to interact with the bot and manage channels in the server.
 
 By utilizing the `rankglobalsetting` command with the appropriate options, users can seamlessly manage their custom channel preferences for global rank notifications and tailor the bot's behavior to their preferences in the Discord server.
-![alt text](https://cdn.discordapp.com/attachments/983670671647313930/1132373752785686538/image.png)
+![alt text](https://github.com/ceo-py/Project-Pictures/blob/main/Iquit/global_server_announcment_adding_custom_channel_example.png?raw=true)
 
 
 # RankSimple Global Command
@@ -319,7 +319,7 @@ The `/ranksimple` command will present the following information:
 
 The `/ranksimple` command streamlines the process of accessing rating information for specific roles in the Discord server's character database. It serves as a valuable resource for users to identify top-rated players within their server effortlessly.
 
-![alt text](https://cdn.discordapp.com/attachments/983670671647313930/1132385453887201280/image.png)
+![alt text](https://github.com/ceo-py/Project-Pictures/blob/main/Iquit/rank_simple_example.png?raw=true)
 
 # RankSimpleLoop Global Command
 
@@ -353,7 +353,7 @@ The `/ranksimpleloop` command allows you to automate daily rank leaderboard noti
 
 The `/ranksimpleloop` command streamlines the process of obtaining daily rank leaderboard information for specific roles in the Discord server. By scheduling the command to trigger at your preferred time, you can effortlessly keep track of top-rated players and their rankings for the chosen role on a daily basis.
 
-![alt text](https://cdn.discordapp.com/attachments/983670671647313930/1132392621101289532/image.png)
+![alt text](https://github.com/ceo-py/Project-Pictures/blob/main/Iquit/rank_simple_loop_example.png?raw=true)
 
 
 # Token Command World of Warcraft Price Information
@@ -402,7 +402,7 @@ The `!token` command will provide the following information:
 
 By using the `!token` command with the desired region parameter, players can stay informed about the fluctuating prices of World of Warcraft tokens, helping them make informed decisions in the in-game economy.
 
-![alt text](https://preview.redd.it/fo0ehrpcgwl71.png?width=681&format=png&auto=webp&s=26d45b61ff1d946585f0ed3bfd81faca756a72fc)
+![alt text](https://github.com/ceo-py/Project-Pictures/blob/main/Iquit/toke_price_example.png?raw=true)
 
 
 # Weather Command
@@ -445,7 +445,7 @@ The `!weather` command will provide the following weather details:
 
 By using the `!weather` command with the desired city name, users can quickly access essential weather information for any location, helping them plan and prepare for their activities accordingly.
 
-![alt text](https://preview.redd.it/vjyah4ndgwl71.png?width=531&format=png&auto=webp&s=5cc256a105183703d35e59edea971efd97c7d461)
+![alt text](https://github.com/ceo-py/Project-Pictures/blob/main/Iquit/weather_example.png?raw=true)
 
 
 # Ask Command
@@ -485,7 +485,7 @@ The `!ask` command is flexible and can handle various types of questions, includ
 
 The `!ask` command serves as a versatile tool for obtaining quick answers to a wide array of questions, making it a valuable feature for users seeking prompt information or engaging in enjoyable interactions with the bot.
 
-![alt text](https://preview.redd.it/9yyw3n7fgwl71.png?width=534&format=png&auto=webp&s=74097e31ce9ea73f39cf07387425bf7fe78b3966)
+![alt text](https://github.com/ceo-py/Project-Pictures/blob/main/Iquit/ask_command_example.png?raw=true)
 
 # Bot Information and Installation
 
@@ -494,10 +494,8 @@ To explore more commands and features, use `!help` for comprehensive details. Th
 ## Installation:
 
 1. [invite](https://discord.com/api/oauth2/authorize?client_id=859492463918972930&permissions=0&scope=bot) the bot to your Discord server.
-2. Create a text channel named "iquit-bot" for seamless interaction.
-
-![alt text](https://preview.redd.it/33k6h2fknwl71.png?width=294&format=png&auto=webp&s=0d3510bb3beb37e6476edcb2ebd3297b131bbb0d)
+2. Create a text channel that include the name "iquit-bot" for seamless interaction.
 
 Enjoy the bot's functionalities and make the most of its features to enhance your World of Warcraft experience! 🎮🤖
 For more information about commands, you can always use !help.
-The bot will only respond in **"iquit-bot"** channel.
+The bot will only respond in **"iquit-bot"** or if you add custom channel.
