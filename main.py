@@ -488,7 +488,7 @@ async def help(ctx):
         )
         embed.add_field(
             name="**!weather city**",
-            value="[Example](https://github.com/ceo-py/Project-Pictures/blob/main/Iquit/weather_example.png?raw=true"
+            value="[Example](https://github.com/ceo-py/Project-Pictures/blob/main/Iquit/weather_example.png?raw=true)"
             "\n `!weather dallas` "
             "with that command you can check the weather in your city or where you want.\n "
             ":arrow_down: ",
