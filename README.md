@@ -1,7 +1,11 @@
 A little bot that I made, so we can use it with my friends and check our progress, among other useful information about WOW.
 
 
-You can test the bot functionality [here](https://discord.gg/gCcfWpMCgE)
+You can test the bot functionality [here](https://discord.gg/gCcfWpMCgE).
+
+Your Feedback Matters: Help Shape the Future of Iquit Bot
+We're always looking for ways to improve our bot and make it even more helpful and engaging for our users. 
+That's why we're inviting you to share your feedback and suggestions. [here](https://github.com/ceo-py/Iquit-WoW-Bot/discussions).
 ## Bot Command Navigation
 
 1. [!add  - Add Characters to the Database](#add-command)
