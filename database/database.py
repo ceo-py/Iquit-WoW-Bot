@@ -42,28 +42,25 @@ class DataBaseInfo(Singleton):
         channel = self.custom_channels_ids().find_one({"db channel id": db_channel_id})
         if channel:
             return (
-                f"Only one custom channel per server is allowed."
-                f"A custom channel with the name **'{channel['name']}'** "
-                f"already exists in this Discord server. "
-                f"In order to add another custom channel, "
-                f"you must delete the existing one first."
+                f"You can only have one custom channel per server. Please unregister the existing channel named "
+                f"'{channel['name']}' to add another."
             )
 
         self.custom_channels_ids().insert_one(
             {"custom id": custom_id, "db channel id": db_channel_id, "name": name}
         )
-        return f"Success! The channel **'{name}'** is now registered in the database."
+        return f"Your custom channel '{name}' has been successfully registered."
 
     def skip_custom_channel(self, id_channel, name):
         if not self.custom_channels_ids().find_one({"custom id": id_channel}):
-            return f"Deletion failed: The channel **'{name}'** is not found in the database."
+            return f"Oops! We couldn't find a channel named **'{name}'**."
 
         self.custom_channels_ids().delete_one(
             {
                 "custom id": id_channel,
             }
         )
-        return f"Deletion completed: Your custom channel **'{name}'** has been removed from the database."
+        return f"Your custom channel **'{name}'** as been successfully unregistered."
 
     def add_character_to_db(
         self,
