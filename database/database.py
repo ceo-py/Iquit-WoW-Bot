@@ -60,7 +60,7 @@ class DataBaseInfo(Singleton):
                 "custom id": id_channel,
             }
         )
-        return f"Your custom channel **'{name}'** as been successfully unregistered."
+        return f"Your custom channel **'{name}'** has been successfully unregistered."
 
     def add_character_to_db(
         self,
