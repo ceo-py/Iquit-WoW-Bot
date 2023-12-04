@@ -168,7 +168,7 @@ class CharacterInfo:
             if x.status_code != 200:
                 return (
                     "**Not valid information, check the **[example]"
-                    "(https://cdn.discordapp.com/attachments/983670671647313930/1055864102142083154/image.png)"
+                    "(https://github.com/ceo-py/Project-Pictures/blob/main/Iquit/add_character_modal_filled.png?raw=true)"
                 )
             real_class = x.json()["class"].lower()
         player_info = await db_.find_character_in_db(
@@ -217,13 +217,16 @@ class CharacterInfo:
         tmbn = x["thumbnail_url"]
         ilvl = x["gear"]["item_level_equipped"]
         purl = x["profile_url"]
-        vault_prog_normal = x["raid_progression"]["aberrus-the-shadowed-crucible"][
+        total_bosses = x["raid_progression"]["amirdrassil-the-dreams-hope"][
+            "total_bosses"
+        ]
+        vault_prog_normal = x["raid_progression"]["amirdrassil-the-dreams-hope"][
             "normal_bosses_killed"
         ]
-        vault_prog_heroic = x["raid_progression"]["aberrus-the-shadowed-crucible"][
+        vault_prog_heroic = x["raid_progression"]["amirdrassil-the-dreams-hope"][
             "heroic_bosses_killed"
         ]
-        vault_prog_mythic = x["raid_progression"]["aberrus-the-shadowed-crucible"][
+        vault_prog_mythic = x["raid_progression"]["amirdrassil-the-dreams-hope"][
             "mythic_bosses_killed"
         ]
         score = x["mythic_plus_scores_by_season"][0]["scores"]["all"]
@@ -267,6 +270,7 @@ class CharacterInfo:
             name,
             score,
             purl,
+            total_bosses
         )
 
 
