@@ -4,7 +4,7 @@ from database.database import db_, os
 class Validation:
     @staticmethod
     def check_right_channel(ctx):
-        if str(ctx.channel) == os.getenv("DISCORD_CHANNEL_NAME"):
+        if os.getenv("DISCORD_CHANNEL_NAME") in str(ctx.channel):
             return True, str(ctx.guild.id), str(ctx.channel.id)
         return False, 0, 0
 
