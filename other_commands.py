@@ -46,9 +46,9 @@ db_update_fields = {"Total Rating": "", "DPS": "", "Healer": "", "Tank": ""}
 changes_pos = ["rises", "drops"]
 
 
-def weather_check(arg):
+def weather_check(arg) -> tuple:
     with requests.get(
-        f"http://api.openweathermap.org/data/2.5/weather?q={arg}&appid={os.getenv('API_WEATHER')}&units=metric"
+            f"http://api.openweathermap.org/data/2.5/weather?q={arg}&appid={os.getenv('API_WEATHER')}&units=metric"
     ) as x:
         x = x.json()
         t = x["main"]["temp"]
@@ -59,15 +59,15 @@ def weather_check(arg):
         return t, t_min, t_max, feels_like, type_of_weather
 
 
-def ask_question(args):
+def ask_question(args) -> tuple:
     query = "+".join(args)
     with requests.get(
-        f"https://api.wolframalpha.com/v1/result?appid={os.getenv('API_ASK_Q')}={query}%3F"
+            f"https://api.wolframalpha.com/v1/result?appid={os.getenv('API_ASK_Q')}={query}%3F"
     ) as response:
         return response.status_code, response.text
 
 
-def get_info_token(region):
+def get_info_token(region) -> tuple:
     data_ = realms_data[region.lower()]
     region, flag_region = data_
     session = HTMLSession()
@@ -96,16 +96,16 @@ def get_info_token(region):
 # change region for afix eu us etc..
 def get_affixes():
     with requests.get(
-        f"""https://raider.io/api/v1/mythic-plus/affixes?region=eu&locale=en"""
+            f"""https://raider.io/api/v1/mythic-plus/affixes?region=eu&locale=en"""
     ) as af:
         return af.json().get("title")
 
 
-def get_wow_cutoff(region, season):
+def get_wow_cutoff(region, season) -> tuple:
     with requests.get(
-        f"""https://raider.io/api/v1/mythic-plus/season-cutoffs?season=season-df-{season}&region={region}"""
+            f"""https://raider.io/api/v1/mythic-plus/season-cutoffs?season=season-df-{season}&region={region}"""
     ) as x:
-        try :
+        try:
             data = x.json()
             top0_1 = data["cutoffs"]["graphData"]["p999"]["data"][0]["y"]
             top0_1_name = data["cutoffs"]["graphData"]["p999"]["name"]
@@ -124,11 +124,11 @@ def emojis(char_name: str) -> str:
     return emojis_data.get(char_name, "None")
 
 
-def sort_api_data_by_total(data):
+def sort_api_data_by_total(data) -> list:
     return sorted(data, key=lambda x: -x["Total"])
 
 
-def compere_new_with_current_position(new_pos, current_pos):
+def compere_new_with_current_position(new_pos, current_pos) -> str:
     if new_pos < current_pos or current_pos == 0:
         status = "rises"
 
@@ -165,9 +165,9 @@ async def compere_char_now_with_db(data: list, id_channel: str, db) -> list:
             result.append(
                 {
                     "output": f"{emojis(char_db_information['Class to display'])} "
-                    f"**{show['Character Name'].capitalize()}** "
-                    f"{emojis('plus')}{abs(show['Total'] - char_db_information['Total Rating'])} "
-                    f"rating reaching **__{show['Total']}__**{emojis('green_arrow')} {pos_status_str}"
+                              f"**{show['Character Name'].capitalize()}** "
+                              f"{emojis('plus')}{abs(show['Total'] - char_db_information['Total Rating'])} "
+                              f"rating reaching **__{show['Total']}__**{emojis('green_arrow')} {pos_status_str}"
                 }
             )
             show.popitem()
@@ -180,7 +180,7 @@ async def compere_char_now_with_db(data: list, id_channel: str, db) -> list:
     return result
 
 
-def get_all_channels_id(client) -> list:
+def get_all_channels_id(client) -> dict:
     return {
         channel.id: channel.id
         for server in client.guilds
@@ -189,7 +189,7 @@ def get_all_channels_id(client) -> list:
     }
 
 
-def generate_superscript_numbers(numbers):
+def generate_superscript_numbers(numbers) -> str:
     numbers_superscript = {
         "0": "⁰",
         "1": "¹",
