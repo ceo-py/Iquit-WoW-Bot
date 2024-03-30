@@ -56,7 +56,8 @@ def weather_check(arg) -> tuple:
         t_max = x["main"]["temp_max"]
         feels_like = x["main"]["feels_like"]
         type_of_weather = x["weather"][0]["main"]
-        return t, t_min, t_max, feels_like, type_of_weather
+        weather_icon = x["weather"][0]["icon"]
+        return t, t_min, t_max, feels_like, type_of_weather, weather_icon
 
 
 def ask_question(args) -> tuple:

@@ -554,13 +554,16 @@ async def weather(ctx, arg1=None):
         if arg1 is None:
             await ctx.send(f"Make sure you type town name.\nExample **!weather Sofia**")
             return
-        t, t_min, t_max, feels_like, type_of_weather = weather_check(arg1)
+        t, t_min, t_max, feels_like, type_of_weather, weather_icon = weather_check(arg1)
         embed = discord.Embed(
             title=f"Temperature in {arg1.capitalize()} is {t} °C",
             colour=discord.Colour.blue(),
         )
+        # embed.set_thumbnail(
+        #     url="https://flyclipart.com/downloadpage/images/sun-png-transparent-background-transparent-sun-transparent-375282.png/375282"
+        # )
         embed.set_thumbnail(
-            url="https://flyclipart.com/downloadpage/images/sun-png-transparent-background-transparent-sun-transparent-375282.png/375282"
+            url=f"https://openweathermap.org/img/wn/{weather_icon}@2x.png"
         )
         embed.add_field(
             name=f"Feels {type_of_weather}", value=f"{feels_like} °C", inline=False
