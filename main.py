@@ -23,7 +23,7 @@ from tree_commands.validation import ValidationTreeCommands as VTC
 from validations.validations import Validation, os
 from discord.ext import commands, tasks
 
-SEASON = 3
+SEASON = 4
 EXPANSION = "DF"
 
 UTC = datetime.timezone.utc
@@ -74,9 +74,10 @@ class PersistentViewBot(commands.Bot):
 
                 result = await compere_char_now_with_db(data_db, id_channel, db_)
                 ctx = self.get_channel(int(ctx_msg))
-                await show_updated_characters(ctx, [x["output"] for x in result])
+                if ctx and result:
+                    await show_updated_characters(ctx, [x["output"] for x in result])
         except Exception as e:
-            print(e)
+            print(f"scheduler_rio_every_2_hours - {e}")
 
     async def setup_hook(self) -> None:
         self.add_view(ButtonsCharacterStatistics())
@@ -261,7 +262,7 @@ class RankSimpleLoop:
             ctx = client.get_channel(int(interaction.channel.id))
             await TC.message_respond_ctx(ctx, self.top, self.role, output)
         except Exception as e:
-            print(e)
+            print(f"loop_simple {e}")
 
 
 @client.tree.command(
@@ -322,9 +323,14 @@ async def rankglobalsetting(
     output = ""
 
     if option == "Add":
+        main_channel = TC.find_db_channel_id(interaction.guild.channels)
+        if not main_channel:
+            await interaction.response.send_message(f"You need to create channel named **'iquit-bot'** first!!!")
+            return
+
         output = db_.add_custom_channel(
             interaction.channel_id,
-            TC.find_db_channel_id(interaction.guild.channels),
+            main_channel,
             interaction.channel.name,
         )
 
@@ -418,14 +424,16 @@ async def add(ctx):
 
 
 async def show_updated_characters(ctx, data: list) -> None:
-    if data:
-        await ctx.send("\n".join(data))
+    if data and ctx:
+        for msg in data:
+            await ctx.send(msg)
 
 
 # @tasks.loop(seconds=0)
 # async def task_loop():
 #     try:
 #         all_channels_ids = get_all_channels_id(client)
+#         custom_channels = list(db_.custom_channels_ids().find())
 #
 #         custom_channels = {
 #             int(x["custom id"]): int(x["db channel id"])
@@ -437,6 +445,8 @@ async def show_updated_characters(ctx, data: list) -> None:
 #             all_channels_ids = TC.remove_channels(all_channels_ids, custom_channels)
 #
 #         for ctx_msg, id_channel in all_channels_ids.items():
+#             # if id_channel != 1116402033684127806:
+#             #     continue
 #
 #             data_db = await char_info.get_data_for_rank(id_channel, None)
 #
@@ -450,10 +460,11 @@ async def show_updated_characters(ctx, data: list) -> None:
 #                 continue
 #
 #             result = await compere_char_now_with_db(data_db, id_channel, db_)
+#
 #             ctx = client.get_channel(int(ctx_msg))
 #             await show_updated_characters(ctx, [x["output"] for x in result])
 #     except Exception as e:
-#         print(e)
+#         print(f"task_loop - {e}")
 
 
 # @client.command()

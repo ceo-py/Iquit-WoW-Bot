@@ -37,11 +37,21 @@ emojis_data = {
     "white_arrow_right": "<a:1830vegarightarrow:1065603909147693207>",
     "white_arrow_left": "<a:8826vegaleftarrow:1065603928860925962>",
     "player_add": "<:6332logmemberplusw:1065621500855586907>",
+    "aa": "<:aa:1239630623262511135>",
+    "av": "<:av:1239630568262598696>",
+    "uld": "<:uld:1239630542316507226>",
+    "nelt": "<:nelt:1239630586189185084>",
+    "hoi": "<:hoi:1239630603880632351>",
+    "no": "<:no:1239630639679148253>",
+    "bh": "<:bh:1239630658637267166>",
+    "rlp": "<:rlp:1239630677608239216>",
+    "tyrannical": "<:tyrannical:1239631772526973018>",
+    "fortified": "<:fortified:1239631756517314624>",
 }
 
 pos_description = {1: "st", 2: "nd", 3: "rd"}
 
-db_update_fields = {"Total Rating": "", "DPS": "", "Healer": "", "Tank": ""}
+db_update_fields = {"Total Rating": "", "DPS": "", "Healer": "", "Tank": "", "Dungeons Record": ""}
 
 changes_pos = ["rises", "drops"]
 
@@ -95,7 +105,7 @@ def get_info_token(region) -> tuple:
 
 
 # change region for afix eu us etc..
-def get_affixes():
+def get_affixes() -> str:
     with requests.get(
             f"""https://raider.io/api/v1/mythic-plus/affixes?region=eu&locale=en"""
     ) as af:
@@ -129,6 +139,10 @@ def sort_api_data_by_total(data) -> list:
     return sorted(data, key=lambda x: -x["Total"])
 
 
+def compere_best_dungeons(data) -> list:
+    pass
+
+
 def compere_new_with_current_position(new_pos, current_pos) -> str:
     if new_pos < current_pos or current_pos == 0:
         status = "rises"
@@ -146,12 +160,66 @@ def merge_data_for_update_db(dict_data: dict, list_data: list) -> dict:
     return {k: v for k, v in zip(dict_data.keys(), list_data)}
 
 
+def time_difference(par_time: int, clear_time: int) -> float:
+    difference = par_time - clear_time
+    percentage_difference = abs((difference / clear_time) * 100)
+
+    return round(percentage_difference, 1)
+
+
+def convert_ms_to_min_sec(milliseconds: int) -> tuple:
+    total_seconds = milliseconds / 1000
+    minutes = int(total_seconds // 60)
+    seconds = total_seconds % 60
+
+    return minutes, int(seconds)
+
+
+def calculate_dungeon_time(clear_time_ms: int, par_time_ms: int) -> str:
+    time_text = 'Under' if par_time_ms > clear_time_ms else 'Over'
+    times_ms = sorted([clear_time_ms, par_time_ms])
+    time_difference_percent = time_difference(clear_time_ms, par_time_ms)
+    minutes, seconds = convert_ms_to_min_sec(times_ms[-1] - times_ms[0])
+    return f'{time_text} by **{minutes}:{seconds:02} ({time_difference_percent}%)**'
+
+
+def get_upgraded_dungeons_msg(db_dungeons_info: dict, current_dungeons_info: dict) -> list:
+    upgrades = {}
+    output = []
+    for dungeon_name in current_dungeons_info:
+        if dungeon_name not in db_dungeons_info:
+            upgrades[dungeon_name] = current_dungeons_info[dungeon_name]
+
+        elif dungeon_name in db_dungeons_info and current_dungeons_info[dungeon_name]['score'] > db_dungeons_info[
+            dungeon_name]['score']:
+            upgrades[dungeon_name] = current_dungeons_info[dungeon_name]
+
+    for dungeon_name in sorted(upgrades, key=lambda d: -upgrades[d]['score']):
+        '''
+        Ruby Life Pools Under by  15:05 (30%) Score 173.8, Level 10 ⭐ ⭐
+        '''
+        dungeon = upgrades[dungeon_name]
+        output.append(
+            f"- {emojis(dungeon.get('week_affix', '').lower())} {emojis(dungeon.get('short_name', '').lower())} **{dungeon_name}** {calculate_dungeon_time(dungeon['clear_time_ms'], dungeon['par_time_ms'])}"
+            f", Score **{dungeon['score']}**"
+            f", Level **{dungeon['mythic_level']}**{generate_superscript_stars(dungeon['num_keystone_upgrades'])}."
+        )
+
+    return output
+
+
 async def compere_char_now_with_db(data: list, id_channel: str, db) -> list:
     result = []
     for pos, show in enumerate(sort_api_data_by_total(data), 1):
         char_db_information = await db.find_character_in_db(
             id_channel, Character_Name=show["Character Name"].lower().strip()
         )
+
+        # await db.update_character_info(
+        #         id_channel,
+        #         show.pop("Character Name"),
+        #         {'Dungeons Record': show.get('dungeons')},
+        #     )
 
         pos_status_str = compere_new_with_current_position(
             pos, char_db_information.get("Position")
@@ -163,15 +231,18 @@ async def compere_char_now_with_db(data: list, id_channel: str, db) -> list:
             )
 
         if show.get("Total") > char_db_information.get("Total Rating"):
+            upgraded_dungeons = '\n'.join(get_upgraded_dungeons_msg(char_db_information.get('Dungeons Record', {}),
+                                                                    show.get('dungeons')))
             result.append(
                 {
                     "output": f"{emojis(char_db_information['Class to display'])} "
                               f"**{show['Character Name'].capitalize()}** "
                               f"{emojis('plus')}{abs(show['Total'] - char_db_information['Total Rating'])} "
-                              f"rating reaching **__{show['Total']}__**{emojis('green_arrow')} {pos_status_str}"
+                              f"rating reaching **__{show['Total']}__**{emojis('green_arrow')} {pos_status_str}\n{upgraded_dungeons}"
                 }
             )
             show.popitem()
+            del show['Player Armory']
             await db.update_character_info(
                 id_channel,
                 show.pop("Character Name"),
@@ -204,3 +275,13 @@ def generate_superscript_numbers(numbers) -> str:
         "9": "⁹",
     }
     return ("").join(numbers_superscript[x] for x in str(numbers))
+
+
+def generate_superscript_stars(stars: int) -> str:
+    stars_superscript = {
+        0: '',
+        1: '⁺',
+        2: '⁺⁺',
+        3: '⁺⁺⁺',
+    }
+    return stars_superscript[stars]

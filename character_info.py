@@ -67,19 +67,24 @@ class CharacterInfo:
                     return 'Error'
 
             for index in results:
-                (name, rating, tank_r, dps_r, heal_r, player_url,) = (
+                (name, rating, tank_r, dps_r, heal_r, player_url, dungeons) = (
                     ci.raider_io_api(index) if not backup else ci.battle_net_api(index)
                 )
                 if rating != 0:
+                    character_info = {
+                        "Character Name": name,
+                        "Total": rating,
+                        "DPS": dps_r,
+                        "Heal": heal_r,
+                        "Tank": tank_r,
+                        "Player Armory": player_url,
+                    }
+
+                    if dungeons:
+                        character_info['dungeons'] = dungeons
+
                     show.append(
-                        {
-                            "Character Name": name,
-                            "Total": rating,
-                            "DPS": dps_r,
-                            "Heal": heal_r,
-                            "Tank": tank_r,
-                            "Player Armory": player_url,
-                        }
+                        character_info
                     )
         return show
 
@@ -87,7 +92,7 @@ class CharacterInfo:
     def raider_io_api_url(region, realm, name):
         return (
             f"https://raider.io/api/v1/characters/profile?region={region}&realm={realm}&name={name}&fields"
-            f"=mythic_plus_recent_runs,covenant,gear,raid_progression,mythic_plus_scores_by_season%3Acurrent"
+            f"=mythic_plus_best_runs,mythic_plus_recent_runs,covenant,gear,raid_progression,mythic_plus_scores_by_season%3Acurrent"
         )
 
     @staticmethod
@@ -133,7 +138,16 @@ class CharacterInfo:
             )
         )
         player_url = data_json["profile_url"]
-        return name, rating, tank_r, dps_r, heal_r, player_url
+        dungeons = {x.pop('dungeon'):
+                        {'mythic_level': x['mythic_level'],
+                         'num_keystone_upgrades': x['num_keystone_upgrades'],
+                         'short_name': x['short_name'],
+                         'week_affix': x['affixes'][0]['name'],
+                         'clear_time_ms': x['clear_time_ms'],
+                         'par_time_ms': x['par_time_ms'],
+                         'score': x['score']} for x in data_json["mythic_plus_best_runs"]
+                    }
+        return name, rating, tank_r, dps_r, heal_r, player_url, dungeons
 
     @staticmethod
     def character_change_information(channel_id, name, rating, dps_r, heal_r, tank_r):
@@ -157,7 +171,7 @@ class CharacterInfo:
             rating = 0
         tank_r, dps_r, heal_r = 0, 0, 0
         player_url = f"https://worldofwarcraft.com/en-gb/character/eu/{data_json['character']['realm']['slug']}/{name}"
-        return name, rating, tank_r, dps_r, heal_r, player_url
+        return name, rating, tank_r, dps_r, heal_r, player_url, {}
 
     @staticmethod
     async def check_if_correct_cadd(info, channel_id):
@@ -188,6 +202,7 @@ class CharacterInfo:
 
     @staticmethod
     async def check_single_character(info, channel_id):
+        region, realm, name = '', '', ''
         if len(info) == 3:
             region, realm, name = info
         elif len(info) == 2:
@@ -198,14 +213,16 @@ class CharacterInfo:
 
             if player_found:
                 region, realm, name = (
-                    player_found["Region"],
-                    player_found["Realm"],
-                    player_found["Character Name"],
+                    player_found.get("Region"),
+                    player_found.get("Realm"),
+                    player_found.get("Character Name"),
                 )
             else:
                 return
 
         nrun = "0"
+        if any(not x for x in (region, realm, name)):
+            return
         with requests.get(ci.raider_io_api_url(region, realm, name)) as x:
             if x.status_code != 200:
                 return

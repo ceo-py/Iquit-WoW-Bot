@@ -63,14 +63,14 @@ class DataBaseInfo(Singleton):
         return f"Your custom channel **'{name}'** has been successfully unregistered."
 
     def add_character_to_db(
-        self,
-        region,
-        realm,
-        character_name,
-        player_nickname,
-        class_,
-        char_class,
-        id_channel,
+            self,
+            region,
+            realm,
+            character_name,
+            player_nickname,
+            class_,
+            char_class,
+            id_channel,
     ):
         self.client["WOW"][f"Channel id {id_channel}"].insert_one(
             {
@@ -85,6 +85,7 @@ class DataBaseInfo(Singleton):
                 "Healer": 0,
                 "Tank": 0,
                 "Position": 0,
+                "Dungeons Record": {}
             }
         )
 
@@ -97,7 +98,7 @@ class DataBaseInfo(Singleton):
         return self.client["WOW"][f"Channel id {id_channel}"].find_one({"$and": [data]})
 
     async def update_character_info(
-        self, id_channel: str, character_name: str, update_info
+            self, id_channel: str, character_name: str, update_info
     ) -> None:
         self.client["WOW"][f"Channel id {id_channel}"].update_one(
             {"Character Name": character_name.lower()},
@@ -122,16 +123,17 @@ class DataBaseInfo(Singleton):
                         "Healer": 0,
                         "Tank": 0,
                         "Position": 0,
+                        "Dungeons Record": {}
                     }
                 },
             )
 
-    def create_new_field(self):
+    def create_new_field(self , new_fields: dict):
         for channel in self.client["WOW"].list_collections():
             if "Channel" not in channel["name"]:
                 continue
             self.client["WOW"][channel["name"]].update_many(
-                {}, {"$set": {"Position": 0}}
+                {}, {"$set":  {new_fields}}
             )
 
     async def delete_user_from_db(self, id_channel: str, character_name: str):
