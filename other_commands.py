@@ -241,7 +241,7 @@ async def compere_char_now_with_db(data: list, id_channel: str, db) -> list:
                               f"rating reaching **__{show['Total']}__**{emojis('green_arrow')} {pos_status_str}\n{upgraded_dungeons}"
                 }
             )
-            show.popitem()
+            # show.popitem()
             del show['Player Armory']
             await db.update_character_info(
                 id_channel,

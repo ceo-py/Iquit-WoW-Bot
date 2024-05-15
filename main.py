@@ -445,8 +445,8 @@ async def show_updated_characters(ctx, data: list) -> None:
 #             all_channels_ids = TC.remove_channels(all_channels_ids, custom_channels)
 #
 #         for ctx_msg, id_channel in all_channels_ids.items():
-#             # if id_channel != 1116402033684127806:
-#             #     continue
+#             if id_channel != 1053417781879644191:
+#                 continue
 #
 #             data_db = await char_info.get_data_for_rank(id_channel, None)
 #
