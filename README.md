@@ -376,7 +376,6 @@ Replace `[region]` with one of the available options for the region you wish to 
 
 - US (United States)
 - EU (European Union)
-- China
 - Korea
 - Taiwan
 
@@ -384,8 +383,8 @@ Replace `[region]` with one of the available options for the region you wish to 
 
 The `!token` command will provide the following information:
 
-- **1-Day Price Range:**
-  The lowest and highest price of the WoW token recorded within the last 24 hours in the specified region.
+- **3-Day Price Range:**
+  The lowest and highest price of the WoW token recorded within the last 3 days in the specified region.
 
 - **7-Day Price Range:**
   The lowest and highest price of the WoW token recorded within the last 7 days in the specified region.
