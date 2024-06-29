@@ -7,7 +7,7 @@ char_info = CharacterInfo()
 
 class AddCharacterModal(discord.ui.Modal, title="Character Information"):
     region = discord.ui.TextInput(
-        label="Region Name", placeholder="US, EU, KR, TW, CN", max_length=2
+        label="Region Name", placeholder="US, EU, KR, TW", max_length=2
     )
     realm = discord.ui.TextInput(
         label="Realm Name", placeholder="Kazzak, Draenor, etc", max_length=26
