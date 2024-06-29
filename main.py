@@ -607,7 +607,7 @@ async def token(ctx, region=None):
     if cnl_id:
         if region is None:
             await ctx.send(
-                f"Make sure you type right region.\nRegions are: us, eu, china, korea, taiwan\nExample **!token eu**"
+                f"Make sure you type right region.\nRegions are: us, eu, kr, tw\nExample **!token eu**"
             )
             return
         (
@@ -627,10 +627,12 @@ async def token(ctx, region=None):
             colour=discord.Colour.blue(),
         )
         embed.set_thumbnail(
-            url="https://wowtokenprices.com/assets/wowtoken-compressed.png"
+            # token picture from down site atm
+            # url="https://wowtokenprices.com/assets/wowtoken-compressed.png"
+            url="https://media.forgecdn.net/avatars/thumbnails/958/807/256/256/638453397304438536.jpeg"
         )
         embed.add_field(
-            name="**1 DAY**",
+            name="**3 DAY**",
             value=f"***Low : {one_day_low} :moneybag:\n"
                   f"High : {one_day_high} :moneybag:***",
             inline=True,

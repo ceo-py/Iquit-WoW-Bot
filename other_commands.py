@@ -8,9 +8,8 @@ load_dotenv()
 realms_data = {
     "us": ["US", ":flag_us:"],
     "eu": ["EU", ":flag_eu:"],
-    "china": ["China", ":flag_cn:"],
-    "korea": ["Korea", ":flag_kr:"],
-    "taiwan": ["Taiwan", ":flag_tw:"],
+    "kr": ["KR", ":flag_kr:"],
+    "tw": ["TW", ":flag_tw:"],
 }
 
 emojis_data = {
@@ -82,22 +81,50 @@ def get_info_token(region) -> tuple:
     data_ = realms_data[region.lower()]
     region, flag_region = data_
     session = HTMLSession()
-    htmldata = session.get(f"https://wowtokenprices.com/{region}")
-    price = htmldata.html.xpath('//*[@id="money-text"]', first=True).text
-    change = htmldata.html.xpath('//*[@id="money-text-small"]', first=True).text
-    one_day_low = htmldata.html.xpath('//*[@id="1-day-low"]', first=True).text
-    seven_day_low = htmldata.html.xpath('//*[@id="7-day-low"]', first=True).text
-    thirty_day_low = htmldata.html.xpath('//*[@id="30-day-low"]', first=True).text
-    one_day_high = htmldata.html.xpath('//*[@id="1-day-high"]', first=True).text
-    seven_day_high = htmldata.html.xpath('//*[@id="7-day-high"]', first=True).text
-    thirty_day_high = htmldata.html.xpath('//*[@id="30-day-high"]', first=True).text
+    # old site down atm https://wowtokenprices.com
+    # htmldata = session.get(f"https://wowtokenprices.com/{region}")
+    # price = htmldata.html.xpath('//*[@id="money-text"]', first=True).text
+    # change = htmldata.html.xpath('//*[@id="money-text-small"]', first=True).text
+    # one_day_low = htmldata.html.xpath('//*[@id="1-day-low"]', first=True).text
+    # seven_day_low = htmldata.html.xpath('//*[@id="7-day-low"]', first=True).text
+    # thirty_day_low = htmldata.html.xpath('//*[@id="30-day-low"]', first=True).text
+    # one_day_high = htmldata.html.xpath('//*[@id="1-day-high"]', first=True).text
+    # seven_day_high = htmldata.html.xpath('//*[@id="7-day-high"]', first=True).text
+    # thirty_day_high = htmldata.html.xpath('//*[@id="30-day-high"]', first=True).text
+
+    htmldata = session.get(f"https://wowanalytica.com/wowtokenprices/{region}")
+
+    price = htmldata.html.xpath(
+        '//*[@id="__next"]/div[1]/main/div/div/section[1]/div/div/div[1]/div[2]/div/div[1]/div[2]', first=True).text
+    change = htmldata.html.xpath(
+        '//*[@id="__next"]/div[1]/main/div/div/section[1]/div/div/div[1]/div[2]/div/div[2]/div[1]', first=True).text
+    three_day_low = htmldata.html.xpath(
+        '//*[@id="__next"]/div[1]/main/div/div/section[1]/div/div/div[3]/div[2]/table[1]/tbody/tr[1]/td[2]/div/span',
+        first=True).text
+    seven_day_low = htmldata.html.xpath(
+        '//*[@id="__next"]/div[1]/main/div/div/section[1]/div/div/div[3]/div[2]/table[1]/tbody/tr[1]/td[3]/div/span',
+        first=True).text
+    thirty_day_low = htmldata.html.xpath(
+        '//*[@id="__next"]/div[1]/main/div/div/section[1]/div/div/div[3]/div[2]/table[1]/tbody/tr[1]/td[4]/div/span',
+        first=True).text
+    three_day_high = htmldata.html.xpath(
+        '//*[@id="__next"]/div[1]/main/div/div/section[1]/div/div/div[3]/div[2]/table[1]/tbody/tr[2]/td[2]/div/span',
+        first=True).text
+    seven_day_high = htmldata.html.xpath(
+        '//*[@id="__next"]/div[1]/main/div/div/section[1]/div/div/div[3]/div[2]/table[1]/tbody/tr[2]/td[3]/div/span',
+        first=True).text
+    thirty_day_high = htmldata.html.xpath(
+        '//*[@id="__next"]/div[1]/main/div/div/section[1]/div/div/div[3]/div[2]/table[1]/tbody/tr[2]/td[4]/div/span',
+        first=True).text
+
+
     return (
         price,
         change,
-        one_day_low,
+        three_day_low,
         seven_day_low,
         thirty_day_low,
-        one_day_high,
+        three_day_high,
         seven_day_high,
         thirty_day_high,
         flag_region,
