@@ -1,6 +1,5 @@
 import datetime
 import discord
-import os
 from discord.ext import commands
 from settings import settings
 
@@ -20,9 +19,16 @@ class PersistentViewBot(commands.Bot):
     async def on_ready(self):
         # await client.tree.sync() # once only to sync CRUD slash command
         await self.change_presence(activity=discord.Game(name="Waiting for Sunset"))
+        # print([
+        #     channel.id
+        #     for server in self.guilds
+        #     for channel in server.channels
+        #     if settings.BOT_CHANNEL_NAME in channel.name
+        # ])
         print("Ready")
+
 
 client = PersistentViewBot()
 
 
-client.run(os.getenv("TOKEN"))
+client.run(settings.BOT_TOKEN)
