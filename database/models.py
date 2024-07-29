@@ -16,6 +16,9 @@ class Server(Model):
     discord_server_id = fields.CharField(max_length=255, unique=True)
     characters = fields.ManyToManyField(
         'models.Character', related_name='servers', through='characterserver')
+    
+    class Meta:
+        unique_together = ('discord_server_id',)
 
 
 async def create_server(discord_server_id):
@@ -96,6 +99,9 @@ class CharacterServer(Model):
         'models.Server', related_name='characterservers')
     ranking = fields.IntField()
 
+    class Meta:
+        unique_together = ('character', 'server')
+
 
 async def create_character_server(character_id, server_id, ranking):
     character_server = await CharacterServer.create(
@@ -119,30 +125,30 @@ async def delete_character_server(character_server_id):
     await CharacterServer.filter(id=character_server_id).delete()
 
 current_dungeons = [
-    {"name": "Algeth'ar Academy",
-     "short_name": "aa",
-     "icon_discord": "<:aa:1239630623262511135>"},
-    {"name": "The Azure Vault",
-     "short_name": "av",
-     "icon_discord": "<:av:1239630568262598696>"},
-    {"name": "Uldaman: Legacy of Tyr",
-     "short_name": "uld",
-     "icon_discord": "<:uld:1239630542316507226>"},
-    {"name": "Neltharus",
-     "short_name": "nelt",
-     "icon_discord": "<:nelt:1239630586189185084>"},
-    {"name": "Halls of Infusion",
-     "short_name": "hoi",
-     "icon_discord": "<:hoi:1239630603880632351>"},
-    {"name": "The Nokhud Offensive",
-     "short_name": "no",
-     "icon_discord": "<:no:1239630639679148253>"},
-    {"name": "Brackenhide Hollow",
-     "short_name": "bh",
-     "icon_discord": "<:bh:1239630658637267166>"},
-    {"name": "Ruby Life Pools",
-     "short_name": "rlp",
-     "icon_discord": "<:rlp:1239630677608239216>"},
+    {"name": "Ara-Kara, City of Echoes",
+     "short_name": "arak",
+     "icon_discord": "<:arak:1267431668071792701>"},
+    {"name": "City of Threads",
+     "short_name": "cot",
+     "icon_discord": "<:cot:1267431653249126462>"},
+    {"name": "Grim Batol",
+     "short_name": "gb",
+     "icon_discord": "<:gb:1267431531807506525>"},
+    {"name": "Mists of Tirna Scithe",
+     "short_name": "mists",
+     "icon_discord": "<:mists:1267431596437536871>"},
+    {"name": "Siege of Boralus",
+     "short_name": "siege",
+     "icon_discord": "<:siege:1267431561691795497>"},
+    {"name": "The Dawnbreaker",
+     "short_name": "dawn",
+     "icon_discord": "<:dawn:1267431616003833943>"},
+    {"name": "The Necrotic Wake",
+     "short_name": "nw",
+     "icon_discord": "<:nw:1267431579647606785>"},
+    {"name": "The Stonevault",
+     "short_name": "sv",
+     "icon_discord": "<:sv:1267431637570945034>"},
 ]
 current_affixes = {
     "tyrannical": "<:tyrannical:1239631772526973018>",
@@ -300,8 +306,8 @@ async def load_character_information(character_id):
         data = response.json()
         
         try:
-            for alter in data['mythic_plus_alternate_runs']:
-            # for alter in data['mythic_plus_best_runs']:
+            # for alter in data['mythic_plus_alternate_runs']:
+            for alter in data['mythic_plus_best_runs']:
                 dungeon = await get_dungeon_by_short_name(alter['short_name'].lower())
                 affix_type = alter['affixes'][0]['name']
 
@@ -322,8 +328,9 @@ async def load_character_information(character_id):
             print(e)
 
 
-for id in range(1, 247):
-    run_async(load_character_information(id))
+
 # run_async(load_servers(servers))
-# run_async(load_dungeons(current_dungeons))
-# run_async(get_char('eu', 'draenor', 'ceoheal'))
+run_async(load_dungeons(current_dungeons))
+# for id in range(1, 247):
+    # run_async(load_character_information(id))
+
