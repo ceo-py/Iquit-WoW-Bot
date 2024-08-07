@@ -5,6 +5,7 @@ from settings import settings
 
 SEASON = settings.WOW_CURRENT_EXPANSION
 EXPANSION = settings.WOW_CURRENT_SEASON
+BOT_TOKEN = settings.BOT_TOKEN
 
 UTC = datetime.timezone.utc
 times = [datetime.time(hour=x) for x in range(0, 24, 2)]
@@ -31,4 +32,4 @@ class PersistentViewBot(commands.Bot):
 client = PersistentViewBot()
 
 
-client.run(settings.BOT_TOKEN)
+client.run(BOT_TOKEN)
