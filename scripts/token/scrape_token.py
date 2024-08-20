@@ -2,7 +2,8 @@ import time
 from requests_html import HTMLSession
 from settings import TOKEN_BASE_URL
 
-def timed_cache(ttl):
+
+def timed_cache(ttl: int):
     """
     Decorator function that implements a timed cache for the decorated function.
 
@@ -15,7 +16,7 @@ def timed_cache(ttl):
     def decorator(func):
         cache = {}
 
-        def wrapper(region):
+        def wrapper(region: str):
             current_time = time.time()
             if region in cache:
                 timestamp, data = cache[region]
@@ -30,7 +31,7 @@ def timed_cache(ttl):
 
 
 @timed_cache(ttl=3600)
-def fetch_info_token(region) -> tuple:
+def fetch_info_token(region: str) -> tuple:
     """
     Fetches token information for a given region from a web page.
 

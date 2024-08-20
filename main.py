@@ -5,6 +5,7 @@ import settings
 from discord.ext import commands
 from database.db import init_db
 from commands  import load_commands
+from views.add_character_to_server_view import AddCharacterButton
 
 from database.service.character_service import get_character_by_region_realm_name
 
@@ -35,6 +36,9 @@ class PersistentViewBot(commands.Bot):
         #     if settings.BOT_CHANNEL_NAME in channel.name
         # ])
         print("Ready")
+
+    async def setup_hook(self) -> None:
+        self.add_view(AddCharacterButton())
 
 
 client = PersistentViewBot()

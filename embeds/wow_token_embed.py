@@ -2,15 +2,15 @@ from discord import Embed, Colour
 from settings import TOKEN_PICTURE_URL
 
 
-async def generate_wow_token_embed(price,
-                                   change,
-                                   one_day_low,
-                                   seven_day_low,
-                                   thirty_day_low,
-                                   one_day_high,
-                                   seven_day_high,
-                                   thirty_day_high,
-                                   flag_region):
+async def generate_wow_token_embed(price: str,
+                                   change: str,
+                                   one_day_low: str,
+                                   seven_day_low: str,
+                                   thirty_day_low: str,
+                                   one_day_high: str,
+                                   seven_day_high: str,
+                                   thirty_day_high: str,
+                                   flag_region: str):
     """
     Generate an embed for WoW token information.
 
