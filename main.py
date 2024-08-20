@@ -23,9 +23,11 @@ class PersistentViewBot(commands.Bot):
         super().__init__(command_prefix="!", help_command=None, intents=intents)
 
     async def on_ready(self):
-        # await client.tree.sync() # once only to sync CRUD slash command
+        load_commands(self)
+         
         await self.change_presence(activity=discord.Game(name="M+"))
         await init_db()
+        await self.tree.sync() # once only to sync CRUD slash command
         # print([
         #     channel.id
         #     for server in self.guilds
@@ -36,7 +38,6 @@ class PersistentViewBot(commands.Bot):
 
 
 client = PersistentViewBot()
-load_commands(client)
 
 
 if __name__ == "__main__":
