@@ -69,6 +69,9 @@ async def delete_server_and_associated_data(server_id: int):
         for character in characters:
             remaining_servers = await character.servers.all()
             if not remaining_servers:
+                # Delete associated DungeonRun records
+                await DungeonRun.filter(character=character).delete()
+                # Delete the character
                 await character.delete()
 
 
