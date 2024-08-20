@@ -3,6 +3,15 @@ from requests_html import HTMLSession
 from settings import TOKEN_BASE_URL
 
 def timed_cache(ttl):
+    """
+    Decorator function that implements a timed cache for the decorated function.
+
+    Args:
+        ttl (int): Time-to-live in seconds for cached entries.
+
+    Returns:
+        function: Decorated function with caching behavior.
+    """
     def decorator(func):
         cache = {}
 
@@ -22,6 +31,24 @@ def timed_cache(ttl):
 
 @timed_cache(ttl=3600)
 def fetch_info_token(region) -> tuple:
+    """
+    Fetches token information for a given region from a web page.
+
+    Args:
+        region (str): The region code to fetch information for.
+
+    Returns:
+        tuple: A tuple containing the following information:
+            - price (str): Current token price.
+            - change (str): Price change.
+            - three_day_low (str): 3-day low price.
+            - seven_day_low (str): 7-day low price.
+            - thirty_day_low (str): 30-day low price.
+            - three_day_high (str): 3-day high price.
+            - seven_day_high (str): 7-day high price.
+            - thirty_day_high (str): 30-day high price.
+            - flag_region (str): Region flag emoji.
+    """
     flag_region = f":flag_{region.lower()}:"
 
     session = HTMLSession()

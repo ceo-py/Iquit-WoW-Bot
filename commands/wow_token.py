@@ -17,6 +17,16 @@ token_options = Literal["EU", "US", "KR", "TW"]
 async def token(
         interaction: discord.Interaction, region: token_options
 ):
+    """
+    Fetches and displays the WoW Token price for the selected region.
+
+    Args:
+        interaction (discord.Interaction): The interaction object representing the command invocation.
+        region (token_options): The region to fetch the token price for (EU, US, KR, or TW).
+
+    Returns:
+        None
+    """
     fetch_data = fetch_info_token(region)
     token_embed = await generate_wow_token_embed(*fetch_data)
 
@@ -25,4 +35,3 @@ async def token(
 
 def setup(client):
     client.tree.add_command(token)
-

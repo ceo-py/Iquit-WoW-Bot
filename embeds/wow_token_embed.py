@@ -11,6 +11,23 @@ async def generate_wow_token_embed(price,
                                    seven_day_high,
                                    thirty_day_high,
                                    flag_region):
+    """
+    Generate an embed for WoW token information.
+
+    Args:
+        price (str): Current token price.
+        change (str): Price change.
+        one_day_low (str): Lowest price in the last day.
+        seven_day_low (str): Lowest price in the last 7 days.
+        thirty_day_low (str): Lowest price in the last 30 days.
+        one_day_high (str): Highest price in the last day.
+        seven_day_high (str): Highest price in the last 7 days.
+        thirty_day_high (str): Highest price in the last 30 days.
+        flag_region (str): Flag emoji representing the region.
+
+    Returns:
+        discord.Embed: An embed containing WoW token price information.
+    """
     moneybag_icon = ":moneybag:"
     embed = Embed(
         title=f"**Current Token Price {flag_region} {price} {moneybag_icon}**",
