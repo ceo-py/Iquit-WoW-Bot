@@ -1,4 +1,5 @@
 
+from settings.settings import DB_URL, WOW_API_URL, ALTERNATIVE_RUN_FIELDS, BEST_RUN_FIELDS
 import requests
 import json
 
@@ -8,7 +9,6 @@ import sys
 import os
 project_dir = os.path.abspath(os.path.join(os.path.dirname(__file__), '..'))
 sys.path.append(project_dir)
-from settings.settings import DB_URL, WOW_API_URL, ALTERNATIVE_RUN_FIELDS, BEST_RUN_FIELDS
 
 
 class Server(Model):
@@ -32,8 +32,9 @@ class Server(Model):
     id = fields.BigIntField(pk=True)
     discord_server_id = fields.CharField(max_length=255, unique=True)
     characters = fields.ManyToManyField(
-        'models.Character', related_name='servers', through='characterserver')
-    
+        'models.Character', related_name='servers', through='characterserver', on_delete=fields.CASCADE
+    )
+
     class Meta:
         unique_together = ('discord_server_id',)
 
@@ -58,7 +59,17 @@ async def update_server(server_id: int, discord_server_id: int) -> None:
 
 
 async def delete_server(server_id: int) -> None:
-    await Server.filter(id=server_id).delete()
+    await delete_server_and_associated_data(server_id)
+
+async def delete_server_and_associated_data(server_id: int):
+    server = await get_server_by_discord_id(server_id)
+    if server:
+        characters = await server.characters.all()
+        await server.delete()
+        for character in characters:
+            remaining_servers = await character.servers.all()
+            if not remaining_servers:
+                await character.delete()
 
 
 class Character(Model):
@@ -159,9 +170,11 @@ class CharacterServer(Model):
     """
     id = fields.BigIntField(pk=True)
     character = fields.ForeignKeyField(
-        'models.Character', related_name='characterservers')
+        'models.Character', related_name='characterservers', on_delete=fields.CASCADE
+    )
     server = fields.ForeignKeyField(
-        'models.Server', related_name='characterservers')
+        'models.Server', related_name='characterservers', on_delete=fields.CASCADE
+    )
     ranking = fields.IntField()
 
     class Meta:
@@ -275,6 +288,7 @@ class DungeonRun(Model):
     par_time_ms = fields.IntField()
     score = fields.FloatField()
     affix_type = fields.CharField(max_length=50)
+
     class Meta:
         unique_together = ('dungeon', 'character', 'affix_type')
 
@@ -372,7 +386,7 @@ async def get_char(region: str, realm: str, name: str):
     print(char.id)
 
 
-async def load_dungeons(current_dungeons :list[dict]) -> None:
+async def load_dungeons(current_dungeons: list[dict]) -> None:
     for dungeon in current_dungeons:
         name = dungeon['name']
         short_name = dungeon['short_name']
@@ -385,7 +399,7 @@ async def load_character_information(character_id: int):
     character = await get_character_by_id(character_id)
     with requests.get(f'{WOW_API_URL}/characters/profile?region={character.region}&realm={character.realm}&name={character.name}&fields={ALTERNATIVE_RUN_FIELDS},{BEST_RUN_FIELDS}') as response:
         data = response.json()
-        
+
         try:
             # for alter in data['mythic_plus_alternate_runs']:
             for alter in data['mythic_plus_best_runs']:
@@ -409,9 +423,7 @@ async def load_character_information(character_id: int):
             print(e)
 
 
-
 # run_async(load_servers(servers))
 run_async(load_dungeons(current_dungeons))
 # for id in range(1, 247):
-    # run_async(load_character_information(id))
-
+# run_async(load_character_information(id))
