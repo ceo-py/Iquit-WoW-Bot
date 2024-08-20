@@ -2,10 +2,10 @@ import time
 from requests_html import HTMLSession
 from settings import TOKEN_BASE_URL
 
-# Custom cache with expiration
 def timed_cache(ttl):
     def decorator(func):
         cache = {}
+
         def wrapper(region):
             current_time = time.time()
             if region in cache:
@@ -19,15 +19,11 @@ def timed_cache(ttl):
         return wrapper
     return decorator
 
+
 @timed_cache(ttl=3600)
 def fetch_info_token(region) -> tuple:
-    flag_region = {
-        "us": ["US", ":flag_us:"],
-        "eu": ["EU", ":flag_eu:"],
-        "kr": ["KR", ":flag_kr:"],
-        "tw": ["TW", ":flag_tw:"],
-    }.get(region.lower())
-    
+    flag_region = f":flag_{region.lower()}:"
+
     session = HTMLSession()
     html_data = session.get(f"{TOKEN_BASE_URL}{region}")
 

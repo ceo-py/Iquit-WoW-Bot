@@ -25,7 +25,7 @@ async def generate_wow_token_embed(price,
          "value": f"***Low : {one_day_low} {moneybag_icon}\n"
          f"High : {one_day_high} {moneybag_icon}***",
          "inline": True},
-        {"name": "**4 DAY**",
+        {"name": "**7 DAY**",
          "value": f"***Low : {seven_day_low} {moneybag_icon}\n"
                   f"High : {seven_day_high} {moneybag_icon}***",
                   "inline": True},
