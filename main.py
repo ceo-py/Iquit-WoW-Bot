@@ -1,8 +1,12 @@
 import datetime
+import os
 import discord
-from discord.ext import commands
 import settings
+from discord.ext import commands
 from database.db import init_db
+from commands  import load_commands
+
+from database.service.character_service import get_character_by_region_realm_name
 
 SEASON = settings.WOW_CURRENT_EXPANSION
 EXPANSION = settings.WOW_CURRENT_SEASON
@@ -32,6 +36,12 @@ class PersistentViewBot(commands.Bot):
 
 
 client = PersistentViewBot()
+load_commands(client)
 
 
-client.run(BOT_TOKEN)
+if __name__ == "__main__":
+    token = BOT_TOKEN
+    if token:
+        client.run(token)
+    else:
+        print("DISCORD_TOKEN environment variable not set")
