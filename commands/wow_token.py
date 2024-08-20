@@ -2,6 +2,8 @@ import discord
 from typing import Literal
 from scripts.token.scrape_token import fetch_info_token
 from embeds.wow_token_embed import generate_wow_token_embed
+from utils.in_correct_channel import in_correct_channel
+
 
 token_options = Literal["EU", "US", "KR", "TW"]
 
@@ -11,6 +13,7 @@ token_options = Literal["EU", "US", "KR", "TW"]
     description="Check WoW Token price for selected region",
 )
 @discord.app_commands.describe(region=f"Pick your region: EU, US, KR, TW")
+@in_correct_channel()
 async def token(
         interaction: discord.Interaction, region: token_options
 ):
