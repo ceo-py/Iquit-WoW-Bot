@@ -1,5 +1,6 @@
 import os
 
+
 def load_commands(bot):
     """
     Load and initialize bot commands from Python files in the commands directory.
@@ -22,7 +23,7 @@ def load_commands(bot):
                 # Import the module
                 module = __import__(f"commands.{module_name}", fromlist=["setup"])
                 # Call the setup function if it exists
-                if hasattr(module, 'setup'):
+                if hasattr(module, "setup"):
                     module.setup(bot)
                 else:
                     print(f"Module {module_name} does not have a setup function.")

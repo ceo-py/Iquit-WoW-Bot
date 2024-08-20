@@ -1,7 +1,16 @@
 from database.models.character import Character
 
 
-async def create_character(region: str, realm: str, name: str, character_class: str, total_rating: int, dps_rating: int, healer_rating: int, tank_rating: int) -> Character:
+async def create_character(
+    region: str,
+    realm: str,
+    name: str,
+    character_class: str,
+    total_rating: int,
+    dps_rating: int,
+    healer_rating: int,
+    tank_rating: int,
+) -> Character:
     """
     Create a new Character instance and save it to the database.
 
@@ -66,7 +75,9 @@ async def get_character_by_id(character_id: int) -> Character:
     return character
 
 
-async def get_character_by_region_realm_name(region: str, realm: str, name: str) -> Character:
+async def get_character_by_region_realm_name(
+    region: str, realm: str, name: str
+) -> Character:
     """
     Retrieve a Character instance by its region, realm, and name.
 
@@ -126,15 +137,15 @@ async def update_character(character_id: int, **kwargs: dict) -> None:
 async def delete_character(character_id: int) -> None:
     """
     Delete a Character instance by its ID.
-    
+
     This asynchronous function deletes a Character record from the database
     using the provided character_id. It does not return any value.
-    
+
     Parameters:
     -----------
     character_id : int
         The ID of the Character record to be deleted.
-    
+
     Returns:
     --------
     None

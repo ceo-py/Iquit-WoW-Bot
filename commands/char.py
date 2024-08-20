@@ -7,6 +7,7 @@ async def char(ctx, *args):
     # await ctx.send(f"Hi its me im the problem its me... {character.total_rating}")
     await ctx.send(f"Hi its me im the problem its me...")
 
+
 # Setup function to add the Cog to the bot
 def setup(client):
     client.add_command(char)

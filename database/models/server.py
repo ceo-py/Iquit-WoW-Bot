@@ -1,6 +1,7 @@
 from tortoise.models import Model
 from tortoise import fields
 
+
 class Server(Model):
     """
     Server model representing a Discord server.
@@ -19,11 +20,15 @@ class Server(Model):
     unique_together : tuple
         Ensures that the combination of 'discord_server_id' is unique across the table.
     """
+
     id = fields.BigIntField(pk=True)
     discord_server_id = fields.CharField(max_length=255, unique=True)
     characters = fields.ManyToManyField(
-        'models.Character', related_name='servers', through='characterserver', on_delete=fields.CASCADE
+        "models.Character",
+        related_name="servers",
+        through="characterserver",
+        on_delete=fields.CASCADE,
     )
 
     class Meta:
-        unique_together = ('discord_server_id',)
+        unique_together = ("discord_server_id",)

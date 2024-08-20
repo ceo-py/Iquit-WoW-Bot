@@ -1,6 +1,7 @@
 from tortoise.models import Model
 from tortoise import fields
 
+
 class Character(Model):
     """
     Character model representing a character in a game.
@@ -31,6 +32,7 @@ class Character(Model):
     unique_together : tuple
         Ensures that the combination of 'region', 'realm', and 'name' is unique across the table.
     """
+
     id = fields.BigIntField(pk=True)
     region = fields.CharField(max_length=50)
     realm = fields.CharField(max_length=50)
@@ -42,4 +44,4 @@ class Character(Model):
     tank_rating = fields.FloatField()
 
     class Meta:
-        unique_together = ('region', 'realm', 'name')
+        unique_together = ("region", "realm", "name")

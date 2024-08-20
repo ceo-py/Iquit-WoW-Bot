@@ -22,10 +22,11 @@ class Dungeon(Model):
     unique_together : tuple
         Ensures that the combination of 'name' and 'short_name' is unique across the table.
     """
+
     id = fields.BigIntField(pk=True)
     name = fields.CharField(max_length=255)
     short_name = fields.CharField(max_length=50)
     icon_discord = fields.CharField(max_length=255)
 
     class Meta:
-        unique_together = ('name', 'short_name')
+        unique_together = ("name", "short_name")

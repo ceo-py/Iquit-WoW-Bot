@@ -1,6 +1,7 @@
 from tortoise.models import Model
 from tortoise import fields
 
+
 class DungeonRun(Model):
     """
     DungeonRun model representing a run of a dungeon by a character.
@@ -31,11 +32,10 @@ class DungeonRun(Model):
     unique_together : tuple
         Ensures that the combination of 'dungeon', 'character', and 'affix_type' is unique across the table.
     """
+
     id = fields.BigIntField(pk=True)
-    character = fields.ForeignKeyField(
-        'models.Character', related_name='dungeon_runs')
-    dungeon = fields.ForeignKeyField(
-        'models.Dungeon', related_name='dungeon_runs')
+    character = fields.ForeignKeyField("models.Character", related_name="dungeon_runs")
+    dungeon = fields.ForeignKeyField("models.Dungeon", related_name="dungeon_runs")
     mythic_level = fields.IntField()
     num_keystone_upgrades = fields.IntField()
     clear_time_ms = fields.IntField()
@@ -44,4 +44,4 @@ class DungeonRun(Model):
     affix_type = fields.CharField(max_length=50)
 
     class Meta:
-        unique_together = ('dungeon', 'character', 'affix_type')
+        unique_together = ("dungeon", "character", "affix_type")

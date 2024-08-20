@@ -6,16 +6,13 @@ from utils.in_correct_channel import in_correct_channel
 from utils.wow_regions_options import region_options
 
 
-
 @discord.app_commands.command(
     name="token",
     description="Check WoW Token price for selected region",
 )
 @discord.app_commands.describe(region=f"Pick your region: EU, US, KR, TW")
 @in_correct_channel()
-async def token(
-        interaction: discord.Interaction, region: region_options
-):
+async def token(interaction: discord.Interaction, region: region_options):
     """
     Fetches and displays the WoW Token price for the selected region.
 

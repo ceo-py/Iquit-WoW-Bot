@@ -1,7 +1,9 @@
 from database.models.character_server import CharacterServer
 
 
-async def create_character_server(character_id: int, server_id: int, ranking: int) -> CharacterServer:
+async def create_character_server(
+    character_id: int, server_id: int, ranking: int
+) -> CharacterServer:
     """
     Create a new CharacterServer instance and save it to the database.
 
@@ -23,9 +25,7 @@ async def create_character_server(character_id: int, server_id: int, ranking: in
         The newly created CharacterServer instance.
     """
     character_server = await CharacterServer.create(
-        character_id=character_id,
-        server_id=server_id,
-        ranking=ranking
+        character_id=character_id, server_id=server_id, ranking=ranking
     )
     return character_server
 
@@ -51,7 +51,9 @@ async def get_character_server_by_id(character_server_id: int) -> CharacterServe
     return character_server
 
 
-async def update_character_server_ranking(character_server_id: int, ranking: int) -> CharacterServer:
+async def update_character_server_ranking(
+    character_server_id: int, ranking: int
+) -> CharacterServer:
     """
     Update the ranking of a CharacterServer instance.
 

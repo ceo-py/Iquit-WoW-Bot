@@ -1,14 +1,16 @@
 from database.models.dungeon_run import DungeonRun
 
 
-async def create_dungeon_run(character: str,
-                             dungeon: str,
-                             mythic_level: int,
-                             num_keystone_upgrades: int,
-                             clear_time_ms: int,
-                             par_time_ms: int,
-                             score: int,
-                             affix_type: str) -> DungeonRun:
+async def create_dungeon_run(
+    character: str,
+    dungeon: str,
+    mythic_level: int,
+    num_keystone_upgrades: int,
+    clear_time_ms: int,
+    par_time_ms: int,
+    score: int,
+    affix_type: str,
+) -> DungeonRun:
     """
     Create a new DungeonRun instance and save it to the database.
 

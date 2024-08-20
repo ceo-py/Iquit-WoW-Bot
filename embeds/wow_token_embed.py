@@ -2,15 +2,17 @@ from discord import Embed, Colour
 from settings import TOKEN_PICTURE_URL
 
 
-async def generate_wow_token_embed(price: str,
-                                   change: str,
-                                   one_day_low: str,
-                                   seven_day_low: str,
-                                   thirty_day_low: str,
-                                   one_day_high: str,
-                                   seven_day_high: str,
-                                   thirty_day_high: str,
-                                   flag_region: str):
+async def generate_wow_token_embed(
+    price: str,
+    change: str,
+    one_day_low: str,
+    seven_day_low: str,
+    thirty_day_low: str,
+    one_day_high: str,
+    seven_day_high: str,
+    thirty_day_high: str,
+    flag_region: str,
+):
     """
     Generate an embed for WoW token information.
 
@@ -34,22 +36,26 @@ async def generate_wow_token_embed(price: str,
         description=f"**Change {change} {moneybag_icon}**",
         colour=Colour.blue(),
     )
-    embed.set_thumbnail(
-        url=TOKEN_PICTURE_URL
-    )
+    embed.set_thumbnail(url=TOKEN_PICTURE_URL)
     embed_field_data = [
-        {"name": "**3 DAY**",
-         "value": f"***Low : {one_day_low} {moneybag_icon}\n"
-         f"High : {one_day_high} {moneybag_icon}***",
-         "inline": True},
-        {"name": "**7 DAY**",
-         "value": f"***Low : {seven_day_low} {moneybag_icon}\n"
-                  f"High : {seven_day_high} {moneybag_icon}***",
-                  "inline": True},
-        {"name": "**30 DAY**",
-         "value": f"***Low : {thirty_day_low} {moneybag_icon}\n"
-         f"High : {thirty_day_high} {moneybag_icon}***",
-         "inline": True},
+        {
+            "name": "**3 DAY**",
+            "value": f"***Low : {one_day_low} {moneybag_icon}\n"
+            f"High : {one_day_high} {moneybag_icon}***",
+            "inline": True,
+        },
+        {
+            "name": "**7 DAY**",
+            "value": f"***Low : {seven_day_low} {moneybag_icon}\n"
+            f"High : {seven_day_high} {moneybag_icon}***",
+            "inline": True,
+        },
+        {
+            "name": "**30 DAY**",
+            "value": f"***Low : {thirty_day_low} {moneybag_icon}\n"
+            f"High : {thirty_day_high} {moneybag_icon}***",
+            "inline": True,
+        },
     ]
     for field in embed_field_data:
         embed.add_field(**field)

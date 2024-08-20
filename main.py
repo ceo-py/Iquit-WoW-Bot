@@ -4,7 +4,7 @@ import discord
 import settings
 from discord.ext import commands
 from database.db import init_db
-from commands  import load_commands
+from commands import load_commands
 from views.add_character_to_server_view import AddCharacterButton
 
 from database.service.character_service import get_character_by_region_realm_name
@@ -25,10 +25,10 @@ class PersistentViewBot(commands.Bot):
 
     async def on_ready(self):
         load_commands(self)
-         
+
         await self.change_presence(activity=discord.Game(name="M+"))
         await init_db()
-        await self.tree.sync() # once only to sync CRUD slash command
+        await self.tree.sync()  # once only to sync CRUD slash command
         # print([
         #     channel.id
         #     for server in self.guilds

@@ -1,27 +1,24 @@
 import asyncio
 import aiohttp
-from settings import WOW_API_URL, ALTERNATIVE_RUN_FIELDS, BEST_RUN_FIELDS
+from utils.generate_api_url_for_char_fetch import generate_api_url_for_char_fetch
+from typing import List
 
 
-async def fetch(session: aiohttp.ClientSession, url: str):
+async def fetch(session: aiohttp.ClientSession, url: str) -> "json":
     async with session.get(url) as response:
         return await response.json()
 
 
-async def get_wow_character(character: dict):
+async def get_wow_character(character: dict) -> "json":
     async with aiohttp.ClientSession() as session:
-        url = f'{WOW_API_URL}/characters/profile?region={character["region"]}&realm={character["realm"]}&name={character["name"]}&fields={ALTERNATIVE_RUN_FIELDS},{BEST_RUN_FIELDS}'
-        response = await fetch(session, url)
+        response = await fetch(session, generate_api_url_for_char_fetch(character))
         return response
 
 
-async def get_multiple_wow_characters(characters: list):
+async def get_multiple_wow_characters(characters: list) -> List["json"]:
     async with aiohttp.ClientSession() as session:
         tasks = []
         for character in characters:
-            url = f'{WOW_API_URL}/characters/profile?region={character["region"]}&realm={character["realm"]}&name={character["name"]}&fields={ALTERNATIVE_RUN_FIELDS},{BEST_RUN_FIELDS}'
-            tasks.append(fetch(session, url))
+            tasks.append(fetch(session, generate_api_url_for_char_fetch(character)))
         responses = await asyncio.gather(*tasks)
         return responses
-
-
