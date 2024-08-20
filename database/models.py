@@ -188,38 +188,6 @@ async def update_character_server(character_server_id: int, ranking: int) -> Cha
 
 async def delete_character_server(character_server_id: int) -> CharacterServer:
     await CharacterServer.filter(id=character_server_id).delete()
-
-current_dungeons = [
-    {"name": "Ara-Kara, City of Echoes",
-     "short_name": "arak",
-     "icon_discord": "<:arak:1267431668071792701>"},
-    {"name": "City of Threads",
-     "short_name": "cot",
-     "icon_discord": "<:cot:1267431653249126462>"},
-    {"name": "Grim Batol",
-     "short_name": "gb",
-     "icon_discord": "<:gb:1267431531807506525>"},
-    {"name": "Mists of Tirna Scithe",
-     "short_name": "mists",
-     "icon_discord": "<:mists:1267431596437536871>"},
-    {"name": "Siege of Boralus",
-     "short_name": "siege",
-     "icon_discord": "<:siege:1267431561691795497>"},
-    {"name": "The Dawnbreaker",
-     "short_name": "dawn",
-     "icon_discord": "<:dawn:1267431616003833943>"},
-    {"name": "The Necrotic Wake",
-     "short_name": "nw",
-     "icon_discord": "<:nw:1267431579647606785>"},
-    {"name": "The Stonevault",
-     "short_name": "sv",
-     "icon_discord": "<:sv:1267431637570945034>"},
-]
-current_affixes = {
-    "tyrannical": "<:tyrannical:1239631772526973018>",
-    "fortified": "<:fortified:1239631756517314624>",
-}
-
 # Dungeons
 
 

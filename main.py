@@ -19,7 +19,7 @@ class PersistentViewBot(commands.Bot):
 
     async def on_ready(self):
         # await client.tree.sync() # once only to sync CRUD slash command
-        await self.change_presence(activity=discord.Game(name="Waiting for Sunset"))
+        await self.change_presence(activity=discord.Game(name="M+"))
         # print([
         #     channel.id
         #     for server in self.guilds
