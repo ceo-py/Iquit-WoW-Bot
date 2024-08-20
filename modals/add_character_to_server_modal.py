@@ -3,6 +3,7 @@ from settings import DISCORD_CHANNEL_NAME
 from scripts.api.request_character_information import get_wow_character
 from utils.convert_dict_k_v_into_small_letters import convert_dict_k_v_small_letters
 
+
 class AddCharacterModal(discord.ui.Modal, title="Add Character to Server"):
     region = discord.ui.TextInput(
         label="Server Region",
@@ -21,12 +22,17 @@ class AddCharacterModal(discord.ui.Modal, title="Add Character to Server"):
     )
 
     async def on_submit(self, interaction: discord.Interaction) -> None:
-        character = {
+        data = {
             "region": self.region,
             "realm": self.realm,
             "name": self.character_name,
         }
-        response = await get_wow_character(convert_dict_k_v_small_letters(character))
+        character = convert_dict_k_v_small_letters(data)
+        response = await get_wow_character(character)
+
+        if response.get("statusCode") != 200 and not response.get("name"):
+            await interaction.response.send_message("Unable to find the character. Please ensure you've entered the correct information:\n• Region: Check if you've used the correct abbreviation (US, EU, KR, or TW)\n• Realm: Verify the realm name and check for any typos\n• Character Name: Confirm the spelling of your character's name\nIf you're still having issues, try logging into the game to verify your character details.", ephemeral=True)            
+            return
 
         # Get the guild (server) where the command was triggered
         print(response)
@@ -35,14 +41,13 @@ class AddCharacterModal(discord.ui.Modal, title="Add Character to Server"):
             await interaction.response.send_message("This command can only be used in a server.", ephemeral=True)
             return
 
-        message = f"Character successfully added to the server: **{self.character_name}** from **{self.realm}**-**{self.region}**."
 
+        message = f"Character successfully added to the server: **{character['name'].capitalize()}** from **{character['realm'].capitalize()}** - **{character['region'].upper()}**."
         for channel in guild.text_channels:
             try:
                 if channel.name == DISCORD_CHANNEL_NAME:
                     await channel.send(message)
-                    break
+                    return
             except discord.errors.Forbidden:
                 continue
 
-        await interaction.response.send_message("Character information has been sent to all channels in the server.", ephemeral=True)
