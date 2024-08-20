@@ -23,3 +23,4 @@ BEST_RUN_FIELDS = "mythic_plus_best_runs"
 
 # WOW 
 TOKEN_BASE_URL = "https://wowanalytica.com/wowtokenprices/"
+TOKEN_PICTURE_URL = "https://media.forgecdn.net/avatars/thumbnails/958/807/256/256/638453397304438536.jpeg"
