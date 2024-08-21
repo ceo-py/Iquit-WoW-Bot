@@ -70,9 +70,17 @@ class AddCharacterModal(discord.ui.Modal, title="Add Character to Server"):
             )
         )
 
+    @staticmethod
+    async def add_dungeon_scores_for_character(character: dict) -> None:
+        dungeons = character.get(
+            'mythic_plus_alternate_runs', []) + character.get('mythic_plus_best_runs', [])
+        for dungeon in sorted(dungeons, key=lambda x: (x.get("dungeon"), x.get("affixes", [{}])[0].get("name"))):
+            print(dungeon["dungeon"])
+
     async def on_submit(self, interaction: discord.Interaction) -> None:
         character_region_realm_name_dict = self.create_character_dict(
-            self.CHARACTER_MAIN_DETAILS, [self.region, self.realm, self.character_name]
+            self.CHARACTER_MAIN_DETAILS, [
+                self.region, self.realm, self.character_name]
         )
 
         character = await get_wow_character(character_region_realm_name_dict)
@@ -101,6 +109,8 @@ class AddCharacterModal(discord.ui.Modal, title="Add Character to Server"):
 
         current_channel = self.find_discord_channel(guild.text_channels)
         server = await get_server_by_discord_id(current_channel.id)
+
+        await self.add_dungeon_scores_for_character(character)
 
         if not server:
             server = await create_server(current_channel.id)

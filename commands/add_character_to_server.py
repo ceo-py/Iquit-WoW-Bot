@@ -1,5 +1,4 @@
 import discord
-from typing import Literal
 from utils.in_correct_channel import in_correct_channel
 from modals.add_character_to_server_modal import AddCharacterModal
 
