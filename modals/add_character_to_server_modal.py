@@ -2,9 +2,23 @@ import discord
 from settings import DISCORD_CHANNEL_NAME
 from scripts.api.request_character_information import get_wow_character
 from utils.convert_dict_k_v_into_small_letters import convert_dict_k_v_small_letters
+from database.service.server_service import get_server_by_discord_id, create_server
+from database.service.character_service import (
+    get_character_by_region_realm_name,
+    create_character,
+)
 
 
 class AddCharacterModal(discord.ui.Modal, title="Add Character to Server"):
+    CHARACTER_MAIN_DETAILS = ["region", "realm", "name"]
+    CHARACTER_DETAILS = [
+        "character_class",
+        "total_rating",
+        "dps_rating",
+        "healer_rating",
+        "tank_rating",
+    ]
+
     region = discord.ui.TextInput(
         label="Server Region",
         placeholder="Enter the server region (e.g., US, EU, KR, TW)",
@@ -21,24 +35,63 @@ class AddCharacterModal(discord.ui.Modal, title="Add Character to Server"):
         max_length=12,
     )
 
-    async def on_submit(self, interaction: discord.Interaction) -> None:
-        data = {
-            "region": self.region,
-            "realm": self.realm,
-            "name": self.character_name,
-        }
-        character = convert_dict_k_v_small_letters(data)
-        response = await get_wow_character(character)
+    @staticmethod
+    def find_discord_channel(channels: "interaction.guild") -> int:
+        for channel in channels:
+            if channel.name == DISCORD_CHANNEL_NAME:
+                return channel
 
-        if response.get("statusCode") != 200 and not response.get("name"):
+    @staticmethod
+    def create_character_dict(keys_: list, values_: list) -> dict:
+        return convert_dict_k_v_small_letters(dict(zip(keys_, values_)))
+
+    async def create_character_in_db(
+        self, character: dict, character_main_fields: dict
+    ) -> None:
+        return await create_character(
+            **self.create_character_dict(
+                self.CHARACTER_MAIN_DETAILS + self.CHARACTER_DETAILS,
+                [
+                    *list(character_main_fields.values()),
+                    character.get("class"),
+                    character.get("mythic_plus_scores_by_season", [""])[0]
+                    .get("scores", {})
+                    .get("all", 0),
+                    character.get("mythic_plus_scores_by_season", [""])[0]
+                    .get("scores", {})
+                    .get("dps", 0),
+                    character.get("mythic_plus_scores_by_season", [""])[0]
+                    .get("scores", {})
+                    .get("healer", 0),
+                    character.get("mythic_plus_scores_by_season", [""])[0]
+                    .get("scores", {})
+                    .get("tank", 0),
+                ],
+            )
+        )
+
+    async def on_submit(self, interaction: discord.Interaction) -> None:
+        character_region_realm_name_dict = self.create_character_dict(
+            self.CHARACTER_MAIN_DETAILS, [self.region, self.realm, self.character_name]
+        )
+
+        character = await get_wow_character(character_region_realm_name_dict)
+
+        if character.get("statusCode") != 200 and not character.get("name"):
             await interaction.response.send_message(
                 "Unable to find the character. Please ensure you've entered the correct information:\n• Region: Check if you've used the correct abbreviation (US, EU, KR, or TW)\n• Realm: Verify the realm name and check for any typos\n• Character Name: Confirm the spelling of your character's name\nIf you're still having issues, try logging into the game to verify your character details.",
                 ephemeral=True,
             )
             return
+        found_character_in_db = await get_character_by_region_realm_name(
+            **character_region_realm_name_dict
+        )
 
-        # Get the guild (server) where the command was triggered
-        print(response)
+        if not found_character_in_db:
+            await self.create_character_in_db(
+                character, character_region_realm_name_dict
+            )
+
         guild = interaction.guild
         if guild is None:
             await interaction.response.send_message(
@@ -46,11 +99,16 @@ class AddCharacterModal(discord.ui.Modal, title="Add Character to Server"):
             )
             return
 
-        message = f"Character successfully added to the server: **{character['name'].capitalize()}** from **{character['realm'].capitalize()}** - **{character['region'].upper()}**."
-        for channel in guild.text_channels:
-            try:
-                if channel.name == DISCORD_CHANNEL_NAME:
-                    await channel.send(message)
-                    return
-            except discord.errors.Forbidden:
-                continue
+        current_channel = self.find_discord_channel(guild.text_channels)
+        server = await get_server_by_discord_id(current_channel.id)
+
+        if not server:
+            server = await create_server(current_channel.id)
+        message = f"Character successfully added to the server: **{str(self.character_name).capitalize()}** from **{str(self.realm).capitalize()}** - **{str(self.region).capitalize()}**."
+
+        try:
+            await current_channel.send(message)
+        except discord.errors.Forbidden as e:
+            print(f"AddCharacterModal:\n{e}")
+
+        await interaction.response.defer()

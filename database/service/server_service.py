@@ -1,4 +1,4 @@
-from models.server import Server
+from database.models.server import Server
 from database.models.dungeon_run import DungeonRun
 
 
