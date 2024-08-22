@@ -30,7 +30,9 @@ async def create_character_server(
     return character_server
 
 
-async def get_character_by_id_with_server_id(character_id: int, server_id: int) -> CharacterServer:
+async def get_character_by_id_with_server_id(
+    character_id: int, server_id: int
+) -> CharacterServer:
     """
     Retrieve a CharacterServer instance by its ID.
 
@@ -47,7 +49,9 @@ async def get_character_by_id_with_server_id(character_id: int, server_id: int) 
     CharacterServer or None
         The CharacterServer instance if found, otherwise None.
     """
-    character_server = await CharacterServer.get_or_none(character_id=character_id, server_id=server_id)
+    character_server = await CharacterServer.get_or_none(
+        character_id=character_id, server_id=server_id
+    )
     return character_server
 
 
@@ -74,7 +78,9 @@ async def update_character_server_ranking(
     await CharacterServer.filter(id=character_server_id).update(ranking=ranking)
 
 
-async def delete_character_from_server(character_id: int, server_id: int) -> CharacterServer:
+async def delete_character_from_server(
+    character_id: int, server_id: int
+) -> CharacterServer:
     """
     Delete a CharacterServer instance by its ID.
 
@@ -92,4 +98,6 @@ async def delete_character_from_server(character_id: int, server_id: int) -> Cha
     --------
     None
     """
-    await CharacterServer.filter(character_id=character_id, server_id=server_id).delete()
+    await CharacterServer.filter(
+        character_id=character_id, server_id=server_id
+    ).delete()

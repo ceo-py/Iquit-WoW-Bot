@@ -1,5 +1,6 @@
 import discord
 from abc import ABC, abstractmethod
+from utils.emojis_discord.region_emojis import region_emojis
 from utils.convert_dict_k_v_into_small_letters import convert_dict_k_v_small_letters
 from database.service.character_service import get_character_by_region_realm_name
 from database.models.character import Character
@@ -44,13 +45,12 @@ class BaseAddRemoveModal(ABC, discord.ui.Modal):
 
     @property
     def character_details_for_discord(self):
-        return f"**{str(self.character_name).capitalize()}** from **{str(self.realm).capitalize()}** - **{str(self.region).capitalize()}**."
+        return f"**{str(self.character_name).capitalize()}** from **{str(self.realm).capitalize()}** {region_emojis.get(str(self.region).lower())}"
 
     @property
     def character_region_realm_name_dict(self) -> dict:
         return self.create_character_dict(
-            self.CHARACTER_MAIN_DETAILS, [
-                self.region, self.realm, self.character_name]
+            self.CHARACTER_MAIN_DETAILS, [self.region, self.realm, self.character_name]
         )
 
     async def found_character_in_db(self) -> Character:
