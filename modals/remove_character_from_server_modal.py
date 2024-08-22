@@ -14,7 +14,9 @@ class RemoveCharacterModal(BaseAddRemoveModal):
     def __init__(self, *args, **kwargs):
         super().__init__(title=self.TITLE, *args, **kwargs)
 
-    async def send_character_not_exist_message(self, interaction: discord.Interaction):
+    async def send_character_not_exist_message_in_db(
+        self, interaction: discord.Interaction
+    ):
         await interaction.response.send_message(
             f"Character does not exist in this server: {self.character_details_for_discord}.",
             ephemeral=True,
@@ -29,13 +31,13 @@ class RemoveCharacterModal(BaseAddRemoveModal):
         found_character_in_db = await self.found_character_in_db()
 
         if not found_character_in_db:
-            await self.send_character_not_exist_message(interaction)
+            await self.send_character_not_exist_message_in_db(interaction)
             return
 
         server = await get_server_by_discord_id(interaction.channel_id)
 
         if not server:
-            await self.send_character_not_exist_message(interaction)
+            await self.send_character_not_exist_message_in_db(interaction)
             return
 
         found_character_in_discord_server = await get_character_by_id_with_server_id(
@@ -43,7 +45,7 @@ class RemoveCharacterModal(BaseAddRemoveModal):
         )
 
         if found_character_in_discord_server is None:
-            await self.send_character_not_exist_message(interaction)
+            await self.send_character_not_exist_message_in_db(interaction)
             return
 
         await delete_character_from_server(found_character_in_db.id, server.id)

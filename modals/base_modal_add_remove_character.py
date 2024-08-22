@@ -58,6 +58,14 @@ class BaseAddRemoveModal(ABC, discord.ui.Modal):
             **self.character_region_realm_name_dict
         )
 
+    async def send_character_not_exist_message_in_battle_net(
+        self, interaction: discord.Interaction
+    ) -> None:
+        await interaction.response.send_message(
+            "Unable to find the character. Please ensure you've entered the correct information:\n• Region: Check if you've used the correct abbreviation (US, EU, KR, or TW)\n• Realm: Verify the realm name and check for any typos\n• Character Name: Confirm the spelling of your character's name\nIf you're still having issues, try logging into the game to verify your character details.",
+            ephemeral=True,
+        )
+
     @abstractmethod
     async def on_submit(self, interaction: discord.Interaction) -> None:
         pass

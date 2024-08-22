@@ -38,10 +38,7 @@ class AddCharacterModal(BaseAddRemoveModal):
         character = await get_wow_character(self.character_region_realm_name_dict)
 
         if character.get("statusCode") != 200 and not character.get("name"):
-            await interaction.response.send_message(
-                "Unable to find the character. Please ensure you've entered the correct information:\n• Region: Check if you've used the correct abbreviation (US, EU, KR, or TW)\n• Realm: Verify the realm name and check for any typos\n• Character Name: Confirm the spelling of your character's name\nIf you're still having issues, try logging into the game to verify your character details.",
-                ephemeral=True,
-            )
+            await self.send_character_not_exist_message_in_battle_net(interaction)
             return
 
         found_character_in_db = await self.found_character_in_db()
