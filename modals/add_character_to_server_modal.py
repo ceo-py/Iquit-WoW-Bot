@@ -1,8 +1,7 @@
 import discord
+from .base_modal_add_remove_character import BaseAddRemoveModal
 from database.models.character import Character
-from settings import DISCORD_CHANNEL_NAME
 from scripts.api.request_character_information import get_wow_character
-from utils.convert_dict_k_v_into_small_letters import convert_dict_k_v_small_letters
 from database.service.server_service import get_server_by_discord_id, create_server
 from database.service.character_server_service import (
     get_character_server_by_id,
@@ -14,41 +13,11 @@ from database.service.character_service import (
 )
 
 
-class AddCharacterModal(discord.ui.Modal, title="Add Character to Server"):
-    CHARACTER_MAIN_DETAILS = ["region", "realm", "name"]
-    CHARACTER_DETAILS = [
-        "character_class",
-        "total_rating",
-        "dps_rating",
-        "healer_rating",
-        "tank_rating",
-    ]
+class AddCharacterModal(BaseAddRemoveModal):
+    TITLE = "Add Character to Server"
 
-    region = discord.ui.TextInput(
-        label="Server Region",
-        placeholder="Enter the server region (e.g., US, EU, KR, TW)",
-        max_length=2,
-    )
-    realm = discord.ui.TextInput(
-        label="Character Realm",
-        placeholder="Enter your character's realm (e.g., Kazzak, Draenor)",
-        max_length=26,
-    )
-    character_name = discord.ui.TextInput(
-        label="Character Name",
-        placeholder="Enter your in-game character name",
-        max_length=12,
-    )
-
-    @staticmethod
-    def find_discord_channel(channels: "interaction.guild") -> int:
-        for channel in channels:
-            if channel.name == DISCORD_CHANNEL_NAME:
-                return channel
-
-    @staticmethod
-    def create_character_dict(keys_: list, values_: list) -> dict:
-        return convert_dict_k_v_small_letters(dict(zip(keys_, values_)))
+    def __init__(self, *args, **kwargs):
+        super().__init__(title=self.TITLE, *args, **kwargs)
 
     async def create_character_in_db(
         self, character: dict, character_main_fields: dict
@@ -58,22 +27,18 @@ class AddCharacterModal(discord.ui.Modal, title="Add Character to Server"):
                 self.CHARACTER_MAIN_DETAILS + self.CHARACTER_DETAILS,
                 [
                     *list(character_main_fields.values()),
-                    character.get("class"), 0, 0, 0, 0,
+                    character.get("class"),
+                    0,
+                    0,
+                    0,
+                    0,
                 ],
             )
         )
 
-    @staticmethod
-    async def add_dungeon_scores_for_character(character: dict) -> None:
-        dungeons = character.get(
-            'mythic_plus_alternate_runs', []) + character.get('mythic_plus_best_runs', [])
-        for dungeon in sorted(dungeons, key=lambda x: (x.get("dungeon"), x.get("affixes", [{}])[0].get("name"))):
-            print(dungeon["dungeon"])
-
     async def on_submit(self, interaction: discord.Interaction) -> None:
         character_region_realm_name_dict = self.create_character_dict(
-            self.CHARACTER_MAIN_DETAILS, [
-                self.region, self.realm, self.character_name]
+            self.CHARACTER_MAIN_DETAILS, [self.region, self.realm, self.character_name]
         )
 
         guild = interaction.guild
@@ -96,9 +61,13 @@ class AddCharacterModal(discord.ui.Modal, title="Add Character to Server"):
             **character_region_realm_name_dict
         )
 
-        character = await self.create_character_in_db(
-            character, character_region_realm_name_dict
-        ) if not found_character_in_db else found_character_in_db
+        character = (
+            await self.create_character_in_db(
+                character, character_region_realm_name_dict
+            )
+            if not found_character_in_db
+            else found_character_in_db
+        )
 
         current_channel = self.find_discord_channel(guild.text_channels)
         server = await get_server_by_discord_id(current_channel.id)
@@ -112,7 +81,8 @@ class AddCharacterModal(discord.ui.Modal, title="Add Character to Server"):
             await create_character_server(character.id, server.id, 0)
         else:
             await interaction.response.send_message(
-                "This character already exists in this Discord server.", ephemeral=True,
+                "This character already exists in this Discord server.",
+                ephemeral=True,
             )
             return
 
