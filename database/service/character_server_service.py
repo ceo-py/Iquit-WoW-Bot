@@ -74,20 +74,22 @@ async def update_character_server_ranking(
     await CharacterServer.filter(id=character_server_id).update(ranking=ranking)
 
 
-async def delete_character_server(character_server_id: int) -> CharacterServer:
+async def delete_character_from_server(character_id: int, server_id: int) -> CharacterServer:
     """
     Delete a CharacterServer instance by its ID.
 
     This asynchronous function deletes a CharacterServer record from the database
-    using the provided character_server_id. It does not return any value.
+    using the provided character_id and server_id. It does not return any value.
 
     Parameters:
     -----------
-    character_server_id : int
-        The ID of the CharacterServer record to be deleted.
+    character_id : int
+        The ID of the Character record to be deleted.
+    server_id : int
+        The unique identifier of the server from which the character should be removed.
 
     Returns:
     --------
     None
     """
-    await CharacterServer.filter(id=character_server_id).delete()
+    await CharacterServer.filter(character_id=character_id, server_id=server_id).delete()

@@ -1,0 +1,6 @@
+role_emojis = {
+    "tank": "<:Tankrole:1058479529158529124>",
+    "healer": "<:Healerrole:1058479567616090222>",
+    "dps": "<:DPSrole:1058479594438668468>",
+    "total": "<:Totalrole:1058488589459136512>",
+}

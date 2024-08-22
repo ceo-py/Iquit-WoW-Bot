@@ -43,9 +43,14 @@ class BaseAddRemoveModal(ABC, discord.ui.Modal):
         return convert_dict_k_v_small_letters(dict(zip(keys_, values_)))
 
     @property
+    def character_details_for_discord(self):
+        return f"**{str(self.character_name).capitalize()}** from **{str(self.realm).capitalize()}** - **{str(self.region).capitalize()}**."
+
+    @property
     def character_region_realm_name_dict(self) -> dict:
         return self.create_character_dict(
-            self.CHARACTER_MAIN_DETAILS, [self.region, self.realm, self.character_name]
+            self.CHARACTER_MAIN_DETAILS, [
+                self.region, self.realm, self.character_name]
         )
 
     async def found_character_in_db(self) -> Character:

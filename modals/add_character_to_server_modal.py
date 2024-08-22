@@ -64,12 +64,12 @@ class AddCharacterModal(BaseAddRemoveModal):
             await create_character_server(character.id, server.id, 0)
         else:
             await interaction.response.send_message(
-                "This character already exists in this Discord server.",
+                f"Character already exists in this server: {self.character_details_for_discord}.",
                 ephemeral=True,
             )
             return
 
-        message = f"Character successfully added to the server: **{str(self.character_name).capitalize()}** from **{str(self.realm).capitalize()}** - **{str(self.region).capitalize()}**."
+        message = f"Character successfully added to the server: {self.character_details_for_discord}."
 
         try:
             await interaction.channel.send(message)

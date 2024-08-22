@@ -9,13 +9,17 @@ class RemoveCharacterModal(BaseAddRemoveModal):
         super().__init__(title=self.TITLE, *args, **kwargs)
 
     async def on_submit(self, interaction: discord.Interaction) -> None:
-        character_region_realm_name_dict = self.create_character_dict(
-            self.CHARACTER_MAIN_DETAILS, [self.region, self.realm, self.character_name]
-        )
+        found_character_in_db = await self.found_character_in_db()
+
+        if not found_character_in_db:
+            await interaction.response.send_message(
+                f"Character does not exist in this server: {self.character_details_for_discord}.",
+                ephemeral=True,
+            )
+            return
 
         await interaction.response.send_message(
-            "This character already exists in this Discord server.",
-            ephemeral=True,
+            f"Character successfully removed from the server: {self.character_details_for_discord}.",
         )
         return
 
