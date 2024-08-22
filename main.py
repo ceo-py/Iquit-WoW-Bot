@@ -21,7 +21,7 @@ class PersistentViewBot(commands.Bot):
     def __init__(self):
         intents = discord.Intents.all()
 
-        super().__init__(command_prefix="!", help_command=None, intents=intents)
+        super().__init__(command_prefix="None!", help_command=None, intents=intents)
 
     async def on_ready(self):
         load_commands(self)
