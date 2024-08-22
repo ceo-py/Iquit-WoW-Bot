@@ -4,7 +4,7 @@ from database.models.character import Character
 from scripts.api.request_character_information import get_wow_character
 from database.service.server_service import get_server_by_discord_id, create_server
 from database.service.character_server_service import (
-    get_character_server_by_id,
+    get_character_by_id_with_server_id,
     create_character_server,
 )
 from database.service.character_service import create_character
@@ -58,7 +58,7 @@ class AddCharacterModal(BaseAddRemoveModal):
         if not server:
             server = await create_server(interaction.channel_id)
 
-        character_server = await get_character_server_by_id(character.id)
+        character_server = await get_character_by_id_with_server_id(character.id, server.id)
 
         if not character_server:
             await create_character_server(character.id, server.id, 0)

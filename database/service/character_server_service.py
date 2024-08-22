@@ -30,12 +30,12 @@ async def create_character_server(
     return character_server
 
 
-async def get_character_server_by_id(character_id: int) -> CharacterServer:
+async def get_character_by_id_with_server_id(character_id: int, server_id: int) -> CharacterServer:
     """
     Retrieve a CharacterServer instance by its ID.
 
     This asynchronous function fetches a CharacterServer record from the database
-    using the provided character_id. If no record is found, it returns None.
+    using the provided character_id and server_id. If no record is found, it returns None.
 
     Parameters:
     -----------
@@ -47,7 +47,7 @@ async def get_character_server_by_id(character_id: int) -> CharacterServer:
     CharacterServer or None
         The CharacterServer instance if found, otherwise None.
     """
-    character_server = await CharacterServer.get_or_none(character_id=character_id)
+    character_server = await CharacterServer.get_or_none(character_id=character_id, server_id=server_id)
     return character_server
 
 
