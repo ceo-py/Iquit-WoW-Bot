@@ -7,10 +7,7 @@ from database.service.character_server_service import (
     get_character_server_by_id,
     create_character_server,
 )
-from database.service.character_service import (
-    get_character_by_region_realm_name,
-    create_character,
-)
+from database.service.character_service import create_character
 
 
 class AddCharacterModal(BaseAddRemoveModal):
@@ -37,18 +34,7 @@ class AddCharacterModal(BaseAddRemoveModal):
         )
 
     async def on_submit(self, interaction: discord.Interaction) -> None:
-        character_region_realm_name_dict = self.create_character_dict(
-            self.CHARACTER_MAIN_DETAILS, [self.region, self.realm, self.character_name]
-        )
-
-        guild = interaction.guild
-        if guild is None:
-            await interaction.response.send_message(
-                "This command can only be used in a server.", ephemeral=True
-            )
-            return
-
-        character = await get_wow_character(character_region_realm_name_dict)
+        character = await get_wow_character(self.character_region_realm_name_dict)
 
         if character.get("statusCode") != 200 and not character.get("name"):
             await interaction.response.send_message(
@@ -57,23 +43,20 @@ class AddCharacterModal(BaseAddRemoveModal):
             )
             return
 
-        found_character_in_db = await get_character_by_region_realm_name(
-            **character_region_realm_name_dict
-        )
+        found_character_in_db = await self.found_character_in_db()
 
         character = (
             await self.create_character_in_db(
-                character, character_region_realm_name_dict
+                character, self.character_region_realm_name_dict
             )
             if not found_character_in_db
             else found_character_in_db
         )
 
-        current_channel = self.find_discord_channel(guild.text_channels)
-        server = await get_server_by_discord_id(current_channel.id)
+        server = await get_server_by_discord_id(interaction.channel_id)
 
         if not server:
-            server = await create_server(current_channel.id)
+            server = await create_server(interaction.channel_id)
 
         character_server = await get_character_server_by_id(character.id)
 
@@ -89,7 +72,7 @@ class AddCharacterModal(BaseAddRemoveModal):
         message = f"Character successfully added to the server: **{str(self.character_name).capitalize()}** from **{str(self.realm).capitalize()}** - **{str(self.region).capitalize()}**."
 
         try:
-            await current_channel.send(message)
+            await interaction.channel.send(message)
         except discord.errors.Forbidden as e:
             print(f"AddCharacterModal:\n{e}")
 

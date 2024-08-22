@@ -1,7 +1,8 @@
 import discord
 from abc import ABC, abstractmethod
-from settings import DISCORD_CHANNEL_NAME
 from utils.convert_dict_k_v_into_small_letters import convert_dict_k_v_small_letters
+from database.service.character_service import get_character_by_region_realm_name
+from database.models.character import Character
 
 
 class BaseAddRemoveModal(ABC, discord.ui.Modal):
@@ -38,14 +39,19 @@ class BaseAddRemoveModal(ABC, discord.ui.Modal):
         self.add_item(self.character_name)
 
     @staticmethod
-    def find_discord_channel(channels: "interaction.guild") -> int:
-        for channel in channels:
-            if channel.name == DISCORD_CHANNEL_NAME:
-                return channel
-
-    @staticmethod
     def create_character_dict(keys_: list, values_: list) -> dict:
         return convert_dict_k_v_small_letters(dict(zip(keys_, values_)))
+
+    @property
+    def character_region_realm_name_dict(self) -> dict:
+        return self.create_character_dict(
+            self.CHARACTER_MAIN_DETAILS, [self.region, self.realm, self.character_name]
+        )
+
+    async def found_character_in_db(self) -> Character:
+        return await get_character_by_region_realm_name(
+            **self.character_region_realm_name_dict
+        )
 
     @abstractmethod
     async def on_submit(self, interaction: discord.Interaction) -> None:
