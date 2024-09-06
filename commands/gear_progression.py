@@ -1,6 +1,6 @@
 import discord
 from utils.in_correct_channel import in_correct_channel
-from modals.add_character_to_server_modal import AddCharacterModal
+from embeds.gear_command_embed import generate_gear_embed
 
 
 @discord.app_commands.command(
@@ -9,19 +9,18 @@ from modals.add_character_to_server_modal import AddCharacterModal
 )
 @in_correct_channel()
 async def gear(interaction: discord.Interaction):
-
     """
-    Fetches and displays the WoW Token price for the selected region.
+    Sends the TWW Gearing Guide Infographic to the Discord channel.
 
     Args:
         interaction (discord.Interaction): The interaction object representing the command invocation.
-        region (token_options): The region to fetch the token price for (EU, US, KR, or TW).
 
     Returns:
         None
     """
+    gear_embed = await generate_gear_embed()
 
-    await interaction.response.send_message(embed=token_embed)
+    await interaction.response.send_message(embed=gear_embed)
 
 
 def setup(client):
