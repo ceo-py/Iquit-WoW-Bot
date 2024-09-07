@@ -4,6 +4,7 @@ from utils.generate_api_url_for_char_fetch import (
     generate_api_url_for_char_fetch,
     generate_api_url_for_char_fetch_check,
 )
+from utils.chunked_iterable import chunked_iterable
 from typing import List
 
 
@@ -28,8 +29,11 @@ async def get_wow_character_check(character: dict) -> "json":
 
 async def get_multiple_wow_characters(characters: list) -> List["json"]:
     async with aiohttp.ClientSession() as session:
-        tasks = []
-        for character in characters:
-            tasks.append(fetch(session, generate_api_url_for_char_fetch(character)))
-        responses = await asyncio.gather(*tasks)
+        tasks = [fetch(session, generate_api_url_for_char_fetch(character)) for character in characters]
+        responses = []
+        
+        for chunk in chunked_iterable(tasks, 300):
+            responses += await asyncio.gather(*chunk)
+            await asyncio.sleep(60)
+
         return responses

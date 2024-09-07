@@ -7,7 +7,6 @@ from database.db import init_db
 from commands import load_commands
 from views.add_character_to_server_view import AddCharacterButton
 
-from database.service.character_service import get_character_by_region_realm_name
 
 SEASON = settings.WOW_CURRENT_EXPANSION
 EXPANSION = settings.WOW_CURRENT_SEASON
