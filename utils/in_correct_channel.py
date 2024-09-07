@@ -1,5 +1,5 @@
 import discord
-from settings import DISCORD_CHANNEL_NAME
+from settings import BOT_CHANNEL_NAME
 
 
 def in_correct_channel():
@@ -7,7 +7,7 @@ def in_correct_channel():
     A decorator that checks if the command is being used in the correct Discord channel.
 
     This decorator ensures that the command is only executed in the channel specified
-    by the DISCORD_CHANNEL_NAME setting. If the command is used in any other channel,
+    by the BOT_CHANNEL_NAME setting. If the command is used in any other channel,
     it sends an ephemeral message to the user and raises a CheckFailure.
 
     Returns:
@@ -22,20 +22,20 @@ def in_correct_channel():
             channel_name = interaction.channel.name
         except AttributeError:
             await interaction.response.send_message(
-                f"Please run this command in the ***#{DISCORD_CHANNEL_NAME}*** channel.",
+                f"Please run this command in the ***#{BOT_CHANNEL_NAME}*** channel.",
                 ephemeral=True,
             )
             raise discord.app_commands.errors.CheckFailure(
-                f"Command must be used in #{DISCORD_CHANNEL_NAME} channel."
+                f"Command must be used in #{BOT_CHANNEL_NAME} channel."
             )
 
-        if channel_name != DISCORD_CHANNEL_NAME:
+        if channel_name != BOT_CHANNEL_NAME:
             await interaction.response.send_message(
-                f"Please run this command in the ***#{DISCORD_CHANNEL_NAME}*** channel.",
+                f"Please run this command in the ***#{BOT_CHANNEL_NAME}*** channel.",
                 ephemeral=True,
             )
             raise discord.app_commands.errors.CheckFailure(
-                f"Command must be used in #{DISCORD_CHANNEL_NAME} channel."
+                f"Command must be used in #{BOT_CHANNEL_NAME} channel."
             )
 
         return True
