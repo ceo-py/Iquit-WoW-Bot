@@ -5,6 +5,7 @@ from utils.generate_api_url_for_char_fetch import (
     generate_api_url_for_char_fetch_check,
 )
 from utils.chunked_iterable import chunked_iterable
+from settings import SLEEPING_TIME
 from typing import List
 
 
@@ -34,6 +35,6 @@ async def get_multiple_wow_characters(characters: list) -> List["json"]:
         
         for chunk in chunked_iterable(tasks, 300):
             responses += await asyncio.gather(*chunk)
-            await asyncio.sleep(60)
+            await asyncio.sleep(SLEEPING_TIME)
 
         return responses
