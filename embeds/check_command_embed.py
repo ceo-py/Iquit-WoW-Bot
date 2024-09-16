@@ -1,5 +1,6 @@
 from discord import Embed, Colour
 from utils.emojis_discord.character_emojis import character_emojis
+from utils.emojis_discord.common_emojis import common_emojis
 from settings import (
     FOOTER_EMBED_PICTURE_URL,
     WOW_LOG_BASE_URL,
@@ -35,21 +36,25 @@ async def generate_check_embed(
         description=f"**Mythic+ Score**",
         colour=Colour.gold(),
     )
+    tank_icon = common_emojis.get("tank")
+    dps_icon = common_emojis.get("dps")
+    healer_icon = common_emojis.get("healer")
+
     embed.set_thumbnail(url=thumbnail_url)
     embed.set_image(url=FOOTER_EMBED_PICTURE_URL)
     embed_field_data = [
         {
-            "name": ":shield:",
+            "name": tank_icon,
             "value": f"{tank_score}",
             "inline": True,
         },
         {
-            "name": ":crossed_swords:",
+            "name": dps_icon,
             "value": f"{dps_score}",
             "inline": True,
         },
         {
-            "name": ":heart:",
+            "name": healer_icon,
             "value": f"{healer_score}",
             "inline": True,
         },

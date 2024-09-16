@@ -1,5 +1,6 @@
 from discord import Embed, Colour
 from settings import TOKEN_PICTURE_URL
+from utils.emojis_discord.common_emojis import common_emojis
 
 
 async def generate_wow_token_embed(
@@ -30,7 +31,7 @@ async def generate_wow_token_embed(
     Returns:
         discord.Embed: An embed containing WoW token price information.
     """
-    moneybag_icon = ":moneybag:"
+    moneybag_icon = common_emojis.get("moneybag")
     embed = Embed(
         title=f"**Current Token Price {flag_region} {price} {moneybag_icon}**",
         description=f"**Change {change} {moneybag_icon}**",

@@ -52,18 +52,18 @@ class CheckCharacterModal(BaseAddRemoveModal):
             character.get("mythic_plus_scores_by_season", [{}])[0]
             .get("scores", {})
             .get("healer", ""),
-            "Aberrus The Shadowed Crucible",
+            "Nerub-ar Palace",
             character.get("raid_progression", {})
-            .get("aberrus-the-shadowed-crucible", {})
+            .get("nerubar-palace", {})
             .get("normal_bosses_killed"),
             character.get("raid_progression", {})
-            .get("aberrus-the-shadowed-crucible", {})
+            .get("nerubar-palace", {})
             .get("heroic_bosses_killed"),
             character.get("raid_progression", {})
-            .get("aberrus-the-shadowed-crucible", {})
+            .get("nerubar-palace", {})
             .get("mythic_bosses_killed"),
             character.get("raid_progression", {})
-            .get("aberrus-the-shadowed-crucible", {})
+            .get("nerubar-palace", {})
             .get("total_bosses"),
         )
 
