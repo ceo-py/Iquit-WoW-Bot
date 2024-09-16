@@ -1,6 +1,7 @@
 from discord import Embed, Colour
 from utils.emojis_discord.character_emojis import character_emojis
 from utils.emojis_discord.role_emojis import role_emojis
+from utils.emojis_discord.common_emojis import common_emojis
 from settings import (
     FOOTER_EMBED_PICTURE_URL,
     WOW_LOG_BASE_URL,
@@ -31,14 +32,18 @@ async def generate_check_embed(
     raid_progress_mythic: str,
     total_raid_bosses: str,
 ):
-    embed = Embed(
-        title=f"{character_emojis.get(character_class.lower())} {name}, {active_spec_name}, {gear_ilvl} ILVL",
-        description=f"**Mythic+ Score**",
-        colour=Colour.gold(),
-    )
+
+    character_icon = character_emojis.get(character_class.lower())
     tank_icon = role_emojis.get("tank")
     dps_icon = role_emojis.get("dps")
     healer_icon = role_emojis.get("healer")
+    keystone_icon = common_emojis.get("keystone")
+
+    embed = Embed(
+        title=f"{character_icon} {name}, {active_spec_name}, {gear_ilvl} ILVL",
+        description=f"**Mythic+ Score**",
+        colour=Colour.gold(),
+    )
 
     embed.set_thumbnail(url=thumbnail_url)
     embed.set_image(url=FOOTER_EMBED_PICTURE_URL)
@@ -79,12 +84,12 @@ async def generate_check_embed(
             "inline": False,
         },
         {
-            "name": f"**Key Level**",
+            "name": f"**Level**{keystone_icon}",
             "value": f"{dungeon_key_lvl}",
             "inline": True,
         },
         {
-            "name": f"**Key Upgrade**",
+            "name": f"**Upgrade**{keystone_icon}",
             "value": f"{dungeon_upgrade}",
             "inline": True,
         },
@@ -102,6 +107,5 @@ async def generate_check_embed(
             "inline": True,
         },
     ]
-    for field in embed_field_data:
-        embed.add_field(**field)
+    [embed.add_field(**field) for field in embed_field_data]
     return embed
