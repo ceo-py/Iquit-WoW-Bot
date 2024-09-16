@@ -56,8 +56,7 @@ class AddCharacterModal(BaseAddRemoveModal):
             if not found_character_in_db
             else found_character_in_db
         )
-
-        character_details_for_message = f"{character_emojis.get(character_class)} {self.character_details_for_discord}"
+        character_details_for_message = f"{character_emojis.get(character_class.lower())} {self.character_details_for_discord}"
         server = await get_server_by_discord_id(interaction.channel_id)
 
         if not server:
