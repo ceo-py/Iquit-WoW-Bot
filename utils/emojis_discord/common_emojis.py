@@ -6,4 +6,5 @@ common_emojis = {
     "white_arrow_left": "<a:8826vegaleftarrow:1065603928860925962>",
     "player_add": "<:6332logmemberplusw:1065621500855586907>",
     "moneybag": ":moneybag:",
+    "keystone": "<:keystone:1285192652681121834>",
 }
