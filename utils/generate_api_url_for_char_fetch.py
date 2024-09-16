@@ -14,10 +14,10 @@ def base_url(character: dict):
 
 
 def generate_api_url_for_char_fetch(character: dict) -> str:
-    base_url = base_url(character)
-    return f'{base_url}{ALTERNATIVE_RUN_FIELDS},{BEST_RUN_FIELDS},{CURRENT_SEASON_SCORE}'
+    url = base_url(character)
+    return f"{url}{ALTERNATIVE_RUN_FIELDS},{BEST_RUN_FIELDS},{CURRENT_SEASON_SCORE}"
 
 
 def generate_api_url_for_char_fetch_check(character: dict) -> str:
-    base_url = base_url(character)
-    return f'{base_url}{CURRENT_SEASON_SCORE},{RAID_PROGRESSION},{GEAR},{MYTHIC_PLUS_RECENT_RUNS}'
+    url = base_url(character)
+    return f"{url}{CURRENT_SEASON_SCORE},{RAID_PROGRESSION},{GEAR},{MYTHIC_PLUS_RECENT_RUNS}"

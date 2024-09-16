@@ -5,8 +5,5 @@ common_emojis = {
     "white_arrow_right": "<a:1830vegarightarrow:1065603909147693207>",
     "white_arrow_left": "<a:8826vegaleftarrow:1065603928860925962>",
     "player_add": "<:6332logmemberplusw:1065621500855586907>",
-    "dps": "<:DPSrole:1058479594438668468>",
-    "tank": "<:Tankrole:1058479529158529124>",
-    "healer": "<:Healerrole:1058479567616090222>",
     "moneybag": ":moneybag:",
 }
