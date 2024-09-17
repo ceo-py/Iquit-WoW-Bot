@@ -1,11 +1,11 @@
 import discord
 
-from scripts.token.scrape_token import fetch_info_token
-from embeds.wow_token_embed import generate_wow_token_embed
+# from scripts.token.scrape_token import fetch_info_token
+from embeds.wow_token_embed import generate_wow_token_embed_from_battle_net
 from utils.in_correct_channel import in_correct_channel
 from utils.wow_regions_options import region_options
-from utils.get_battle_net_token import get_battle_net_token
-from settings import BATTLE_CLIENT_ID, BATTLE_CLIENT_SECRET, BATTLE_NET_AUTH_URL
+from utils.token.get_token_price import get_token_price
+
 
 @discord.app_commands.command(
     name="token",
@@ -24,11 +24,10 @@ async def token(interaction: discord.Interaction, region: region_options):
     Returns:
         None
     """
-    fetch_data = fetch_info_token(region)
-    token_embed = await generate_wow_token_embed(*fetch_data)
-    battle_net_token = get_battle_net_token(BATTLE_CLIENT_ID, BATTLE_CLIENT_SECRET, BATTLE_NET_AUTH_URL)
-    
-    
+    # fetch_data = fetch_info_token(region)
+    # token_embed = await generate_wow_token_embed(*fetch_data)
+    token_price = await get_token_price(region)
+    token_embed = generate_wow_token_embed_from_battle_net(token_price, region)
 
     await interaction.response.send_message(embed=token_embed)
 
