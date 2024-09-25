@@ -41,7 +41,7 @@ class DungeonRun(Model):
     clear_time_ms = fields.IntField()
     par_time_ms = fields.IntField()
     score = fields.FloatField()
-    affix_type = fields.CharField(max_length=50)
+    affix_types = fields.JSONField(default=list)
 
     class Meta:
-        unique_together = ("dungeon", "character", "affix_type")
+        unique_together = ("dungeon", "character")

@@ -12,6 +12,7 @@ async def init_db():
                 "database.models.dungeon_run",
                 "database.models.dungeon",
                 "database.models.server",
+                "database.models.affixes",
             ]
         },
     )
