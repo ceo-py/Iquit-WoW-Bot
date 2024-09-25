@@ -55,6 +55,27 @@ async def get_character_by_id_with_server_id(
     return character_server
 
 
+async def get_character_by_id(character_id: int) -> CharacterServer:
+    """
+    Retrieve a CharacterServer instance by its ID.
+
+    This asynchronous function fetches a CharacterServer record from the database
+    using the provided character_id. If no record is found, it returns None.
+
+    Parameters:
+    -----------
+    character_id : int
+        The ID of the Character record to be retrieved.
+
+    Returns:
+    --------
+    CharacterServer or None
+        The CharacterServer instance if found, otherwise None.
+    """
+    character_server = await CharacterServer.get_or_none(character_id=character_id)
+    return character_server
+
+
 async def update_character_server_ranking(
     character_server_id: int, ranking: int
 ) -> CharacterServer:
