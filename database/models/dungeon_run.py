@@ -24,8 +24,8 @@ class DungeonRun(Model):
         Par time for the dungeon in milliseconds.
     score : FloatField
         Score achieved in the dungeon run.
-    affix_type : CharField
-        Type of affix applied during the dungeon run, with a maximum length of 50 characters.
+    affix_type : JSONField
+        Type of affix applied during the dungeon run in string format.
 
     Meta:
     -----

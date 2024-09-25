@@ -2,14 +2,14 @@ from database.models.dungeon_run import DungeonRun
 
 
 async def create_dungeon_run(
-    character: str,
-    dungeon: str,
+    character_id: int,
+    dungeon_id: int,
     mythic_level: int,
     num_keystone_upgrades: int,
     clear_time_ms: int,
     par_time_ms: int,
     score: int,
-    affix_type: str,
+    affix_types: list[str],
 ) -> DungeonRun:
     """
     Create a new DungeonRun instance and save it to the database.
@@ -19,10 +19,10 @@ async def create_dungeon_run(
 
     Parameters:
     -----------
-    character : str
-        The name of the character who completed the dungeon run.
-    dungeon : str
-        The name of the dungeon that was run.
+    character_id : int
+        The character ID who completed the dungeon run.
+    dungeon_id : int
+        The dungeon ID that was run.
     mythic_level : int
         The mythic+ level of the dungeon run.
     num_keystone_upgrades : int
@@ -33,7 +33,7 @@ async def create_dungeon_run(
         The par time for the dungeon, in milliseconds.
     score : int
         The score achieved for the dungeon run.
-    affix_type : str
+    affix_types : list[str]
         The type of affixes active during the run.
 
     Returns:
@@ -43,13 +43,13 @@ async def create_dungeon_run(
 
     """
     dungeon = await DungeonRun.create(
-        character=character,
-        dungeon=dungeon,
+        character_id=character_id,
+        dungeon_id=dungeon_id,
         mythic_level=mythic_level,
         num_keystone_upgrades=num_keystone_upgrades,
         clear_time_ms=clear_time_ms,
         par_time_ms=par_time_ms,
         score=score,
-        affix_type=affix_type,
+        affix_types=affix_types,
     )
     return dungeon
