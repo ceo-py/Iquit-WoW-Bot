@@ -20,16 +20,25 @@ class AddCharacterModal(BaseAddRemoveModal):
     async def create_character_in_db(
         self, character: dict, character_main_fields: dict
     ) -> Character:
+        character_class = character.get("class")
+        scores_data = character.get("mythic_plus_scores_by_season", [{}])[0].get(
+            "scores", {}
+        )
+        total_rating = scores_data.get("all", 0)
+        dps_rating = scores_data.get("dps", 0)
+        healer_rating = scores_data.get("healer", 0)
+        tank_rating = scores_data.get("tank", 0)
+
         return await create_character(
             **self.create_character_dict(
                 self.CHARACTER_MAIN_DETAILS + self.CHARACTER_DETAILS,
                 [
                     *list(character_main_fields.values()),
-                    character.get("class"),
-                    0,
-                    0,
-                    0,
-                    0,
+                    character_class,
+                    total_rating,
+                    dps_rating,
+                    healer_rating,
+                    tank_rating,
                 ],
             )
         )
