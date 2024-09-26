@@ -56,7 +56,8 @@ class MPlusBestRunsModal(BaseAddRemoveModal):
 
         if not dungeon_runs:
             await interaction.response.send_message(
-                f"The character {interaction.client.character_emojis.get(character['class'].lower())} **{character['name']}** hasn't completed any Mythic+ dungeons yet.",
+                f"The character {interaction.client.character_emojis.get(character['class'].lower())} "
+                f"**{character['name']}** hasn't completed any Mythic+ dungeons yet.",
             )
 
         character_data = {
