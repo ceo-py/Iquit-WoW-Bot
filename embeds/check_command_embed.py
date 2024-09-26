@@ -1,7 +1,5 @@
+import discord
 from discord import Embed, Colour
-from utils.emojis_discord.character_emojis import character_emojis
-from utils.emojis_discord.role_emojis import role_emojis
-from utils.emojis_discord.common_emojis import common_emojis
 from settings import (
     FOOTER_EMBED_PICTURE_URL,
     WOW_LOG_BASE_URL,
@@ -31,13 +29,13 @@ async def generate_check_embed(
     raid_progress_heroic: str,
     raid_progress_mythic: str,
     total_raid_bosses: str,
+    interaction: discord.Interaction,
 ):
-
-    character_icon = character_emojis.get(character_class.lower())
-    tank_icon = role_emojis.get("tank")
-    dps_icon = role_emojis.get("dps")
-    healer_icon = role_emojis.get("healer")
-    keystone_icon = common_emojis.get("keystone")
+    character_icon = interaction.client.character_emojis.get(character_class.lower())
+    tank_icon = interaction.client.character_role_emojis.get("tank")
+    dps_icon = interaction.client.character_role_emojis.get("dps")
+    healer_icon = interaction.client.character_role_emojis.get("healer")
+    keystone_icon = interaction.client.common_emojis.get("keystone")
 
     embed = Embed(
         title=f"{character_icon} {name}, {active_spec_name}, {gear_ilvl} ILVL",

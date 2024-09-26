@@ -1,6 +1,5 @@
 import discord
 
-# from scripts.token.scrape_token import fetch_info_token
 from embeds.wow_token_embed import generate_wow_token_embed_from_battle_net
 from utils.in_correct_channel import in_correct_channel
 from utils.wow_regions_options import region_options
@@ -24,10 +23,13 @@ async def token(interaction: discord.Interaction, region: region_options):
     Returns:
         None
     """
-    # fetch_data = fetch_info_token(region)
-    # token_embed = await generate_wow_token_embed(*fetch_data)
     token_price = await get_token_price(region)
-    token_embed = generate_wow_token_embed_from_battle_net(token_price, region)
+    token_embed = generate_wow_token_embed_from_battle_net(
+        token_price,
+        region,
+        interaction.client.common_emojis,
+        interaction.client.region_emojis,
+    )
 
     await interaction.response.send_message(embed=token_embed)
 

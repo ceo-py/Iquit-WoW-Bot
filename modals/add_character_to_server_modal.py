@@ -1,6 +1,5 @@
 import discord
 from .base_modal_add_remove_character import BaseAddRemoveModal
-from utils.emojis_discord.character_emojis import character_emojis
 from database.models.character import Character
 from scripts.api.request_character_information import get_wow_character
 from database.service.server_service import get_server_by_discord_id, create_server
@@ -65,7 +64,7 @@ class AddCharacterModal(BaseAddRemoveModal):
             if not found_character_in_db
             else found_character_in_db
         )
-        character_details_for_message = f"{character_emojis.get(character_class.lower())} {self.character_details_for_discord}"
+        character_details_for_message = f"{interaction.client.character_emojis.get(character_class.lower())} {self.character_details_for_discord(interaction)}"
         server = await get_server_by_discord_id(interaction.channel_id)
 
         if not server:

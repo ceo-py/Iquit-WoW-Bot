@@ -7,7 +7,6 @@ from database.service.character_server_service import (
 from database.service.server_service import get_server_by_discord_id
 from database.service.character_server_service import get_character_by_id
 from database.service.character_service import delete_character
-from utils.emojis_discord.character_emojis import character_emojis
 
 
 class RemoveCharacterModal(BaseAddRemoveModal):
@@ -26,7 +25,7 @@ class RemoveCharacterModal(BaseAddRemoveModal):
 
     async def send_success_message(self, interaction: discord.Interaction, character):
         await interaction.response.send_message(
-            f"Character successfully removed from the server: {character_emojis.get(character.character_class)} {self.character_details_for_discord}.",
+            f"Character successfully removed from the server: {interaction.client.character_emojis.get(character.character_class)} {self.character_details_for_discord(interaction)}.",
         )
 
     async def delete_character_from_db_if_no_discord_server(self, character_id):

@@ -65,6 +65,7 @@ class CheckCharacterModal(BaseAddRemoveModal):
             character.get("raid_progression", {})
             .get("nerubar-palace", {})
             .get("total_bosses"),
+            interaction,
         )
 
         await interaction.response.send_message(embed=check_embed)

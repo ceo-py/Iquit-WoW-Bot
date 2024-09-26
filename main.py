@@ -6,7 +6,7 @@ from discord.ext import commands
 from database.db import init_db
 from commands import load_commands
 from views.add_character_to_server_view import AddCharacterButton
-from utils.emojis_discord.affixes_emojis import get_affixes_emojis
+from utils.affixes_emojis import get_affixes_emojis
 
 
 SEASON = settings.WOW_CURRENT_EXPANSION
