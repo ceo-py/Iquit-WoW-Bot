@@ -2,7 +2,7 @@ from database.service.emojis_discord_service import get_all_emojis
 from typing import Dict
 
 
-async def get_affixes_emojis(type: str) -> Dict[str, str]:
+async def get_emojis(type: str) -> Dict[str, str]:
     """
     Current types of Emojis:
     - Affix
