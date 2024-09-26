@@ -1,7 +1,8 @@
 from database.models.dungeon_run import DungeonRun
+from typing import Dict, List, Any
 
 
-async def create_dungeon_run(
+async def update_or_create_dungeon_run(
     character_id: int,
     dungeon_id: int,
     mythic_level: int,
@@ -12,10 +13,10 @@ async def create_dungeon_run(
     affix_types: list[str],
 ) -> DungeonRun:
     """
-    Create a new DungeonRun instance and save it to the database.
+    Update an existing DungeonRun instance or create a new one if it doesn't exist.
 
-    This function creates a new DungeonRun record in the database using the
-    provided parameters.
+    This function attempts to update an existing DungeonRun record in the database
+    using the provided parameters. If no matching record is found, it creates a new one.
 
     Parameters:
     -----------
@@ -39,10 +40,10 @@ async def create_dungeon_run(
     Returns:
     --------
     DungeonRun
-        The newly created DungeonRun instance.
+        The updated or newly created DungeonRun instance.
 
     """
-    dungeon = await DungeonRun.create(
+    dungeon = await DungeonRun.update_or_create(
         character_id=character_id,
         dungeon_id=dungeon_id,
         mythic_level=mythic_level,
