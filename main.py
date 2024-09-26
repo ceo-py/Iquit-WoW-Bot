@@ -6,6 +6,7 @@ from discord.ext import commands
 from database.db import init_db
 from commands import load_commands
 from views.add_character_to_server_view import AddCharacterButton
+from utils.emojis_discord.affixes_emojis import get_affixes_emojis
 
 
 SEASON = settings.WOW_CURRENT_EXPANSION
@@ -21,14 +22,32 @@ class PersistentViewBot(commands.Bot):
         intents = discord.Intents.all()
 
         super().__init__(
-            command_prefix="NoCoMaNdS!@#", help_command=None, intents=intents
+            command_prefix="NoCoMmAnDs!@#", help_command=None, intents=intents
         )
+
+    async def load_emojis(self):
+        emoji_categories = [
+            "Affix",
+            "Character",
+            "Common",
+            "Dungeon",
+            "Region",
+            "Character_Role",
+        ]
+
+        for category in emoji_categories:
+            setattr(
+                self, f"{category.lower()}_emojis", await get_affixes_emojis(category)
+            )
 
     async def on_ready(self):
         load_commands(self)
 
         await self.change_presence(activity=discord.Game(name="M+"))
         await init_db()
+
+        await self.load_emojis()
+
         # await self.tree.sync()  # once only to sync CRUD slash command
         # print([
         #     channel.id
