@@ -53,3 +53,22 @@ async def create_dungeon_run(
         affix_types=affix_types,
     )
     return dungeon
+
+
+async def delete_dungeon_run(character_id: int) -> None:
+    """
+    Delete DungeonRun instances associated with a character ID.
+
+    This asynchronous function deletes all DungeonRun records from the database
+    that are associated with the provided character_id.
+
+    Parameters:
+    -----------
+    character_id : int
+        The ID of the character whose DungeonRun records are to be deleted.
+
+    Returns:
+    --------
+    None
+    """
+    await DungeonRun.filter(character_id=character_id).delete()

@@ -43,7 +43,7 @@ class BaseAddRemoveModal(ABC, discord.ui.Modal):
         return convert_dict_k_v_small_letters(dict(zip(keys_, values_)))
 
     def character_details_for_discord(self, interaction: discord.Interaction):
-        return f"**{str(self.character_name).capitalize()}** from **{str(self.realm).capitalize()}** {interaction.client.region_emojis.get(str(self.region).lower())}"
+        return f"**{str(self.character_name).capitalize()}** from **{str(self.realm).capitalize()}** {interaction.client.region_emojis.get(str(self.region).lower(), '')}"
 
     @property
     def character_region_realm_name_dict(self) -> dict:

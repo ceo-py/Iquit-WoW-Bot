@@ -7,6 +7,7 @@ from database.service.character_server_service import (
 from database.service.server_service import get_server_by_discord_id
 from database.service.character_server_service import get_character_by_id
 from database.service.character_service import delete_character
+from database.service.dungeon_run_service import delete_dungeon_run
 
 
 class RemoveCharacterModal(BaseAddRemoveModal):
@@ -19,7 +20,7 @@ class RemoveCharacterModal(BaseAddRemoveModal):
         self, interaction: discord.Interaction
     ):
         await interaction.response.send_message(
-            f"Character does not exist in this server: {self.character_details_for_discord}.",
+            f"Character does not exist in this server: {self.character_details_for_discord(interaction)}.",
             ephemeral=True,
         )
 
@@ -33,6 +34,7 @@ class RemoveCharacterModal(BaseAddRemoveModal):
         character_in_another_discord_server = await get_character_by_id(character_id)
         if character_in_another_discord_server is None:
             await delete_character(character_id)
+            await delete_dungeon_run(character_id)
 
     async def on_submit(self, interaction: discord.Interaction) -> None:
         found_character_in_db = await self.found_character_in_db()
