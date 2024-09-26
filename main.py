@@ -43,9 +43,7 @@ class PersistentViewBot(commands.Bot):
         ]
 
         for category in emoji_categories:
-            setattr(
-                self, f"{category.lower()}_emojis", await get_emojis(category)
-            )
+            setattr(self, f"{category.lower()}_emojis", await get_emojis(category))
 
     async def on_ready(self):
         load_commands(self)

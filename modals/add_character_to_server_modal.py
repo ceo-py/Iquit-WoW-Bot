@@ -8,6 +8,8 @@ from database.service.character_server_service import (
     create_character_server,
 )
 from database.service.character_service import create_character
+from database.service.dungeon_run_service import create_dungeon_run
+from database.service.dungeon_service import get_all_dungeons
 
 
 class AddCharacterModal(BaseAddRemoveModal):
@@ -42,24 +44,57 @@ class AddCharacterModal(BaseAddRemoveModal):
             )
         )
 
-    async def on_submit(self, interaction: discord.Interaction) -> None:
-        character = await get_wow_character(self.character_region_realm_name_dict)
+    async def create_character_dungeon_runs_in_db(
+        self, character_fetch_data: dict, character_id: int
+    ):
 
-        if character.get("statusCode") != 200 and not character.get("name"):
+        dungeon_runs = character_fetch_data.get("mythic_plus_best_runs", [])
+        if not dungeon_runs:
+            return
+
+        all_dungeons = {
+            dungeon.short_name.lower(): dungeon.id
+            for dungeon in await get_all_dungeons()
+        }
+
+        for dungeon_run in dungeon_runs:
+            data = {
+                "character_id": character_id,
+                "dungeon_id": all_dungeons.get(dungeon_run.get("short_name").lower()),
+                "mythic_level": dungeon_run.get("mythic_level"),
+                "num_keystone_upgrades": dungeon_run.get("num_keystone_upgrades"),
+                "clear_time_ms": dungeon_run.get("clear_time_ms"),
+                "par_time_ms": dungeon_run.get("par_time_ms"),
+                "score": dungeon_run.get("score"),
+                "affix_types": [
+                    affix.get("name") for affix in dungeon_run.get("affixes", [{}])
+                ],
+            }
+
+            await create_dungeon_run(**data)
+
+    async def on_submit(self, interaction: discord.Interaction) -> None:
+        character_fetch_data = await get_wow_character(
+            self.character_region_realm_name_dict
+        )
+
+        if character_fetch_data.get(
+            "statusCode"
+        ) != 200 and not character_fetch_data.get("name"):
             await self.send_character_not_exist_message_in_battle_net(interaction)
             return
 
         found_character_in_db = await self.found_character_in_db()
 
         character_class = (
-            character.get("class")
+            character_fetch_data.get("class")
             if not found_character_in_db
             else found_character_in_db.character_class
         )
 
         character = (
             await self.create_character_in_db(
-                character, self.character_region_realm_name_dict
+                character_fetch_data, self.character_region_realm_name_dict
             )
             if not found_character_in_db
             else found_character_in_db
@@ -74,15 +109,19 @@ class AddCharacterModal(BaseAddRemoveModal):
             character.id, server.id
         )
 
-        if not character_server:
-            await create_character_server(character.id, server.id, 0)
-        else:
+        if character_server:
             await interaction.response.send_message(
                 f"Character already exists in this server: {character_details_for_message}.",
                 ephemeral=True,
             )
             return
 
+        await create_character_server(character.id, server.id, 0)
+
+        if not found_character_in_db:
+            await self.create_character_dungeon_runs_in_db(
+                character_fetch_data, character.id
+            )
         message = f"Character successfully added to the server: {character_details_for_message}."
 
         try:

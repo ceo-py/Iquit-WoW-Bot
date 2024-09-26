@@ -22,6 +22,21 @@ async def get_dungeon_by_short_name(short_name: str) -> Dungeon:
     return dungeon
 
 
+async def get_all_dungeons() -> list[Dungeon]:
+    """
+    Retrieve all Dungeon instances.
+
+    This asynchronous function fetches all Dungeon records from the database.
+
+    Returns:
+    --------
+    list[Dungeon]
+        A list of all Dungeon instances.
+    """
+    dungeons = await Dungeon.all()
+    return dungeons
+
+
 async def create_dungeon(name: str, short_name: str, icon_discord: str) -> Dungeon:
     """
     Create a new Dungeon instance and save it to the database.

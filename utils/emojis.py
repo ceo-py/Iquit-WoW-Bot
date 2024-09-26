@@ -12,7 +12,5 @@ async def get_emojis(type: str) -> Dict[str, str]:
     - Region
     - Character_Role
     """
-    emojis = {
-        emoji.name: emoji.icon_discord for emoji in await get_all_emojis(type)
-    }
+    emojis = {emoji.name: emoji.icon_discord for emoji in await get_all_emojis(type)}
     return emojis
