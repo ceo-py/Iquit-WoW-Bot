@@ -8,7 +8,7 @@ from database.service.character_server_service import (
     create_character_server,
 )
 from database.service.character_service import create_character
-from database.service.dungeon_run_service import create_dungeon_run
+from database.service.dungeon_run_service import update_or_create_dungeon_run
 from database.service.dungeon_service import get_all_dungeons
 
 
@@ -71,7 +71,7 @@ class AddCharacterModal(BaseAddRemoveModal):
                 ],
             }
 
-            await create_dungeon_run(**data)
+            await update_or_create_dungeon_run(**data)
 
     async def on_submit(self, interaction: discord.Interaction) -> None:
         character_fetch_data = await get_wow_character(

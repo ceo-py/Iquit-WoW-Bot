@@ -53,7 +53,7 @@ class PersistentViewBot(commands.Bot):
 
         await self.load_emojis()
 
-        # await self.tree.sync()  # once only to sync CRUD slash command
+        await self.tree.sync()  # once only to sync CRUD slash command
         # print([
         #     channel.id
         #     for server in self.guilds
