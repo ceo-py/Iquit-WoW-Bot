@@ -21,6 +21,13 @@ class PersistentViewBot(commands.Bot):
     def __init__(self):
         intents = discord.Intents.all()
 
+        self.affix_emojis = None
+        self.character_emojis = None
+        self.common_emojis = None
+        self.dungeon_emojis = None
+        self.region_emojis = None
+        self.character_role_emojis = None
+
         super().__init__(
             command_prefix="NoCoMmAnDs!@#", help_command=None, intents=intents
         )
