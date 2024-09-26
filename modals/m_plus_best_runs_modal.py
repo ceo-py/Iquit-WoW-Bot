@@ -17,7 +17,9 @@ class MPlusBestRunsModal(BaseAddRemoveModal):
         self, character: dict, interaction: discord.Interaction
     ) -> str:
         message = [
-            f"{character.get('spec name', '')} {interaction.client.character_emojis.get(character.get('class', '').lower())} **{character.get('name', '')}** Score **{character.get('score', '')}**"
+            f"{character.get('spec name', '')} "
+            f"{interaction.client.character_emojis.get(character.get('class', '').lower())} "
+            f"**{character.get('name', '')}** Score **{character.get('score', '')}**"
         ]
 
         for pos, dungeon_run in enumerate(
@@ -34,7 +36,11 @@ class MPlusBestRunsModal(BaseAddRemoveModal):
             dungeon_name = dungeon_run.get("dungeon", "")
             dungeon_icon = interaction.client.dungeon_emojis.get(dungeon_name)
             message.append(
-                f"**{pos}. {dungeon_name} {dungeon_icon}{affixes}**   {interaction.client.common_emojis.get('keystone')} **{dungeon_run.get('mythic_level')}**{generate_superscript_stars(dungeon_run.get('num_keystone_upgrades'))} {generate_time_message(dungeon_run.get('clear_time_ms', 0), dungeon_run.get('par_time_ms', 0))} Score **{dungeon_run.get('score')}**"
+                f"**{pos}. {dungeon_name} {dungeon_icon}{affixes}**"
+                f"   {interaction.client.common_emojis.get('keystone')} "
+                f"**{dungeon_run.get('mythic_level')}**{generate_superscript_stars(dungeon_run.get('num_keystone_upgrades'))} "
+                f"{generate_time_message(dungeon_run.get('clear_time_ms', 0), dungeon_run.get('par_time_ms', 0))} "
+                f"Score **{dungeon_run.get('score')}**"
             )
 
         return "\n".join(message)
