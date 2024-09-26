@@ -59,6 +59,7 @@ class MPlusBestRunsModal(BaseAddRemoveModal):
                 f"The character {interaction.client.character_emojis.get(character['class'].lower())} "
                 f"**{character['name']}** hasn't completed any Mythic+ dungeons yet.",
             )
+            return
 
         character_data = {
             "name": character.get("name", ""),
