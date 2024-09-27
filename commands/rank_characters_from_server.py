@@ -7,6 +7,8 @@ from database.service.character_server_service import (
 )
 from database.service.character_service import get_characters_by_ids
 
+ADD_COMMAND_MESSAGE = "Please use the **/add** command to add some and see the ranking."
+
 
 @discord.app_commands.command(
     name="rank",
@@ -26,7 +28,14 @@ async def rank(interaction: discord.Interaction):
 
     if not all_characters_in_discord_server_ids:
         await interaction.response.send_message(
-            "This server has no characters yet. Please use the **/add** command to add some and see the ranking."
+            "This server has no characters yet. {ADD_COMMAND_MESSAGE}"
+        )
+        return
+
+    if sum(character.total_rating for character in all_characters) == 0:
+        await interaction.response.send_message(
+            "There are no characters with a rating greater than zero in this server. "
+            f"{ADD_COMMAND_MESSAGE}"
         )
         return
 
