@@ -23,7 +23,6 @@ async def generate_rank_characters_embed(
 ) -> Embed:
 
     region = get_discord_region_base_on_characters(characters)
-    print(region)
 
     embed = discord.Embed(
         title=f"Mythic+ Rankings {WOW_CURRENT_EXPANSION} Season {WOW_CURRENT_SEASON} - Leaderboard",
@@ -39,7 +38,7 @@ async def generate_rank_characters_embed(
 
     embed_fields = [
         {
-            "name": f"**{interaction.client.common_emojis.get(region.lower())} Rating Cutoffs**",
+            "name": f"**{interaction.client.region_emojis.get(region.lower())} Rating Cutoffs**",
             "value": f"```" f"{cut_offs_message}```",
             "inline": False,
         },
