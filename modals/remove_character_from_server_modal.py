@@ -19,13 +19,13 @@ class RemoveCharacterModal(BaseAddRemoveModal):
     async def send_character_not_exist_message_in_db(
         self, interaction: discord.Interaction
     ):
-        await interaction.response.send_message(
+        await interaction.followup.send(
             f"Character does not exist in this server: {self.character_details_for_discord(interaction)}.",
             ephemeral=True,
         )
 
     async def send_success_message(self, interaction: discord.Interaction, character):
-        await interaction.response.send_message(
+        await interaction.followup.send(
             f"Character successfully removed from the server: {interaction.client.character_emojis.get(character.character_class)} {self.character_details_for_discord(interaction)}.",
         )
 
@@ -37,6 +37,7 @@ class RemoveCharacterModal(BaseAddRemoveModal):
             await delete_dungeon_run(character_id)
 
     async def on_submit(self, interaction: discord.Interaction) -> None:
+        await interaction.response.defer()
         found_character_in_db = await self.found_character_in_db()
 
         if not found_character_in_db:

@@ -59,7 +59,7 @@ class BaseAddRemoveModal(ABC, discord.ui.Modal):
     async def send_character_not_exist_message_in_battle_net(
         self, interaction: discord.Interaction
     ) -> None:
-        await interaction.response.send_message(
+        await interaction.followup.send(
             "Unable to find the character. Please ensure you've entered the correct information:\n"
             f"• Region: Check if you've used the correct abbreviation (US, EU, KR, or TW)\n"
             f"• Realm: Verify the realm name and check for any typos\n"

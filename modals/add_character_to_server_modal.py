@@ -74,6 +74,8 @@ class AddCharacterModal(BaseAddRemoveModal):
             await update_or_create_dungeon_run(**data)
 
     async def on_submit(self, interaction: discord.Interaction) -> None:
+
+        await interaction.response.defer()
         character_fetch_data = await get_wow_character(
             self.character_region_realm_name_dict
         )
@@ -110,7 +112,7 @@ class AddCharacterModal(BaseAddRemoveModal):
         )
 
         if character_server:
-            await interaction.response.send_message(
+            await interaction.followup.send(
                 f"Character already exists in this server: {character_details_for_message}.",
                 ephemeral=True,
             )
@@ -125,7 +127,6 @@ class AddCharacterModal(BaseAddRemoveModal):
         message = f"Character successfully added to the server: {character_details_for_message}."
 
         try:
-            await interaction.response.send_message(message)
+            await interaction.followup.send(message)
         except discord.errors.Forbidden as e:
             print(f"AddCharacterModal:\n{e}")
-            await interaction.response.defer()
