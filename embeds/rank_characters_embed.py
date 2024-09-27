@@ -5,8 +5,10 @@ from settings import (
     WOW_CURRENT_SEASON,
     RANK_THUMBNAIL,
     RAIDER_IO_BASE_URL_FOR_RANK,
+    ARCHON_URL,
 )
 from scripts.api.request_cut_off_information import get_wow_cut_offs
+from scripts.api.request_affixes_information import get_wow_affixes
 
 
 def get_discord_region_base_on_characters(characters: list) -> str:
@@ -77,6 +79,11 @@ async def generate_rank_characters_embed(
             "inline": True,
         },
         {
+            "name": "This Week Affixes",
+            "value": f"[{await get_wow_affixes(region)}]({ARCHON_URL})",
+            "inline": False,
+        },
+        {
             "name": f"**World Top Ranks Season {WOW_CURRENT_SEASON} {WOW_CURRENT_EXPANSION}**",
             "value": f"[Mythic+ Rankings for All Classes & Roles]"
             f"({RAIDER_IO_BASE_URL_FOR_RANK}-{WOW_CURRENT_EXPANSION.lower()}-{WOW_CURRENT_SEASON}/world/all/all)\n "
@@ -89,14 +96,6 @@ async def generate_rank_characters_embed(
             "inline": False,
         },
     ]
-    """
-
-    embed.add_field(
-        name="This Week Affixes",
-        value=f"[{get_affixes()}](https://mplus.subcreation.net/index.html)",
-        inline=False,
-    )
-    """
     for fields in embed_fields:
         embed.add_field(**fields)
     return embed
