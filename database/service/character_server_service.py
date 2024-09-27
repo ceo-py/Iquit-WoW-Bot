@@ -1,4 +1,5 @@
 from database.models.character_server import CharacterServer
+from typing import List
 
 
 async def create_character_server(
@@ -53,6 +54,27 @@ async def get_character_by_id_with_server_id(
         character_id=character_id, server_id=server_id
     )
     return character_server
+
+
+async def get_all_characters_from_discord_server_by_id(server_id: int) -> List[CharacterServer]:
+    """
+    Retrieve all CharacterServer instances for a given server ID.
+
+    This asynchronous function fetches all CharacterServer records from the database
+    that match the provided server_id.
+
+    Parameters:
+    -----------
+    server_id : int
+        The ID of the Discord server to retrieve characters for.
+
+    Returns:
+    --------
+    List[CharacterServer]
+        A list of CharacterServer instances associated with the given server_id.
+    """
+    character_servers = await CharacterServer.filter(server_id=server_id)
+    return character_servers
 
 
 async def get_character_by_id(character_id: int) -> CharacterServer:

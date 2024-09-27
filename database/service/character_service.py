@@ -1,5 +1,5 @@
 from database.models.character import Character
-
+from typing import List
 
 async def create_character(
     region: str,
@@ -74,6 +74,27 @@ async def get_character_by_id(character_id: int) -> Character:
     character = await Character.get_or_none(id=character_id)
     return character
 
+async def get_characters_by_ids(character_ids: List[int]) -> List[Character]:
+    """
+    Retrieve multiple Character instances by their IDs.
+
+    This asynchronous function fetches multiple Character records from the database
+    using the provided list of character_ids. It returns a list of Character instances
+    for all the IDs that were found in the database.
+
+    Parameters:
+    -----------
+    character_ids : List[int]
+        A list of Character IDs to be retrieved.
+
+    Returns:
+    --------
+    List[Character]
+        A list of Character instances corresponding to the provided IDs.
+        If an ID is not found, it will not be included in the result.
+    """
+    characters = await Character.filter(id__in=character_ids)
+    return characters
 
 async def get_character_by_region_realm_name(
     region: str, realm: str, name: str
