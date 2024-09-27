@@ -56,7 +56,9 @@ async def get_character_by_id_with_server_id(
     return character_server
 
 
-async def get_all_characters_from_discord_server_by_id(server_id: int) -> List[CharacterServer]:
+async def get_all_characters_from_discord_server_by_id(
+    server_id: int,
+) -> List[CharacterServer]:
     """
     Retrieve all CharacterServer instances for a given server ID.
 
