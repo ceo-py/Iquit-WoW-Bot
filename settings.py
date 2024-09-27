@@ -42,6 +42,7 @@ WOW_LOG_BASE_URL = CONFIG["WOW_LOG_BASE_URL"]
 
 # PICTURES
 GEAR_PROGRESSION = CONFIG["GEAR_PROGRESSION"]
+RANK_THUMBNAIL = "https://github.com/ceo-py/Project-Pictures/blob/main/Iquit/rank_command_thumb.png?raw=true"
 
 # GUIDES LINK
 WOWHEAD_SEASON_GEAR_GUIDE = CONFIG["WOWHEAD_SEASON_GEAR_GUIDE"]

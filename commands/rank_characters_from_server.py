@@ -29,7 +29,7 @@ async def rank(interaction: discord.Interaction):
         )
         return
 
-    rank_embed = generate_rank_characters_embed(all_characters, interaction)
+    rank_embed = await generate_rank_characters_embed(all_characters, interaction)
     await interaction.response.send_message(embed=rank_embed)
 
 
