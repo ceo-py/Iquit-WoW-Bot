@@ -1,0 +1,13 @@
+TOKEN = discord bot token from => https://discord.com/developers/applications
+
+**DATABASE IS PostgreSQL**
+DB_NAME = DATABASE NAME
+DB_USER = DATABASE USERNAME
+DB_PASSWORD = DATABASE PASSWORD
+DB_HOST = DATABASE IP
+DB_PORT = DATABASE PORT
+
+BATTLE_CLIENT_ID = BATTLE NET CLIENT ID FROM => https://develop.battle.net/access/clients
+BATTLE_CLIENT_SECRET = BATTLE NET CLIENT SECRET FROM => https://develop.battle.net/access/clients
+
+DISCORD_CHANNEL_NAME = NAME OF THE DISCORD CHANNEL WHERE BOT WILL ANSWER
