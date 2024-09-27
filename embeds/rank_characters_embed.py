@@ -95,6 +95,6 @@ async def generate_rank_characters_embed(
             "inline": False,
         },
     ]
-    for fields in embed_fields:
-        embed.add_field(**fields)
+
+    [embed.add_field(**fields) for fields in embed_fields]
     return embed
