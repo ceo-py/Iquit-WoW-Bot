@@ -28,7 +28,7 @@ async def rank(interaction: discord.Interaction):
 
     if not all_characters_in_discord_server_ids:
         await interaction.response.send_message(
-            "This server has no characters yet. {ADD_COMMAND_MESSAGE}"
+            f"This server has no characters yet. {ADD_COMMAND_MESSAGE}"
         )
         return
 
