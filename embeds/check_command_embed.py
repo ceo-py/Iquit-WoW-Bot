@@ -38,7 +38,7 @@ async def generate_check_embed(
     keystone_icon = interaction.client.common_emojis.get("keystone")
 
     embed = Embed(
-        title=f"{character_icon} {name}, {active_spec_name}, {gear_ilvl} ILVL",
+        title=f"{active_spec_name} {character_icon} {name} {gear_ilvl} Ilvl",
         description=f"**Mythic+ Score**",
         colour=Colour.gold(),
     )
@@ -82,12 +82,12 @@ async def generate_check_embed(
             "inline": False,
         },
         {
-            "name": f"**Level**{keystone_icon}",
+            "name": f"**{keystone_icon} Level**",
             "value": f"{dungeon_key_lvl}",
             "inline": True,
         },
         {
-            "name": f"**Upgrade**{keystone_icon}",
+            "name": f"**{keystone_icon} Upgrade**",
             "value": f"{dungeon_upgrade}",
             "inline": True,
         },
