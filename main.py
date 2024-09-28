@@ -5,7 +5,7 @@ import settings
 from discord.ext import commands
 from database.db import init_db
 from commands import load_commands
-from views.add_character_to_server_view import ButtonsCharacterStatistics
+from views.buttons_character_statistics import ButtonsCharacterStatistics
 from utils.emojis import get_emojis
 
 
