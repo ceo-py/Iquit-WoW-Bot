@@ -20,6 +20,12 @@ async def rank(interaction: discord.Interaction):
 
     discord_server_instance = await get_server_by_discord_id(interaction.channel_id)
 
+    if not discord_server_instance:
+        await interaction.response.send_message(
+            f"This server has no characters yet. {ADD_COMMAND_MESSAGE}"
+        )
+        return
+
     all_characters_in_discord_server_ids = (
         await get_all_characters_from_discord_server_by_id(discord_server_instance.id)
     )
