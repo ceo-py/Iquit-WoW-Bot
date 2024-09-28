@@ -1,12 +1,6 @@
 from settings import RAIDER_IO_BASE_URL_FOR_CHARACTER
 from utils.super_scripts_text import generate_superscript_numbers
-
-TYPES = {
-    "total": "total_rating",
-    "dps": "dps_rating",
-    "heal": "healer_rating",
-    "tank": "tank_rating",
-}
+from settings import CHARACTER_ROLES
 
 
 def filter_and_sort_characters_by_role(characters: list, role: str) -> list:
@@ -29,9 +23,9 @@ def filter_and_sort_characters_by_role(characters: list, role: str) -> list:
         [
             char
             for char in characters
-            if getattr(char, TYPES.get(role, "total_rating")) > 0
+            if getattr(char, CHARACTER_ROLES.get(role, "total_rating")) > 0
         ],
-        key=lambda x: (-getattr(x, TYPES.get(role, "total_rating")), x.name),
+        key=lambda x: (-getattr(x, CHARACTER_ROLES.get(role, "total_rating")), x.name),
     )
 
 
@@ -57,7 +51,7 @@ def format_ranks_for_embed(characters: list, role: str, positions: int) -> str:
 
     for pos, character in enumerate(sorted_characters[:positions]):
         rating = generate_superscript_numbers(
-            getattr(character, TYPES.get(role, "total_rating"))
+            getattr(character, CHARACTER_ROLES.get(role, "total_rating"))
         )
         output[pos] = (
             f"[{pos + 1}.{character.name.capitalize()} {rating}]({RAIDER_IO_BASE_URL_FOR_CHARACTER}"

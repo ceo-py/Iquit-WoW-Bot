@@ -51,3 +51,14 @@ RANK_THUMBNAIL = "https://github.com/ceo-py/Project-Pictures/blob/main/Iquit/ran
 WOWHEAD_SEASON_GEAR_GUIDE = (
     "https://www.wowhead.com/guide/the-war-within/season-1-gearing"
 )
+
+# DISCORD
+MESSAGE_CHARACTER_LIMIT = 2000
+
+# CHARACTER ROLES
+CHARACTER_ROLES = {
+    "total": "total_rating",
+    "dps": "dps_rating",
+    "heal": "healer_rating",
+    "tank": "tank_rating",
+}
