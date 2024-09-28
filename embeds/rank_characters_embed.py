@@ -9,6 +9,7 @@ from settings import (
 )
 from utils.api.request_cut_off_information import get_wow_cut_offs
 from utils.api.request_affixes_information import get_wow_affixes
+from utils.character.character_ranking import sort_ranks_base_on_role
 
 
 def get_discord_region_base_on_characters(characters: list) -> str:
@@ -29,6 +30,14 @@ async def generate_rank_characters_embed(
         colour=discord.Colour.blue(),
     )
     embed.set_thumbnail(url=RANK_THUMBNAIL)
+
+    sorted_characters = sort_ranks_base_on_role(characters, "dps")
+
+    for x in characters:
+        print(x.total_rating)
+
+    for character in sorted_characters:
+        print(character.total_rating)
 
     cut_offs = await get_wow_cut_offs(region, WOW_CURRENT_EXPANSION, WOW_CURRENT_SEASON)
     cut_offs_message = None
