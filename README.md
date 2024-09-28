@@ -59,7 +59,8 @@ Add a character to the server's list for tracking and ranking in Mythic Plus.
   - `region`: The player's region (e.g., `eu`, `us`, `kr`, `tw`).
   - `realm`: The player's server.
   - `character name`: The character's name.
-- **Output**: The character is added to the Discord server for tracking, and their data will be available in future `/rank` or `/check` commands.
+
+- **Output**: Character added to server tracking. Will appear in `/rank` and receive announcements for rating updates.
 
 ### `/remove`
 Remove a character from the server's tracking list.
@@ -69,7 +70,7 @@ Remove a character from the server's tracking list.
   - `region`: The player's region.
   - `realm`: The player's server.
   - `character name`: The character's name.
-- **Output**: The character is removed from the server, and their data will no longer be included in `/rank` or `/check` results.
+- **Output**: The character is removed from the server, and their data will no longer be included in `/rank` and announcements.
 
 ### `/gear`
 Provides a link to a gear guide and a picture showing gear progression for your character.
