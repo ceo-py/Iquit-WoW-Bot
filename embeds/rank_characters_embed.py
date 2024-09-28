@@ -9,7 +9,7 @@ from settings import (
 )
 from utils.api.request_cut_off_information import get_wow_cut_offs
 from utils.api.request_affixes_information import get_wow_affixes
-from utils.character.character_ranking import sort_ranks_base_on_role
+from utils.character.character_ranking import format_ranks_for_embed
 
 
 def get_discord_region_base_on_characters(characters: list) -> str:
@@ -31,13 +31,10 @@ async def generate_rank_characters_embed(
     )
     embed.set_thumbnail(url=RANK_THUMBNAIL)
 
-    sorted_characters = sort_ranks_base_on_role(characters, "dps")
-
-    for x in characters:
-        print(x.total_rating)
-
-    for character in sorted_characters:
-        print(character.total_rating)
+    characters_with_total_rating = format_ranks_for_embed(characters, "total", 9)
+    characters_with_dps_rating = format_ranks_for_embed(characters, "dps", 3)
+    characters_with_heal_rating = format_ranks_for_embed(characters, "heal", 3)
+    characters_with_tank_rating = format_ranks_for_embed(characters, "tank", 3)
 
     cut_offs = await get_wow_cut_offs(region, WOW_CURRENT_EXPANSION, WOW_CURRENT_SEASON)
     cut_offs_message = None
@@ -53,17 +50,17 @@ async def generate_rank_characters_embed(
         },
         {
             "name": "**:regional_indicator_t::regional_indicator_o::regional_indicator_p: :nine:**",
-            "value": "",
+            "value": "\n".join(str(c) for c in characters_with_total_rating[:3]),
             "inline": True,
         },
         {
             "name": ":arrow_down_small:",
-            "value": "",
+            "value": "\n".join(str(c) for c in characters_with_total_rating[3:6]),
             "inline": True,
         },
         {
             "name": ":arrow_down_small:",
-            "value": "",
+            "value": "\n".join(str(c) for c in characters_with_total_rating[6:]),
             "inline": True,
         },
         {
@@ -73,17 +70,17 @@ async def generate_rank_characters_embed(
         },
         {
             "name": f"{interaction.client.character_role_emojis.get('dps')}",
-            "value": "",
+            "value": "\n".join(str(c) for c in characters_with_dps_rating),
             "inline": True,
         },
         {
             "name": f"{interaction.client.character_role_emojis.get('healer')}",
-            "value": "",
+            "value": "\n".join(str(c) for c in characters_with_heal_rating),
             "inline": True,
         },
         {
             "name": f"{interaction.client.character_role_emojis.get('tank')}",
-            "value": "",
+            "value": "\n".join(str(c) for c in characters_with_tank_rating),
             "inline": True,
         },
         {

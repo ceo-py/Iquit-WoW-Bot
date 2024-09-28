@@ -16,6 +16,7 @@ BOT_CHANNEL_NAME = CONFIG["DISCORD_CHANNEL_NAME"]
 
 # SETTINGS RAIDER IO
 RAIDER_IO_BASE_URL_FOR_RANK = "https://raider.io/mythic-plus-character-rankings/season"
+RAIDER_IO_BASE_URL_FOR_CHARACTER = "https://raider.io/characters"
 WOW_API_URL = "https://raider.io/api/v1"
 ALTERNATIVE_RUN_FIELDS = "mythic_plus_alternate_runs"
 BEST_RUN_FIELDS = "mythic_plus_best_runs"

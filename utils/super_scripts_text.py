@@ -11,7 +11,7 @@ def generate_superscript_numbers(numbers: int) -> str:
         "8": "⁸",
         "9": "⁹",
     }
-    return ("").join(numbers_superscript[x] for x in str(numbers))
+    return ("").join(numbers_superscript[x] for x in str(int(numbers)))
 
 
 def generate_superscript_stars(stars: int) -> str:
