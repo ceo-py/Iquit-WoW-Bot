@@ -25,8 +25,6 @@ The bot automatically checks all characters in the server every 15 minutes for a
 - **Character name and new rating**: Includes the role icon and rating change.
 - **Rank position**: Shows the character's new rank or if they remain in the same position.
 - **Dungeon details**: Displays the completed dungeons with time remaining, score, and level.
-
-### Example Announcement:
 ![alt text](https://github.com/ceo-py/Iquit-WoW-Bot/blob/main/pictures/announcement_example.png)
 
 ### `/check`
