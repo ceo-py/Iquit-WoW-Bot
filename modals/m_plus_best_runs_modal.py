@@ -1,4 +1,5 @@
 import discord
+from settings import MESSAGE_CHARACTER_LIMIT
 from .base_modal_add_remove_character import BaseAddRemoveModal
 from utils.api.request_character_information import get_wow_character
 from utils.dungeon.calculate_dungeon_time import (
@@ -73,6 +74,20 @@ class MPlusBestRunsModal(BaseAddRemoveModal):
             "dungeon runs": dungeon_runs,
         }
 
-        await interaction.followup.send(
-            self.generate_m_plus_best_runs_message(character_data, interaction)
+        message_full = self.generate_m_plus_best_runs_message(
+            character_data, interaction
         )
+
+        messages = []
+        current_chunk = ""
+        for current_row in message_full.split("\n"):
+            if len(current_chunk) + len(current_row) + 1 > MESSAGE_CHARACTER_LIMIT:
+                messages.append(current_chunk)
+                current_chunk = ""
+            current_chunk += f"{current_row}\n"
+
+        if current_chunk:
+            messages.append(current_chunk)
+
+        for message in messages:
+            await interaction.followup.send(message)
