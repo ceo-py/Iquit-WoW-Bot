@@ -11,6 +11,8 @@ class CheckCharacterModal(BaseAddRemoveModal):
         super().__init__(title=self.TITLE, *args, **kwargs)
 
     async def on_submit(self, interaction: discord.Interaction) -> None:
+
+        await interaction.response.defer()
         character = await get_wow_character_check(self.character_region_realm_name_dict)
 
         if character.get("statusCode") != 200 and not character.get("name"):
@@ -68,4 +70,4 @@ class CheckCharacterModal(BaseAddRemoveModal):
             interaction,
         )
 
-        await interaction.response.send_message(embed=check_embed)
+        await interaction.followup.send(embed=check_embed)
