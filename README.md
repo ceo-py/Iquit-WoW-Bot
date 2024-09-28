@@ -40,7 +40,6 @@ Displays detailed character information after you provide the character's region
   - Raidbots for simulation results.
   - Archon for simulation results.
   - World of Warcraft for character information.
-![alt text](https://raw.githubusercontent.com/ceo-py/Iquit-WoW-Bot/refs/heads/main/pictures/check_example.png)
 
 ### `/token`
 Shows the up-to-date price of the WoW token for your region.
@@ -49,7 +48,6 @@ Shows the up-to-date price of the WoW token for your region.
 - **Parameters**: 
   - `region`: The region for which you want the token price (e.g., `eu`, `us`, `kr`, `tw`).
 - **Output**: The current token price for the specified region.
-![alt text](https://raw.githubusercontent.com/ceo-py/Iquit-WoW-Bot/refs/heads/main/pictures/token_example.png)
 
 ### `/add`
 Add a character to the server's list for tracking and ranking in Mythic Plus.
@@ -77,7 +75,6 @@ Provides a link to a gear guide and a picture showing gear progression for your 
 
 - **Usage**: `/gear`
 - **Output**: A link to a comprehensive gear guide and a visual representation of gear progression.
-![alt text](https://raw.githubusercontent.com/ceo-py/Iquit-WoW-Bot/refs/heads/main/pictures/gear_exmaple.png)
 
 ## Getting Started
 
