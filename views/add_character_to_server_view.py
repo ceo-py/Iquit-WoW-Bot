@@ -1,5 +1,4 @@
 import discord
-from utils.emojis import get_emojis
 from modals.add_character_to_server_modal import AddCharacterModal
 from database.service.server_service import get_server_by_discord_id
 from database.service.character_server_service import (
@@ -21,8 +20,6 @@ class ButtonsCharacterStatistics(discord.ui.View):
 
         if not discord_server_instance:
             return "This server has no characters yet. Please use the /add command to add some and see the ranking."
-            
-            
 
         all_characters_in_discord_server_ids = (
             await get_all_characters_from_discord_server_by_id(
