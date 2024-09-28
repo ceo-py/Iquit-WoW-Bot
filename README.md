@@ -9,6 +9,7 @@ A Discord bot for World of Warcraft (WoW) players, designed specifically for Myt
 - **Check Character Information**: View detailed character data such as item level, raid progression, last Mythic dungeon completed, and links for selected character to Raidbots, Wowhead, Wowprogress and Archon.
 - **View WoW Token Prices**: Stay up to date with WoW token prices for your region.
 - **Interactive Gear Guide**: Access gear guides and gear progression tips, all with just one command.
+- **Mythic Plus Dungeon Records**: On use it will display a character's best record for each Mythic Plus dungeon, including affixes, key level, time, and score.
 
 ## Commands
 
@@ -26,6 +27,22 @@ The bot automatically checks all characters in the server every 15 minutes for a
 - **Rank position**: Shows the character's new rank or if they remain in the same position.
 - **Dungeon details**: Displays the completed dungeons with time remaining, score, and level.
 ![alt text](https://github.com/ceo-py/Iquit-WoW-Bot/blob/main/pictures/announcement_example.png)
+
+### `/mplus`
+Displays information about a character's Mythic Plus dungeon records for the current season.
+
+- **Usage**: `/mplus`
+- **Parameters**:
+  - `region`: The player's region (e.g., `eu`, `us`, `kr`, `tw`).
+  - `realm`: The player's server.
+  - `character name`: The character's name.
+
+- **Output**: Shows detailed information for each Mythic Plus dungeon completed by the character, including:
+  - Dungeon name
+  - Key level
+  - Affixes
+  - Dungeon score
+  - Un/Completion time
 
 ### `/check`
 Displays detailed character information after you provide the character's region, realm, and name.
