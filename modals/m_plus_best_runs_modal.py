@@ -46,6 +46,7 @@ class MPlusBestRunsModal(BaseAddRemoveModal):
         return "\n".join(message)
 
     async def on_submit(self, interaction: discord.Interaction) -> None:
+        await interaction.response.defer()
         character = await get_wow_character(self.character_region_realm_name_dict)
 
         if character.get("statusCode") != 200 and not character.get("name"):
@@ -55,7 +56,7 @@ class MPlusBestRunsModal(BaseAddRemoveModal):
         dungeon_runs = character.get("mythic_plus_best_runs", [])
 
         if not dungeon_runs:
-            await interaction.response.send_message(
+            await interaction.followup.send(
                 f"The character {interaction.client.character_emojis.get(character['class'].lower())} "
                 f"**{character['name']}** hasn't completed any Mythic+ dungeons yet.",
             )
@@ -72,6 +73,6 @@ class MPlusBestRunsModal(BaseAddRemoveModal):
             "dungeon runs": dungeon_runs,
         }
 
-        await interaction.response.send_message(
+        await interaction.followup.send(
             self.generate_m_plus_best_runs_message(character_data, interaction)
         )
