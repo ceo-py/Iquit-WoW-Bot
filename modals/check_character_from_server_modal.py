@@ -1,6 +1,6 @@
 import discord
 from .base_modal_add_remove_character import BaseAddRemoveModal
-from scripts.api.request_character_information import get_wow_character_check
+from utils.api.request_character_information import get_wow_character_check
 from embeds.check_command_embed import generate_check_embed
 
 

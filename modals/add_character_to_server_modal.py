@@ -1,7 +1,7 @@
 import discord
 from .base_modal_add_remove_character import BaseAddRemoveModal
 from database.models.character import Character
-from scripts.api.request_character_information import get_wow_character
+from utils.api.request_character_information import get_wow_character
 from database.service.server_service import get_server_by_discord_id, create_server
 from database.service.character_server_service import (
     get_character_by_id_with_server_id,

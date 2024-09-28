@@ -1,6 +1,6 @@
 import discord
 from .base_modal_add_remove_character import BaseAddRemoveModal
-from scripts.api.request_character_information import get_wow_character
+from utils.api.request_character_information import get_wow_character
 from utils.dungeon.calculate_dungeon_time import (
     generate_calculated_dungeon_time_message_for_discord as generate_time_message,
 )

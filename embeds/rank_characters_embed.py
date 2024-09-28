@@ -7,8 +7,8 @@ from settings import (
     RAIDER_IO_BASE_URL_FOR_RANK,
     ARCHON_URL,
 )
-from scripts.api.request_cut_off_information import get_wow_cut_offs
-from scripts.api.request_affixes_information import get_wow_affixes
+from utils.api.request_cut_off_information import get_wow_cut_offs
+from utils.api.request_affixes_information import get_wow_affixes
 
 
 def get_discord_region_base_on_characters(characters: list) -> str:
