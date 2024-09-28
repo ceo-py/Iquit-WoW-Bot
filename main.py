@@ -5,7 +5,7 @@ import settings
 from discord.ext import commands
 from database.db import init_db
 from commands import load_commands
-from views.add_character_to_server_view import AddCharacterButton
+from views.add_character_to_server_view import ButtonsCharacterStatistics
 from utils.emojis import get_emojis
 
 
@@ -63,7 +63,7 @@ class PersistentViewBot(commands.Bot):
         print("Ready")
 
     async def setup_hook(self) -> None:
-        self.add_view(AddCharacterButton())
+        self.add_view(ButtonsCharacterStatistics())
 
 
 client = PersistentViewBot()

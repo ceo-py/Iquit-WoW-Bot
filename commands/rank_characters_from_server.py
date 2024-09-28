@@ -1,4 +1,5 @@
 import discord
+from views.add_character_to_server_view import ButtonsCharacterStatistics
 from utils.in_correct_channel import in_correct_channel
 from embeds.rank_characters_embed import generate_rank_characters_embed
 from database.service.server_service import get_server_by_discord_id
@@ -40,7 +41,9 @@ async def rank(interaction: discord.Interaction):
         return
 
     rank_embed = await generate_rank_characters_embed(all_characters, interaction)
-    await interaction.response.send_message(embed=rank_embed)
+    await interaction.response.send_message(
+        embed=rank_embed, view=ButtonsCharacterStatistics()
+    )
 
 
 def setup(client):
