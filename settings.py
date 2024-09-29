@@ -24,8 +24,8 @@ CURRENT_SEASON_SCORE = "mythic_plus_scores_by_season:current"
 RAID_PROGRESSION = "raid_progression"
 GEAR = "gear"
 MYTHIC_PLUS_RECENT_RUNS = "mythic_plus_recent_runs"
-SLEEPING_TIME = 69
-CHUNK_SIZE = 300
+WAITING_TIME = 60
+MAX_REQUESTS_PER_MINUTE = 300
 
 # WOW
 TOKEN_PICTURE_URL = "https://media.forgecdn.net/avatars/thumbnails/958/807/256/256/638453397304438536.jpeg"
