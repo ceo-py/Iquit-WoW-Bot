@@ -4,7 +4,6 @@ from utils.generate_api_url_for_char_fetch import (
     generate_api_url_for_char_fetch,
     generate_api_url_for_char_fetch_check,
 )
-from utils.chunked_iterable import chunked_iterable
 from .rate_limiter import rate_limiter
 from typing import List
 
