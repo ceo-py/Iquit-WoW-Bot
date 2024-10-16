@@ -1,10 +1,10 @@
 import discord
-from .base_modal_add_remove_character import BaseAddRemoveModal
+from .base_character_modal import BaseCharacterModal
 from utils.api.request_character_information import get_wow_character_check
 from embeds.check_command_embed import generate_check_embed
 
 
-class CheckCharacterModal(BaseAddRemoveModal):
+class CheckCharacterModal(BaseCharacterModal):
     TITLE = "Check Character Progression"
 
     def __init__(self, *args, **kwargs):

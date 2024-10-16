@@ -5,7 +5,7 @@ from database.service.character_service import get_character_by_region_realm_nam
 from database.models.character import Character
 
 
-class BaseAddRemoveModal(ABC, discord.ui.Modal):
+class BaseCharacterModal(ABC, discord.ui.Modal):
     CHARACTER_MAIN_DETAILS = ["region", "realm", "name"]
     CHARACTER_DETAILS = [
         "character_class",

@@ -1,6 +1,6 @@
 import discord
 from settings import MESSAGE_CHARACTER_LIMIT
-from .base_modal_add_remove_character import BaseAddRemoveModal
+from .base_character_modal import BaseCharacterModal
 from utils.api.request_character_information import get_wow_character
 from utils.dungeon.calculate_dungeon_time import (
     generate_calculated_dungeon_time_message_for_discord as generate_time_message,
@@ -8,7 +8,7 @@ from utils.dungeon.calculate_dungeon_time import (
 from utils.super_scripts_text import generate_superscript_stars
 
 
-class MPlusBestRunsModal(BaseAddRemoveModal):
+class MPlusBestRunsModal(BaseCharacterModal):
     TITLE = "Show top Mythic+ runs across all dungeons."
 
     def __init__(self, *args, **kwargs):

@@ -1,9 +1,9 @@
 import discord
-from .base_modal_add_remove_character import BaseAddRemoveModal
+from .base_character_modal import BaseCharacterModal
 from utils.api.request_character_information import get_wow_character
 
 
-class RatingPlannerModal(BaseAddRemoveModal):
+class RatingPlannerModal(BaseCharacterModal):
     TITLE = "Rating Planner"
 
     def __init__(self, *args, **kwargs):
@@ -42,7 +42,7 @@ class RatingPlannerModal(BaseAddRemoveModal):
                 f"Please enter a valid key level between 2 and 20.",
             )
             return
-        
+
         if not self.target_rating.value.isdigit():
             await interaction.followup.send(
                 f"Please enter a valid Mythic+ rating you want to achieve.",

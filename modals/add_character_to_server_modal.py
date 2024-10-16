@@ -1,5 +1,5 @@
 import discord
-from .base_modal_add_remove_character import BaseAddRemoveModal
+from .base_character_modal import BaseCharacterModal
 from database.models.character import Character
 from utils.api.request_character_information import get_wow_character
 from database.service.server_service import get_server_by_discord_id, create_server
@@ -12,7 +12,7 @@ from database.service.dungeon_run_service import update_or_create_dungeon_run
 from database.service.dungeon_service import get_all_dungeons
 
 
-class AddCharacterModal(BaseAddRemoveModal):
+class AddCharacterModal(BaseCharacterModal):
     TITLE = "Add Character to Server"
 
     def __init__(self, *args, **kwargs):

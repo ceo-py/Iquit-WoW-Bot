@@ -1,5 +1,5 @@
 import discord
-from .base_modal_add_remove_character import BaseAddRemoveModal
+from .base_character_modal import BaseCharacterModal
 from database.service.character_server_service import (
     get_character_by_id_with_server_id,
     delete_character_from_server,
@@ -10,7 +10,7 @@ from database.service.character_service import delete_character
 from database.service.dungeon_run_service import delete_dungeon_run
 
 
-class RemoveCharacterModal(BaseAddRemoveModal):
+class RemoveCharacterModal(BaseCharacterModal):
     TITLE = "Remove Character from Server"
 
     def __init__(self, *args, **kwargs):
