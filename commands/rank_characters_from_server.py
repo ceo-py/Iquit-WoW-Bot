@@ -17,11 +17,12 @@ ADD_COMMAND_MESSAGE = "Please use the **/add** command to add some and see the r
 )
 @in_correct_channel()
 async def rank(interaction: discord.Interaction):
+    await interaction.response.defer()
 
     discord_server_instance = await get_server_by_discord_id(interaction.channel_id)
 
     if not discord_server_instance:
-        await interaction.response.send_message(
+        await interaction.followup.send(
             f"This server has no characters yet. {ADD_COMMAND_MESSAGE}"
         )
         return
@@ -34,20 +35,20 @@ async def rank(interaction: discord.Interaction):
     )
 
     if not all_characters_in_discord_server_ids:
-        await interaction.response.send_message(
+        await interaction.followup.send(
             f"This server has no characters yet. {ADD_COMMAND_MESSAGE}"
         )
         return
 
     if sum(character.total_rating for character in all_characters) == 0:
-        await interaction.response.send_message(
+        await interaction.followup.send(
             "There are no characters with a rating greater than zero in this server. "
             f"{ADD_COMMAND_MESSAGE}"
         )
         return
 
     rank_embed = await generate_rank_characters_embed(all_characters, interaction)
-    await interaction.response.send_message(
+    await interaction.followup.send(
         embed=rank_embed, view=ButtonsCharacterStatistics()
     )
 

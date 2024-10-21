@@ -18,9 +18,10 @@ async def gear(interaction: discord.Interaction):
     Returns:
         None
     """
+    await interaction.response.defer()
     gear_embed = await generate_gear_embed()
 
-    await interaction.response.send_message(embed=gear_embed)
+    await interaction.followup.send(embed=gear_embed)
 
 
 def setup(client):
