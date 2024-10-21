@@ -26,37 +26,33 @@ class RatingPlannerModal(BaseCharacterModal):
     async def on_submit(self, interaction: discord.Interaction) -> None:
 
         await interaction.response.defer()
+        not_correct_input_fields_error_message = []
 
         character = await get_wow_character(self.character_region_realm_name_dict)
 
         if character.get("statusCode") != 200 and not character.get("name"):
             await self.send_character_not_exist_message_in_battle_net(interaction)
             return
-        
+
         if (
             not self.max_key_level.value.isdigit()
             or int(self.max_key_level.value) < 2
             or float(self.max_key_level.value) > 20
         ):
-            await interaction.followup.send(
-                f"Please enter a valid key level between 2 and 20.",
-            )
-            return
+            not_correct_input_fields_error_message.append(
+                "Please enter a valid key level between 2 and 20.")
 
         if not self.target_rating.value.isdigit():
-            await interaction.followup.send(
-                f"Please enter a valid Mythic+ rating you want to achieve.",
-            )
-            return
+            not_correct_input_fields_error_message.append("Please enter a valid Mythic+ rating you want to achieve.")
 
         character_details_message = f"{interaction.client.character_emojis.get(character.get('class').lower())} {self.character_details_for_discord(interaction)}"
         top_character_runs = character.get("mythic_plus_best_runs", [])
 
         if not top_character_runs:
-            await interaction.followup.send(
-                f"No Mythic+ runs found for {character_details_message}"
-            )
-            return
+            not_correct_input_fields_error_message.append(f"No Mythic+ runs found for {character_details_message}")
+
+        if not_correct_input_fields_error_message:
+            return await interaction.followup.send("\n".join(not_correct_input_fields_error_message))
 
         try:
             await interaction.followup.send(character_details_message)
