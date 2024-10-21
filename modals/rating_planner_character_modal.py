@@ -40,19 +40,26 @@ class RatingPlannerModal(BaseCharacterModal):
             or float(self.max_key_level.value) > 20
         ):
             not_correct_input_fields_error_message.append(
-                "Please enter a valid key level between 2 and 20.")
+                "Please enter a valid key level between 2 and 20."
+            )
 
         if not self.target_rating.value.isdigit():
-            not_correct_input_fields_error_message.append("Please enter a valid Mythic+ rating you want to achieve.")
+            not_correct_input_fields_error_message.append(
+                "Please enter a valid Mythic+ rating you want to achieve."
+            )
 
         character_details_message = f"{interaction.client.character_emojis.get(character.get('class').lower())} {self.character_details_for_discord(interaction)}"
         top_character_runs = character.get("mythic_plus_best_runs", [])
 
         if not top_character_runs:
-            not_correct_input_fields_error_message.append(f"No Mythic+ runs found for {character_details_message}")
+            not_correct_input_fields_error_message.append(
+                f"No Mythic+ runs found for {character_details_message}"
+            )
 
         if not_correct_input_fields_error_message:
-            return await interaction.followup.send("\n".join(not_correct_input_fields_error_message))
+            return await interaction.followup.send(
+                "\n".join(not_correct_input_fields_error_message)
+            )
 
         try:
             await interaction.followup.send(character_details_message)

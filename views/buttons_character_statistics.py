@@ -39,11 +39,12 @@ class ButtonsCharacterStatistics(discord.ui.View):
         output = ""
 
         for pos, character in enumerate(all_characters, 1):
+            character_message = f"{pos}.{character.name.capitalize()}: {int(getattr(character, CHARACTER_ROLES.get(role, 'total_rating')))}\n"
 
-            if len(output) + len(character.name) > MESSAGE_CHARACTER_LIMIT:
+            if len(output) + len(character_message) > MESSAGE_CHARACTER_LIMIT:
                 break
 
-            output += f"{pos}.{character.name.capitalize()}: {int(getattr(character, CHARACTER_ROLES.get(role, 'total_rating')))}\n"
+            output += character_message
 
         return (
             output
