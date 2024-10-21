@@ -84,6 +84,7 @@ async def generate_rank_characters_embed(
     characters: list, interaction: discord.Interaction
 ) -> Embed:
 
+    RANK_URL_RAIDER_IO = f"{RAIDER_IO_BASE_URL_FOR_RANK}-{WOW_CURRENT_EXPANSION.lower()}-{WOW_CURRENT_SEASON}/world/all"
     region = get_discord_region_base_on_characters(characters)
 
     embed = discord.Embed(
@@ -149,13 +150,13 @@ async def generate_rank_characters_embed(
         {
             "name": f"**World Top Ranks Season {WOW_CURRENT_SEASON} {WOW_CURRENT_EXPANSION}**",
             "value": f"[Mythic+ Rankings for All Classes & Roles]"
-            f"({RAIDER_IO_BASE_URL_FOR_RANK}-{WOW_CURRENT_EXPANSION.lower()}-{WOW_CURRENT_SEASON}/world/all/all)\n "
+            f"({RANK_URL_RAIDER_IO}/all)\n "
             f"[Mythic+ Rankings for All Tanks]"
-            f"({RAIDER_IO_BASE_URL_FOR_RANK}-{WOW_CURRENT_EXPANSION.lower()}-{WOW_CURRENT_SEASON}/world/all/tank)\n "
+            f"({RANK_URL_RAIDER_IO}/tank)\n "
             f"[Mythic+ Rankings for All Healers]"
-            f"({RAIDER_IO_BASE_URL_FOR_RANK}-{WOW_CURRENT_EXPANSION.lower()}-{WOW_CURRENT_SEASON}/world/all/healer)\n "
+            f"({RANK_URL_RAIDER_IO}/healer)\n "
             f"[Mythic+ Rankings for All DPS]"
-            f"({RAIDER_IO_BASE_URL_FOR_RANK}-{WOW_CURRENT_EXPANSION.lower()}-{WOW_CURRENT_SEASON}/world/all/dps)",
+            f"({RANK_URL_RAIDER_IO}/dps)",
             "inline": False,
         },
     ]
