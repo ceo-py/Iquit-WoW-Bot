@@ -17,8 +17,9 @@ class MPlusBestRunsModal(BaseCharacterModal):
     def generate_m_plus_best_runs_message(
         self, character: dict, interaction: discord.Interaction
     ) -> str:
+        character_spec = character.get('spec name')
         message = [
-            f"{character.get('spec name', '')} "
+            f"{character_spec if str(character_spec) != 'None' else ''} "
             f"{interaction.client.character_emojis.get(character.get('class', '').lower())} "
             f"**{character.get('name', '')}** Score **{character.get('score', '')}**"
         ]
