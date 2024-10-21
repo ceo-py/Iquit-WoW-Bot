@@ -48,30 +48,35 @@ def generate_cut_off_message(
             side: cut_off_top.get(side, {}).get("quantileMinValue", 0) for side in sides
         }
 
-    output = [
-        {
-            "name": f"**{region_icon}{horde_icon}{alliance_icon} Cutoffs**",
-            "value": "\n".join(
-                f'Top {str(cut_off_key)}% - {cut_offs_number_ranks.get(cut_off_key, {}).get("all")}'
-                for cut_off_key in cut_offs_number_ranks
-            ),
-            "inline": True,
-        },
-        {
-            "name": f"{horde_icon}",
-            "value": "\n".join(
-                f'{str(r.get("horde"))}' for r in cut_offs_number_ranks.values()
-            ),
-            "inline": True,
-        },
-        {
-            "name": f"{alliance_icon}",
-            "value": "\n".join(
-                f'{str(r.get("alliance"))}' for r in cut_offs_number_ranks.values()
-            ),
-            "inline": True,
-        },
-    ]
+    # TODO : fix issue if no cut offs are found
+    try:
+        output = [
+            {
+                "name": f"**{region_icon}{horde_icon}{alliance_icon} Cutoffs**",
+                "value": "\n".join(
+                    f'Top {str(cut_off_key)}% - {cut_offs_number_ranks.get(cut_off_key, {}).get("all")}'
+                    for cut_off_key in cut_offs_number_ranks
+                ),
+                "inline": True,
+            },
+            {
+                "name": f"{horde_icon}",
+                "value": "\n".join(
+                    f'{str(r.get("horde"))}' for r in cut_offs_number_ranks.values()
+                ),
+                "inline": True,
+            },
+            {
+                "name": f"{alliance_icon}",
+                "value": "\n".join(
+                    f'{str(r.get("alliance"))}' for r in cut_offs_number_ranks.values()
+                ),
+                "inline": True,
+            },
+        ]
+    except Exception as e:
+        print(f"Exception in generate_cut_off_message\n{e}")
+        return []
     return output
 
 
