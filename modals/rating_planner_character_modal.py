@@ -32,11 +32,11 @@ class RatingPlannerModal(BaseCharacterModal):
         if character.get("statusCode") != 200 and not character.get("name"):
             await self.send_character_not_exist_message_in_battle_net(interaction)
             return
-
+        
         if (
             not self.max_key_level.value.isdigit()
-            or self.max_key_level < 2
-            or self.max_key_level > 20
+            or int(self.max_key_level.value) < 2
+            or float(self.max_key_level.value) > 20
         ):
             await interaction.followup.send(
                 f"Please enter a valid key level between 2 and 20.",
