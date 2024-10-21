@@ -48,9 +48,7 @@ async def rank(interaction: discord.Interaction):
         return
 
     rank_embed = await generate_rank_characters_embed(all_characters, interaction)
-    await interaction.followup.send(
-        embed=rank_embed, view=ButtonsCharacterStatistics()
-    )
+    await interaction.followup.send(embed=rank_embed, view=ButtonsCharacterStatistics())
 
 
 def setup(client):
