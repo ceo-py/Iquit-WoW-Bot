@@ -103,8 +103,6 @@ async def generate_rank_characters_embed(
     )
     cut_offs_message = generate_cut_off_message(cut_offs, interaction, region)
 
-    # print(cut_offs_message)
-
     embed_fields = [
         *cut_offs_message,
         {
