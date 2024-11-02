@@ -111,7 +111,7 @@ Enjoy tracking your Mythic Plus progress and stay competitive with your friends 
 3. Update emoji IDs in database using the provided JSON fileExample
 4. Create all emojis into the database using the provided json file (json file name is equal to the table name inside the database). MAKE SURE YOU CHANGE THE IDS IN THE JSON FILE WITH THE ONE YOU GOT FROM DISCORD
 
-(More Information)[https://github.com/ceo-py/Iquit-WoW-Bot/issues/2#issuecomment-2453038059]
+[More Information](https://github.com/ceo-py/Iquit-WoW-Bot/issues/2#issuecomment-2453038059)
 
 THE WAY YOU COPY DISCORD EMOJIS IDS RIGHT CLICK ON THE EMOJIS AND **COPY TEXT**
 `<:arak:1267431668071792701>`
