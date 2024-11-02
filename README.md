@@ -103,3 +103,15 @@ Provides a link to a gear guide and a picture showing gear progression for your 
 ---
 
 Enjoy tracking your Mythic Plus progress and stay competitive with your friends and guildmates!
+
+## To use Discord emojis when you self host the bot
+
+1. Upload emoji images from 'icons' folder to your Discord server
+2. Copy emoji IDs from Discord
+3. Update emoji IDs in database using the provided JSON fileExample
+4. Create all emojis into the database using the provided json file (json file name is equal to the table name inside the database). MAKE SURE YOU CHANGE THE IDS IN THE JSON FILE WITH THE ONE YOU GOT FROM DISCORD
+
+THE WAY YOU COPY DISCORD EMOJIS IDS RIGHT CLICK ON THE EMOJIS AND **COPY TEXT**
+`<:arak:1267431668071792701>`
+
+

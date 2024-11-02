@@ -31,7 +31,7 @@ def generate_cut_off_message(
     if cut_offs is None:
         return [
             {
-                "name": f"**{interaction.client.region_emojis.get(region.lower())} Rating Cutoffs**",
+                "name": f"**Rating Cutoffs {interaction.client.region_emojis.get(region.lower())}**",
                 "value": f"```n/a```",
                 "inline": False,
             },
