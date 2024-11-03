@@ -19,7 +19,7 @@ TYPES = {
 }
 
 
-async def get_affix_by_name(name: str, type: str) -> BaseEmojiDiscord:
+async def get_emoji_by_name(name: str, type: str) -> BaseEmojiDiscord:
     """
     Retrieve a Emoji instance by its name with given emoji type.
 
@@ -44,7 +44,7 @@ async def get_affix_by_name(name: str, type: str) -> BaseEmojiDiscord:
     return emoji
 
 
-async def create_affix(name: str, icon_discord: str, type: str) -> BaseEmojiDiscord:
+async def create_emoji(name: str, icon_discord: str, type: str) -> BaseEmojiDiscord:
     """
     Create a new Emoji instance and save it to the database.
 
