@@ -3,10 +3,8 @@ from settings import TOKEN_PICTURE_URL
 
 
 def generate_wow_token_embed_from_battle_net(
-    price: int, region: str, common_emojis: dict, region_emojis: dict
+    price: int, moneybag_icon: str, flag_icon: str
 ) -> Embed:
-    moneybag_icon = common_emojis.get("moneybag")
-    flag_icon = region_emojis.get(region.lower())
     embed = Embed(
         title=f"**Region {flag_icon} **",
         colour=Colour.blue(),

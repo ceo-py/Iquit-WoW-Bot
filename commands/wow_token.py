@@ -27,9 +27,8 @@ async def token(interaction: discord.Interaction, region: region_options):
     token_price = await get_token_price(region)
     token_embed = generate_wow_token_embed_from_battle_net(
         token_price,
-        region,
-        interaction.client.common_emojis,
-        interaction.client.region_emojis,
+        interaction.client.common_emojis.get("moneybag"),
+        interaction.client.region_emojis.get(region.lower()),
     )
 
     await interaction.followup.send(embed=token_embed)
