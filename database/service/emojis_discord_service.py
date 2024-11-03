@@ -33,6 +33,7 @@ async def get_affix_by_name(name: str, type: str) -> BaseEmojiDiscord:
 
     type : str
         The name of the Type Emoji record to be retrieved.
+            Options: "Affix", "Character", "Common", "Dungeon", "Region", "Character_Role",
 
     Returns:
     --------
@@ -60,6 +61,7 @@ async def create_affix(name: str, icon_discord: str, type: str) -> BaseEmojiDisc
 
     type : str
         The name of the Type Emoji record to be retrieved.
+            Options: "Affix", "Character", "Common", "Dungeon", "Region", "Character_Role",
 
     Returns:
     --------
@@ -80,7 +82,9 @@ async def get_all_emojis(type: str) -> List[BaseEmojiDiscord]:
 
     Parameters:
     -----------
-    None
+    type : str
+        The name of the Type Emoji record to be retrieved.
+            Options: "Affix", "Character", "Common", "Dungeon", "Region", "Character_Role",
 
     Returns:
     --------
