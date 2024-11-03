@@ -13,6 +13,7 @@ def generate_url_token_api(region: str) -> str:
 async def get_token_price(region: str) -> int:
     url = generate_url_token_api(region)
     with requests.get(url) as response:
-        return response.json()["price"] / 10000
+        if response.status_code == 200:
+            return response.json()["price"] / 10000
 
     return 0
