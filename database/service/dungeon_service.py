@@ -37,7 +37,7 @@ async def get_all_dungeons() -> list[Dungeon]:
     return dungeons
 
 
-async def create_dungeon(name: str, short_name: str, icon_discord: str) -> Dungeon:
+async def create_dungeon(name: str, short_name: str) -> Dungeon:
     """
     Create a new Dungeon instance and save it to the database.
 
@@ -50,9 +50,6 @@ async def create_dungeon(name: str, short_name: str, icon_discord: str) -> Dunge
         The name of the dungeon.
     short_name : str
         The short name of the dungeon.
-    icon_discord : str
-        The Text for the dungeon's icon on Discord.
-        Example  => <:aa:1239630623262511135>
 
     Returns:
     --------
@@ -62,6 +59,5 @@ async def create_dungeon(name: str, short_name: str, icon_discord: str) -> Dunge
     dungeon = await Dungeon.create(
         name=name,
         short_name=short_name,
-        icon_discord=icon_discord,
     )
     return dungeon

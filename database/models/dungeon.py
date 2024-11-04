@@ -14,8 +14,6 @@ class Dungeon(Model):
         Full name of the dungeon, with a maximum length of 255 characters.
     short_name : CharField
         Short name or abbreviation of the dungeon, with a maximum length of 50 characters.
-    icon_discord : CharField
-        URL or identifier for the dungeon's icon on Discord, with a maximum length of 255 characters.
 
     Meta:
     -----
@@ -26,7 +24,6 @@ class Dungeon(Model):
     id = fields.BigIntField(pk=True)
     name = fields.CharField(max_length=255)
     short_name = fields.CharField(max_length=50)
-    icon_discord = fields.CharField(max_length=255)
 
     class Meta:
         unique_together = ("name", "short_name")
