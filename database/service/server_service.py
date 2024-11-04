@@ -14,13 +14,16 @@ async def create_server(discord_server_id: int) -> Server:
     discord_server_id : int
         The unique identifier of the Discord server.
 
+    discord_channel_id : int
+        The unique identifier of the Discord channel.
+
     Returns:
     --------
     Server
         The newly created Server instance.
 
     """
-    server = await Server.create(discord_server_id=discord_server_id)
+    server = await Server.get_or_create(discord_server_id=discord_server_id)
     return server
 
 

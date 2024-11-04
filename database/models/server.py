@@ -22,7 +22,8 @@ class Server(Model):
     """
 
     id = fields.BigIntField(pk=True)
-    discord_server_id = fields.CharField(max_length=255, unique=True)
+    discord_server_id = fields.BigIntField(unique=True)
+    discord_channel_id = fields.BigIntField(null=True)
     characters = fields.ManyToManyField(
         "models.Character",
         related_name="servers",
