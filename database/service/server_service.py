@@ -23,6 +23,28 @@ async def create_server(discord_server_id: int) -> Server:
         The newly created Server instance.
 
     """
+    server = await Server.create(discord_server_id=discord_server_id)
+    return server
+
+
+async def create_or_get_server(discord_server_id: int) -> Server:
+    """
+    Get an existing Server instance or create a new one if it doesn't exist.
+
+    This function attempts to retrieve a Server record from the database using the given
+    Discord server ID. If no record exists, it creates a new one.
+
+    Parameters:
+    -----------
+    discord_server_id : int
+        The unique identifier of the Discord server.
+
+    Returns:
+    --------
+    Server
+        The existing or newly created Server instance.
+
+    """
     server = await Server.get_or_create(discord_server_id=discord_server_id)
     return server
 

@@ -1,5 +1,5 @@
 import discord
-from database.service.server_service import create_server
+from database.service.server_service import create_or_get_server
 
 
 def in_correct_channel():
@@ -32,7 +32,7 @@ def in_correct_channel():
                     f"Cannot send messages in DMs. Please use a server text channel."
                 )
 
-            server_data_from_db, _ = await create_server(server_id)
+            server_data_from_db, _ = await create_or_get_server(server_id)
 
         except AttributeError:
             await interaction.response.send_message(
