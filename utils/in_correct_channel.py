@@ -13,6 +13,9 @@ def in_correct_channel():
     Returns:
         function: A decorator function that can be used with Discord commands.
 
+    Raises:
+        CheckFailure: If the command is used in any channel other than the one specified
+                      by the subscribe command.
     """
 
     async def predicate(interaction: discord.Interaction):
@@ -25,7 +28,10 @@ def in_correct_channel():
                     f"Please run this command in ***Server*** text channel where bot is present.",
                     ephemeral=True,
                 )
-            
+                raise discord.app_commands.errors.CheckFailure(
+                    f"Cannot send messages in DMs. Please use a server text channel."
+                )
+
             server_data_from_db, _ = await create_server(server_id)
 
         except AttributeError:
@@ -33,19 +39,28 @@ def in_correct_channel():
                 f"Please run this command in ***Server*** text channel where bot is present.",
                 ephemeral=True,
             )
-        
+            raise discord.app_commands.errors.CheckFailure(
+                f"Cannot send messages in DMs. Please use a server text channel."
+            )
+
         if server_data_from_db.discord_channel_id is None:
             await interaction.response.send_message(
-                f"Please use `/subscribe` command in the channel where you want the bot to respond.",                
+                f"Please use `/subscribe` command in the channel where you want the bot to respond.",
                 ephemeral=True,
             )
-        
+            raise discord.app_commands.errors.CheckFailure(f"No subscribed channel")
+
         if server_data_from_db.discord_channel_id != channel_id:
-            subscribed_channel = interaction.guild.get_channel(server_data_from_db.discord_channel_id)
-            subscribed_channel_name = subscribed_channel.name
+            subscribed_channel = interaction.guild.get_channel(
+                server_data_from_db.discord_channel_id
+            )
+            subscribed_channel_mention = subscribed_channel.mention
             await interaction.response.send_message(
-                f"Please use this command in #{subscribed_channel_name}, or use `/subscribe` to set this channel as the bot channel.",                                
+                f"This command can only be used in {subscribed_channel_mention}. To change the bot's response channel, use `/subscribe` in your desired channel.",
                 ephemeral=True,
+            )
+            raise discord.app_commands.errors.CheckFailure(
+                f"Command can only be executed in the subscribed channel."
             )
 
         return True

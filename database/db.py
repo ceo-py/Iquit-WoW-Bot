@@ -25,32 +25,32 @@ async def init_db():
 async def load_initial_data():
     emojis_to_load = (
         {
-            'file name': "affixdiscordicons",
+            "file name": "affixdiscordicons",
             "type": "Affix",
         },
         {
-            'file name': "characterdiscordicons",
+            "file name": "characterdiscordicons",
             "type": "Character",
         },
         {
-            'file name': "characterrolediscordicons",
+            "file name": "characterrolediscordicons",
             "type": "Character_Role",
         },
         {
-            'file name': "commondiscordicons",
+            "file name": "commondiscordicons",
             "type": "Common",
         },
         {
-            'file name': "dungeondiscordicons",
+            "file name": "dungeondiscordicons",
             "type": "Dungeon",
         },
         {
-            'file name': "regiondiscordicons",
+            "file name": "regiondiscordicons",
             "type": "Region",
         },
     )
     for emoji in emojis_to_load:
-        file_name = emoji.get('file name')
+        file_name = emoji.get("file name")
 
         with open(f"icons/{file_name}/{file_name}.json", "r") as file:
             emojis_discord_data = json.load(file)

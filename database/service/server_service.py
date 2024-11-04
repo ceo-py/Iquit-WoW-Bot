@@ -71,26 +71,28 @@ async def get_server_by_discord_id(discord_server_id: int) -> Server:
     return server
 
 
-async def update_server(server_id: int, discord_server_id: int) -> None:
+async def update_server(discord_server_id: int, discord_channel_id: int) -> None:
     """
-    Update the Discord server ID for an existing Server instance.
+    Update the Discord channel ID for an existing Server instance.
 
-    This function updates the Discord server ID of a Server record in the
-    database identified by the given server ID.
+    This function updates the Discord channel ID of a Server record in the
+    database identified by the given Discord server ID.
 
     Parameters:
     -----------
-    server_id : int
-        The unique identifier of the server in the database.
     discord_server_id : int
-        The new Discord server ID to be updated.
+        The Discord server ID used to identify the server record.
+    discord_channel_id : int
+        The new Discord channel ID to be updated.
 
     Returns:
     --------
     None
 
     """
-    await Server.filter(id=server_id).update(discord_server_id=discord_server_id)
+    await Server.filter(discord_server_id=discord_server_id).update(
+        discord_channel_id=discord_channel_id
+    )
 
 
 async def delete_server(server_id: int) -> None:
