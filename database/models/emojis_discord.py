@@ -22,8 +22,8 @@ class BaseEmojiDiscord(Model):
     """
 
     id = fields.BigIntField(pk=True)
-    name = fields.CharField(max_length=255)
-    icon_discord = fields.CharField(max_length=255)
+    name = fields.CharField(max_length=255, unique=True)
+    icon_discord = fields.CharField(max_length=255, unique=True)
 
     class Meta:
         abstract = True

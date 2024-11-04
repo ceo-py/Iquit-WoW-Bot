@@ -3,7 +3,7 @@ import os
 import discord
 import settings
 from discord.ext import commands
-from database.db import init_db
+from database.db import init_db, load_initial_data
 from commands import load_commands
 from views.buttons_character_statistics import ButtonsCharacterStatistics
 from utils.emojis import get_emojis
@@ -50,6 +50,9 @@ class PersistentViewBot(commands.Bot):
 
         await self.change_presence(activity=discord.Game(name="M+"))
         await init_db()
+
+        # use only for initial data loading when first time creating database make sure you update json files in icons folder
+        # await load_initial_data() 
 
         await self.load_emojis()
 
