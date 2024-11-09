@@ -61,7 +61,7 @@ class BaseCharacterModal(ABC, discord.ui.Modal):
         raider_io_url = [
             x.lower().strip() for x in self.raider_io_url.value.split("/")[-3:]
         ]
-        if all(x != "" for x in raider_io_url):
+        if all(x != "" for x in raider_io_url) and len(raider_io_url) == 3:
             self.region, self.realm, self.character_name = raider_io_url
         return self.create_character_dict(
             self.CHARACTER_MAIN_DETAILS, [self.region, self.realm, self.character_name]
