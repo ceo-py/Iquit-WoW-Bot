@@ -13,7 +13,7 @@ from database.service.dungeon_service import get_all_dungeons
 
 
 class AddCharacterModal(BaseCharacterModal):
-    TITLE = "Add Character to Server"
+    TITLE = "Add character: paste URL or type details"
 
     def __init__(self, *args, **kwargs):
         super().__init__(title=self.TITLE, *args, **kwargs)

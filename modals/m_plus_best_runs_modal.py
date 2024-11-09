@@ -9,7 +9,7 @@ from utils.super_scripts_text import generate_superscript_stars
 
 
 class MPlusBestRunsModal(BaseCharacterModal):
-    TITLE = "Show top Mythic+ runs across all dungeons."
+    TITLE = "Show top M+ runs: paste URL or type details"
 
     def __init__(self, *args, **kwargs):
         super().__init__(title=self.TITLE, *args, **kwargs)

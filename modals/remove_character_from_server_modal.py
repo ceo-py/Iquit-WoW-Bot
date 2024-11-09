@@ -11,7 +11,7 @@ from database.service.dungeon_run_service import delete_dungeon_run
 
 
 class RemoveCharacterModal(BaseCharacterModal):
-    TITLE = "Remove Character from Server"
+    TITLE = "Remove character: paste URL or type details"
 
     def __init__(self, *args, **kwargs):
         super().__init__(title=self.TITLE, *args, **kwargs)

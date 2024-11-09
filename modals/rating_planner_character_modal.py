@@ -4,7 +4,7 @@ from utils.api.request_character_information import get_wow_character
 
 
 class RatingPlannerModal(BaseCharacterModal):
-    TITLE = "Rating Planner"
+    TITLE = "Rating Planner: paste URL or type details"
 
     def __init__(self, *args, **kwargs):
         super().__init__(title=self.TITLE, *args, **kwargs)

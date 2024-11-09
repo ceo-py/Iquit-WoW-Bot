@@ -5,7 +5,8 @@ from embeds.check_command_embed import generate_check_embed
 
 
 class CheckCharacterModal(BaseCharacterModal):
-    TITLE = "Check Character Progression"
+
+    TITLE = "Character details: paste URL or type details"
 
     def __init__(self, *args, **kwargs):
         super().__init__(title=self.TITLE, *args, **kwargs)

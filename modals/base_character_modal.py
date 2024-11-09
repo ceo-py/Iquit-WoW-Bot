@@ -18,22 +18,33 @@ class BaseCharacterModal(ABC, discord.ui.Modal):
     def __init__(self, title="", *args, **kwargs):
         super().__init__(title=title, *args, **kwargs)
 
+        self.raider_io_url = discord.ui.TextInput(
+            label="Raider.io URL",
+            placeholder="Paste Raider.io profile URL",
+            max_length=120,
+            required=False,
+        )
+
         self.region = discord.ui.TextInput(
             label="Server Region",
             placeholder="Enter the server region (e.g., US, EU, KR, TW)",
             max_length=2,
+            required=False,
         )
         self.realm = discord.ui.TextInput(
             label="Character Realm",
             placeholder="Enter your character's realm (e.g., Kazzak, Draenor)",
             max_length=26,
+            required=False,
         )
         self.character_name = discord.ui.TextInput(
             label="Character Name",
             placeholder="Enter your in-game character name",
             max_length=12,
+            required=False,
         )
 
+        self.add_item(self.raider_io_url)
         self.add_item(self.region)
         self.add_item(self.realm)
         self.add_item(self.character_name)
