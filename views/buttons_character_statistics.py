@@ -6,7 +6,15 @@ from database.service.character_server_service import (
 )
 from database.service.character_service import get_characters_by_ids
 from utils.character.character_ranking import filter_and_sort_characters_by_role
-from settings import MESSAGE_CHARACTER_LIMIT, CHARACTER_ROLES
+from settings import (
+    MESSAGE_CHARACTER_LIMIT,
+    CHARACTER_ROLES,
+    TOTAL_EMOJI,
+    DPS_EMOJI,
+    HEAL_EMOJI,
+    TANK_EMOJI,
+    ADD_EMOJI,
+)
 
 
 class ButtonsCharacterStatistics(discord.ui.View):
@@ -71,7 +79,7 @@ class ButtonsCharacterStatistics(discord.ui.View):
         label="",
         style=discord.ButtonStyle.gray,
         custom_id="1",
-        emoji="<:Totalrole:1058488589459136512>",
+        emoji=TOTAL_EMOJI,
     )
     async def total(self, interaction: discord.Interaction, button: discord.ui.Button):
         await ButtonsCharacterStatistics.send_message(interaction, "TOP Total", "total")
@@ -80,7 +88,7 @@ class ButtonsCharacterStatistics(discord.ui.View):
         label="",
         style=discord.ButtonStyle.gray,
         custom_id="2",
-        emoji="<:DPSrole:1058479594438668468>",
+        emoji=DPS_EMOJI,
     )
     async def dps(self, interaction: discord.Interaction, button: discord.ui.Button):
         await ButtonsCharacterStatistics.send_message(interaction, "TOP DPS", "dps")
@@ -89,7 +97,7 @@ class ButtonsCharacterStatistics(discord.ui.View):
         label="",
         style=discord.ButtonStyle.gray,
         custom_id="3",
-        emoji="<:Healerrole:1058479567616090222>",
+        emoji=HEAL_EMOJI,
     )
     async def heal(self, interaction: discord.Interaction, button: discord.ui.Button):
         await ButtonsCharacterStatistics.send_message(interaction, "TOP Heal", "heal")
@@ -98,7 +106,7 @@ class ButtonsCharacterStatistics(discord.ui.View):
         label="",
         style=discord.ButtonStyle.gray,
         custom_id="4",
-        emoji="<:Tankrole:1058479529158529124>",
+        emoji=TANK_EMOJI,
     )
     async def tank(self, interaction: discord.Interaction, button: discord.ui.Button):
         await ButtonsCharacterStatistics.send_message(interaction, "TOP Tank", "tank")
@@ -107,7 +115,7 @@ class ButtonsCharacterStatistics(discord.ui.View):
         label="Add Character to Server",
         style=discord.ButtonStyle.red,
         custom_id="5",
-        emoji="<:6332logmemberplusw:1065621500855586907>",
+        emoji=ADD_EMOJI,
     )
     async def add_character_to_server(
         self, interaction: discord.Interaction, button: discord.ui.Button
