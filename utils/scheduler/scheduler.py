@@ -1,6 +1,7 @@
 from database.service.character_service import get_all_characters
 from database.service.dungeon_service import get_all_dungeons
 from database.service.dungeon_run_service import update_or_create_dungeon_run
+from database.models.dungeon_run import DungeonRun
 from utils.api.request_character_information import get_multiple_wow_characters
 
 
@@ -10,24 +11,29 @@ async def get_current_season_dungeons():
     }
 
 
-async def update_dungeon_run(
-    dungeon_run: dict, character_id: int, current_season_dungeons: dict
-):
-    data = {
-        "character_id": character_id,
-        "dungeon_id": current_season_dungeons.get(
-            dungeon_run.get("short_name").lower()
-        ),
-        "mythic_level": dungeon_run.get("mythic_level"),
-        "num_keystone_upgrades": dungeon_run.get("num_keystone_upgrades"),
-        "clear_time_ms": dungeon_run.get("clear_time_ms"),
-        "par_time_ms": dungeon_run.get("par_time_ms"),
-        "score": dungeon_run.get("score"),
-        "affix_types": [
-            affix.get("name") for affix in dungeon_run.get("affixes", [{}])
-        ],
-    }
-    await update_or_create_dungeon_run(**data)
+async def update_dungeon_runs(characters: dict, current_season_dungeons: dict):
+    dungeon_runs = []
+    for character in characters:
+        for run in character.get("mythic_plus_best_runs", []):
+            dungeon_runs.append(
+                DungeonRun(
+                character_id=character.get("character_id"),
+                dungeon_id=current_season_dungeons.get(run.get("short_name").lower()),
+                mythic_level=run.get("mythic_level"),
+                num_keystone_upgrades=run.get("num_keystone_upgrades"),
+                clear_time_ms=run.get("clear_time_ms"),
+                par_time_ms=run.get("par_time_ms"),
+                score=run.get("score"),
+                affix_types=[affix.get("name") for affix in run.get("affixes", [{}])]
+            )
+            )
+
+    await DungeonRun.bulk_create(
+            dungeon_runs,
+            update_fields=["mythic_level", "num_keystone_upgrades", "clear_time_ms", 
+                        "par_time_ms", "score", "affix_types"],
+            on_conflict=["dungeon_id", "character_id"]
+        )
 
 
 def add_character_id_when_score_differs(
@@ -87,11 +93,4 @@ async def task_scheduler():
     characters = add_character_id_when_score_differs(
         characters_update_data, all_characters_in_db
     )
-    for character in characters:
-        dungeon_runs = character.get("mythic_plus_best_runs", [])
-        if not dungeon_runs:
-            continue
-        for dungeon_run in dungeon_runs:
-            await update_dungeon_run(
-                dungeon_run, character.get("character_id"), current_season_dungeons
-            )
+    await update_dungeon_runs(characters, current_season_dungeons)
