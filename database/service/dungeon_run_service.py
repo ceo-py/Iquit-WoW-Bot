@@ -43,14 +43,16 @@ async def update_or_create_dungeon_run(
 
     """
     dungeon = await DungeonRun.update_or_create(
+        defaults={
+            "mythic_level": mythic_level,
+            "num_keystone_upgrades": num_keystone_upgrades,
+            "clear_time_ms": clear_time_ms,
+            "par_time_ms": par_time_ms,
+            "score": score,
+            "affix_types": affix_types,
+        },
         character_id=character_id,
         dungeon_id=dungeon_id,
-        mythic_level=mythic_level,
-        num_keystone_upgrades=num_keystone_upgrades,
-        clear_time_ms=clear_time_ms,
-        par_time_ms=par_time_ms,
-        score=score,
-        affix_types=affix_types,
     )
     return dungeon
 

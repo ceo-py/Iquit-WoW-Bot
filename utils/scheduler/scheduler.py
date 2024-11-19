@@ -30,7 +30,9 @@ async def update_dungeon_run(
     await update_or_create_dungeon_run(**data)
 
 
-def add_character_id_when_score_differs(fetch_characters: list, db_characters: list) -> list:
+def add_character_id_when_score_differs(
+    fetch_characters: list, db_characters: list
+) -> list:
     output = []
     for character in fetch_characters:
         fetch_character_data = (
@@ -82,7 +84,9 @@ async def task_scheduler():
         for c in await get_all_characters()
     ]
     characters_update_data = await get_multiple_wow_characters(all_characters_in_db)
-    characters = add_character_id_when_score_differs(characters_update_data, all_characters_in_db)
+    characters = add_character_id_when_score_differs(
+        characters_update_data, all_characters_in_db
+    )
     for character in characters:
         dungeon_runs = character.get("mythic_plus_best_runs", [])
         if not dungeon_runs:
@@ -91,4 +95,3 @@ async def task_scheduler():
             await update_dungeon_run(
                 dungeon_run, character.get("character_id"), current_season_dungeons
             )
-            break
