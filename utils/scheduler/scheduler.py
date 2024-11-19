@@ -17,23 +17,33 @@ async def update_dungeon_runs(characters: dict, current_season_dungeons: dict):
         for run in character.get("mythic_plus_best_runs", []):
             dungeon_runs.append(
                 DungeonRun(
-                character_id=character.get("character_id"),
-                dungeon_id=current_season_dungeons.get(run.get("short_name").lower()),
-                mythic_level=run.get("mythic_level"),
-                num_keystone_upgrades=run.get("num_keystone_upgrades"),
-                clear_time_ms=run.get("clear_time_ms"),
-                par_time_ms=run.get("par_time_ms"),
-                score=run.get("score"),
-                affix_types=[affix.get("name") for affix in run.get("affixes", [{}])]
-            )
+                    character_id=character.get("character_id"),
+                    dungeon_id=current_season_dungeons.get(
+                        run.get("short_name").lower()
+                    ),
+                    mythic_level=run.get("mythic_level"),
+                    num_keystone_upgrades=run.get("num_keystone_upgrades"),
+                    clear_time_ms=run.get("clear_time_ms"),
+                    par_time_ms=run.get("par_time_ms"),
+                    score=run.get("score"),
+                    affix_types=[
+                        affix.get("name") for affix in run.get("affixes", [{}])
+                    ],
+                )
             )
 
     await DungeonRun.bulk_create(
-            dungeon_runs,
-            update_fields=["mythic_level", "num_keystone_upgrades", "clear_time_ms", 
-                        "par_time_ms", "score", "affix_types"],
-            on_conflict=["dungeon_id", "character_id"]
-        )
+        dungeon_runs,
+        update_fields=[
+            "mythic_level",
+            "num_keystone_upgrades",
+            "clear_time_ms",
+            "par_time_ms",
+            "score",
+            "affix_types",
+        ],
+        on_conflict=["dungeon_id", "character_id"],
+    )
 
 
 def add_character_id_when_score_differs(
