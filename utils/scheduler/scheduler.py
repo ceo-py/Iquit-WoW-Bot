@@ -2,6 +2,7 @@ from database.service.character_service import get_all_characters
 from database.service.dungeon_service import get_all_dungeons
 from database.service.dungeon_run_service import update_or_create_dungeon_run
 from database.models.dungeon_run import DungeonRun
+from database.models.character import Character
 from utils.api.request_character_information import get_multiple_wow_characters
 
 
@@ -13,6 +14,7 @@ async def get_current_season_dungeons():
 
 async def update_dungeon_runs(characters: dict, current_season_dungeons: dict):
     dungeon_runs = []
+    updated_character_ratings = []
     for character in characters:
         for run in character.get("mythic_plus_best_runs", []):
             dungeon_runs.append(
@@ -31,6 +33,39 @@ async def update_dungeon_runs(characters: dict, current_season_dungeons: dict):
                     ],
                 )
             )
+
+            updated_character_ratings.append(
+                Character(
+                    region=character.get("region"),
+                    realm=character.get("realm"),
+                    name=character.get("name"),
+                    character_class=character.get("class"),
+                    total_rating=character.get("mythic_plus_scores_by_season", [{}])[0]
+                    .get("scores", {})
+                    .get("all", 0),
+                    dps_rating=character.get("mythic_plus_scores_by_season", [{}])[0]
+                    .get("scores", {})
+                    .get("dps", 0),
+                    healer_rating=character.get("mythic_plus_scores_by_season", [{}])[0]
+                    .get("scores", {})
+                    .get("healer", 0),
+                    tank_rating=character.get("mythic_plus_scores_by_season", [{}])[0]
+                    .get("scores", {})
+                    .get("tank", 0),
+                )
+            )
+
+    await Character.bulk_create(
+        updated_character_ratings,
+        update_fields=[
+            "character_class",
+            "total_rating",
+            "dps_rating",
+            "healer_rating",
+            "tank_rating",
+        ],
+        on_conflict=["region", "name", "realm"],
+    )
 
     await DungeonRun.bulk_create(
         dungeon_runs,

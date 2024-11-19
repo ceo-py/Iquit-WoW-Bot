@@ -31,7 +31,9 @@ async def get_wow_character_check(character: dict) -> "json":
 async def get_multiple_wow_characters(characters: list) -> List["json"]:
     async with aiohttp.ClientSession() as session:
         tasks = [
-            asyncio.create_task(fetch(session, generate_api_url_for_char_fetch(character)))
+            asyncio.create_task(
+                fetch(session, generate_api_url_for_char_fetch(character))
+            )
             for character in characters
         ]
         responses = await asyncio.gather(*tasks)
