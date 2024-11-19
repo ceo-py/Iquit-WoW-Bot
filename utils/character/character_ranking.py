@@ -44,7 +44,7 @@ def format_ranks_for_embed(characters: list, role: str, positions: int) -> str:
         positions (int): Number of top positions to include in the formatted output.
 
     Returns:
-        str: Formatted string of rank objects based on the specified role and positions.
+        str: Formatted string of rank based on the specified role and positions.
     """
     output = [f"{x}. n/a" for x in range(1, positions + 1)]
     sorted_characters = filter_and_sort_characters_by_role(characters, role)

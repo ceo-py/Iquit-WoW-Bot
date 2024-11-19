@@ -34,9 +34,6 @@ async def get_multiple_wow_characters(characters: list) -> List["json"]:
             fetch(session, generate_api_url_for_char_fetch(character))
             for character in characters
         ]
-        responses = []
-
-        for task in tasks:
-            responses += await asyncio.gather(*task)
+        responses = await asyncio.gather(*tasks)
 
         return responses

@@ -175,3 +175,11 @@ async def delete_character(character_id: int) -> None:
     None
     """
     await Character.filter(id=character_id).delete()
+
+
+async def get_all_characters() -> List[Character]:
+    """
+    Retrieve all Character instances from the database.
+    """
+    characters = await Character.all()
+    return characters
