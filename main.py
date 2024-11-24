@@ -14,7 +14,11 @@ EXPANSION = settings.WOW_CURRENT_SEASON
 BOT_TOKEN = settings.BOT_TOKEN
 
 UTC = datetime.timezone.utc
-times = [datetime.time(hour=h, minute=m) for h in range(24) for m in range(0, 60, 15)]
+times = [
+    datetime.time(hour=h, minute=m)
+    for h in range(24)
+    for m in range(0, 60, settings.SCHEDULER_INTERVAL_MINUTES)
+]
 
 
 class PersistentViewBot(commands.Bot):
@@ -48,7 +52,7 @@ class PersistentViewBot(commands.Bot):
     @tasks.loop(time=times)
     async def scheduler_rio_every_15_minutes(self):
         print("Scheduler started")
-        # await task_scheduler()
+        await task_scheduler()
 
     async def on_ready(self):
         load_commands(self)
@@ -60,7 +64,7 @@ class PersistentViewBot(commands.Bot):
         # await load_initial_data()
 
         await self.load_emojis()
-        await task_scheduler()
+        # await task_scheduler()
         print("Ready")
         await self.scheduler_rio_every_15_minutes.start()
         # await self.tree.sync()  # once only to sync CRUD slash command

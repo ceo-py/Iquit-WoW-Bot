@@ -12,6 +12,7 @@ DB_URL = f'postgres://{CONFIG["DB_USER"]}:{CONFIG["DB_PASSWORD"]}@{CONFIG["DB_HO
 
 # BOT SETTINGS
 BOT_TOKEN = CONFIG["TOKEN"]
+SCHEDULER_INTERVAL_MINUTES = 1
 
 # SETTINGS RAIDER IO
 RAIDER_IO_BASE_URL_FOR_RANK = "https://raider.io/mythic-plus-character-rankings/season"

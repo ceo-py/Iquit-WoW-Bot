@@ -1,5 +1,6 @@
 from database.service.character_service import get_all_characters
 from database.service.dungeon_service import get_all_current_season_dungeons
+from database.service.dungeon_run_service import get_all_dungeon_runs_for_character
 from database.models.dungeon_run import DungeonRun
 from database.models.character import Character
 from utils.api.request_character_information import get_multiple_wow_characters
@@ -12,14 +13,14 @@ async def get_current_season_dungeons():
     }
 
 
-async def update_dungeon_runs(characters: dict, current_season_dungeons: dict):
+async def update_dungeon_runs(characters: dict, current_season_dungeons: dict) -> None:
     dungeon_runs = []
     updated_character_ratings = []
     for character in characters:
         for run in character.get("mythic_plus_best_runs", []):
             dungeon_runs.append(
                 DungeonRun(
-                    character_id=character.get("character_id"),
+                    character_id=character.get("change", {}).get("character_id"),
                     dungeon_id=current_season_dungeons.get(
                         run.get("short_name").lower()
                     ),
@@ -81,8 +82,59 @@ async def update_dungeon_runs(characters: dict, current_season_dungeons: dict):
     )
 
 
-def add_character_id_when_score_differs(
-    fetch_characters: list, db_characters: list
+def add_dungeon_messages(new_score: int, new_run: dict, updated_runs: list) -> list:
+    updated_runs.append(
+        {
+            "name": new_run.get("dungeon"),
+            "mythic_level": new_run.get("mythic_level"),
+            "num_keystone_upgrades": new_run.get("num_keystone_upgrades"),
+            "clear_time_ms": new_run.get("clear_time_ms"),
+            "par_time_ms": new_run.get("par_time_ms"),
+            "score": new_score,
+        }
+    )
+    return updated_runs
+
+
+async def get_character_updated_dungeon_runs(
+    character_id: int, updated_dungeon_runs: list, current_season_dungeons: dict
+) -> list:
+    updated_runs = []
+    db_runs = await get_all_dungeon_runs_for_character(character_id)
+
+    if not db_runs:
+        updated_runs.extend(
+            add_dungeon_messages(run.get("score", 0), run, [])
+            for run in updated_dungeon_runs
+            if run.get("score", 0) > 0
+        )
+        return updated_runs
+
+    for db_run in db_runs:
+        remaining_runs = []
+        for new_run in updated_dungeon_runs:
+            score = new_run.get("score", 0)
+            if score == 0:
+                continue
+
+            dungeon_id = current_season_dungeons.get(new_run.get("short_name").lower())
+            if db_run.dungeon_id == dungeon_id:
+                if score > db_run.score:
+                    add_dungeon_messages(score, new_run, updated_runs)
+            else:
+                remaining_runs.append(new_run)
+        updated_dungeon_runs = remaining_runs
+
+    updated_runs.extend(
+        add_dungeon_messages(run.get("score", 0), run, [])
+        for run in updated_dungeon_runs
+        if run.get("score", 0) > 0
+    )
+    return updated_runs
+
+
+async def add_score_differs_to_characters(
+    fetch_characters: list, db_characters: list, current_season_dungeons: dict
 ) -> list:
     output = []
     for character in fetch_characters:
@@ -111,10 +163,23 @@ def add_character_id_when_score_differs(
             )
             if (
                 fetch_character.difference(set(x.lower() for x in db_character_data))
-                and db_character.get("total_rating") == current_character_score
+                or db_character.get("total_rating") == current_character_score
             ):
                 continue
-            character["character_id"] = db_character.get("character_id")
+            print(
+                f"db => {db_character.get('total_rating')}\n fetch => {current_character_score}"
+            )
+            await get_character_updated_dungeon_runs(
+                db_character.get("character_id"),
+                character.get("mythic_plus_best_runs", []),
+                current_season_dungeons,
+            )
+            character["change"] = {
+                "character_id": db_character.get("character_id"),
+                "old_rating": db_character.get("total_rating"),
+                "new_rating": current_character_score,
+                "updated_dungeon_runs": [],
+            }
             output.append(character)
             db_characters.pop(index)
             break
@@ -135,7 +200,8 @@ async def task_scheduler():
         for c in await get_all_characters()
     ]
     characters_update_data = await get_multiple_wow_characters(all_characters_in_db)
-    characters = add_character_id_when_score_differs(
-        characters_update_data, all_characters_in_db
+    characters = await add_score_differs_to_characters(
+        characters_update_data, all_characters_in_db, current_season_dungeons
     )
+    [print(c.get("name")) for c in characters]
     await update_dungeon_runs(characters, current_season_dungeons)
