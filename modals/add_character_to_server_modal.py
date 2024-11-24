@@ -9,7 +9,7 @@ from database.service.character_server_service import (
 )
 from database.service.character_service import create_character
 from database.service.dungeon_run_service import update_or_create_dungeon_run
-from database.service.dungeon_service import get_all_dungeons
+from database.service.dungeon_service import get_all_current_season_dungeons
 
 
 class AddCharacterModal(BaseCharacterModal):
@@ -54,7 +54,7 @@ class AddCharacterModal(BaseCharacterModal):
 
         all_dungeons = {
             dungeon.short_name.lower(): dungeon.id
-            for dungeon in await get_all_dungeons()
+            for dungeon in await get_all_current_season_dungeons()
         }
 
         for dungeon_run in dungeon_runs:

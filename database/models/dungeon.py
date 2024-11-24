@@ -24,6 +24,7 @@ class Dungeon(Model):
     id = fields.BigIntField(pk=True)
     name = fields.CharField(max_length=255)
     short_name = fields.CharField(max_length=50)
+    current_season = fields.BooleanField(default=False)
 
     class Meta:
         unique_together = ("name", "short_name")

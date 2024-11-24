@@ -1,5 +1,5 @@
 from database.service.character_service import get_all_characters
-from database.service.dungeon_service import get_all_dungeons
+from database.service.dungeon_service import get_all_current_season_dungeons
 from database.service.dungeon_run_service import update_or_create_dungeon_run
 from database.models.dungeon_run import DungeonRun
 from database.models.character import Character
@@ -8,7 +8,7 @@ from utils.api.request_character_information import get_multiple_wow_characters
 
 async def get_current_season_dungeons():
     return {
-        dungeon.short_name.lower(): dungeon.id for dungeon in await get_all_dungeons()
+        dungeon.short_name.lower(): dungeon.id for dungeon in await get_all_current_season_dungeons()
     }
 
 

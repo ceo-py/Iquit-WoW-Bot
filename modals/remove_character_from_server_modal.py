@@ -26,7 +26,7 @@ class RemoveCharacterModal(BaseCharacterModal):
 
     async def send_success_message(self, interaction: discord.Interaction, character):
         await interaction.followup.send(
-            f"Character successfully removed from the server: {interaction.client.character_emojis.get(character.character_class)} {self.character_details_for_discord(interaction)}.",
+            f"Character successfully removed from the server: {interaction.client.character_emojis.get(character.character_class, "")} {self.character_details_for_discord(interaction)}.",
         )
 
     async def delete_character_from_db_if_no_discord_server(self, character_id):

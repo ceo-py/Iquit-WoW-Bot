@@ -22,9 +22,9 @@ async def get_dungeon_by_short_name(short_name: str) -> Dungeon:
     return dungeon
 
 
-async def get_all_dungeons() -> list[Dungeon]:
+async def get_all_current_season_dungeons() -> list[Dungeon]:
     """
-    Retrieve all Dungeon instances.
+    Retrieve all current season Dungeon instances.
 
     This asynchronous function fetches all Dungeon records from the database.
 
@@ -33,7 +33,7 @@ async def get_all_dungeons() -> list[Dungeon]:
     list[Dungeon]
         A list of all Dungeon instances.
     """
-    dungeons = await Dungeon.all()
+    dungeons = await Dungeon.filter(current_season=True)
     return dungeons
 
 
