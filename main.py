@@ -71,6 +71,7 @@ class PersistentViewBot(commands.Bot):
         # ])
 
 
+
     async def setup_hook(self) -> None:
         self.add_view(ButtonsCharacterStatistics())
 

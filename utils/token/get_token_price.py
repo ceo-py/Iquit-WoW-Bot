@@ -1,19 +1,22 @@
 from utils.token.get_battle_net_token import get_battle_net_token
 from settings import BATTLE_CLIENT_ID, BATTLE_CLIENT_SECRET, BATTLE_NET_AUTH_URL
-import requests
+import aiohttp
 
 
 def generate_url_token_api(region: str) -> str:
-    battle_net_token = get_battle_net_token(
-        BATTLE_CLIENT_ID, BATTLE_CLIENT_SECRET, BATTLE_NET_AUTH_URL
-    )
-    return f"https://{region}.api.blizzard.com/data/wow/token/index?namespace=dynamic-{region}&locale=en_{region.capitalize()}&access_token={battle_net_token}"
+    return f"https://{region.lower()}.api.blizzard.com/data/wow/token/?namespace=dynamic-{region.lower()}"
 
 
 async def get_token_price(region: str) -> int:
     url = generate_url_token_api(region)
-    with requests.get(url) as response:
-        if response.status_code == 200:
-            return response.json()["price"] / 10000
-
-    return 0
+    battle_net_token = get_battle_net_token(
+        BATTLE_CLIENT_ID, BATTLE_CLIENT_SECRET, BATTLE_NET_AUTH_URL
+    )
+    headers = {"Authorization": f"Bearer {battle_net_token}"}
+    async with aiohttp.ClientSession() as session:
+        async with session.get(url, headers=headers) as response:
+            if response.status != 200:
+                return 0
+            
+            json_data = await response.json()
+            return json_data["price"] / 10000
