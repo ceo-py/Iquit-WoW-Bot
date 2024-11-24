@@ -44,7 +44,7 @@ class RemoveCharacterModal(BaseCharacterModal):
             await self.send_character_not_exist_message_in_db(interaction)
             return
 
-        server = await get_server_by_discord_id(interaction.channel_id)
+        server = await get_server_by_discord_id(interaction.guild_id)
 
         found_character_in_discord_server = await get_character_by_id_with_server_id(
             found_character_in_db.id, server.id

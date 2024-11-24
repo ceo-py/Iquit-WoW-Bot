@@ -19,7 +19,7 @@ ADD_COMMAND_MESSAGE = "Please use the **/add** command to add some and see the r
 async def rank(interaction: discord.Interaction):
     await interaction.response.defer()
 
-    discord_server_instance = await get_server_by_discord_id(interaction.channel_id)
+    discord_server_instance = await get_server_by_discord_id(interaction.guild_id)
 
     if not discord_server_instance:
         await interaction.followup.send(

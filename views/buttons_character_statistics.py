@@ -24,7 +24,7 @@ class ButtonsCharacterStatistics(discord.ui.View):
     @staticmethod
     async def generate_message(interaction: discord.Interaction, role: str) -> str:
 
-        discord_server_instance = await get_server_by_discord_id(interaction.channel_id)
+        discord_server_instance = await get_server_by_discord_id(interaction.guild_id)
 
         if not discord_server_instance:
             return "This server has no characters yet. Please use the /add command to add some and see the ranking."
