@@ -9,7 +9,7 @@ def generate_url_token_api(region: str) -> str:
 
 async def get_token_price(region: str) -> int:
     url = generate_url_token_api(region)
-    battle_net_token = get_battle_net_token(
+    battle_net_token = await get_battle_net_token(
         BATTLE_CLIENT_ID, BATTLE_CLIENT_SECRET, BATTLE_NET_AUTH_URL
     )
     headers = {"Authorization": f"Bearer {battle_net_token}"}
