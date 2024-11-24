@@ -1,8 +1,7 @@
 import datetime
-import os
 import discord
 import settings
-from discord.ext import commands
+from discord.ext import commands, tasks
 from database.db import init_db, load_initial_data
 from utils.scheduler.scheduler import task_scheduler
 from commands import load_commands
@@ -14,8 +13,8 @@ SEASON = settings.WOW_CURRENT_EXPANSION
 EXPANSION = settings.WOW_CURRENT_SEASON
 BOT_TOKEN = settings.BOT_TOKEN
 
-# UTC = datetime.timezone.utc
-# times = [datetime.time(hour=x) for x in range(0, 24, 2)]
+UTC = datetime.timezone.utc
+times = [datetime.time(hour=h, minute=m) for h in range(24) for m in range(0, 60, 15)]
 
 
 class PersistentViewBot(commands.Bot):
@@ -46,18 +45,23 @@ class PersistentViewBot(commands.Bot):
         for category in emoji_categories:
             setattr(self, f"{category.lower()}_emojis", await get_emojis(category))
 
+    @tasks.loop(time=times)
+    async def scheduler_rio_every_15_minutes(self):
+        print("Scheduler started")
+        # await task_scheduler()
+
     async def on_ready(self):
         load_commands(self)
 
         await self.change_presence(activity=discord.Game(name="M+"))
         await init_db()
-        # await task_scheduler()
 
         # use only for initial data loading when first time creating database make sure you update json files in icons folder
         # await load_initial_data()
 
         await self.load_emojis()
-
+        print("Ready")
+        await self.scheduler_rio_every_15_minutes.start()
         # await self.tree.sync()  # once only to sync CRUD slash command
         # print([
         #     channel.id
@@ -65,7 +69,7 @@ class PersistentViewBot(commands.Bot):
         #     for channel in server.channels
         #     if settings.BOT_CHANNEL_NAME in channel.name
         # ])
-        print("Ready")
+
 
     async def setup_hook(self) -> None:
         self.add_view(ButtonsCharacterStatistics())
