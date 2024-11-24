@@ -17,6 +17,6 @@ async def get_token_price(region: str) -> int:
         async with session.get(url, headers=headers) as response:
             if response.status != 200:
                 return 0
-            
+
             json_data = await response.json()
             return json_data["price"] / 10000

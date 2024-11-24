@@ -70,8 +70,6 @@ class PersistentViewBot(commands.Bot):
         #     if settings.BOT_CHANNEL_NAME in channel.name
         # ])
 
-
-
     async def setup_hook(self) -> None:
         self.add_view(ButtonsCharacterStatistics())
 
