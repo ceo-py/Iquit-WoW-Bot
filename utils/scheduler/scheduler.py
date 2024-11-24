@@ -36,9 +36,9 @@ async def update_dungeon_runs(characters: dict, current_season_dungeons: dict):
 
             updated_character_ratings.append(
                 Character(
-                    region=character.get("region"),
-                    realm=character.get("realm"),
-                    name=character.get("name"),
+                    region=character.get("region").lower(),
+                    realm=character.get("realm").lower(),
+                    name=character.get("name").lower(),
                     character_class=character.get("class"),
                     total_rating=character.get("mythic_plus_scores_by_season", [{}])[0]
                     .get("scores", {})

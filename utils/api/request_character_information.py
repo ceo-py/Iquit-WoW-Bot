@@ -11,6 +11,8 @@ from typing import List
 async def fetch(session: aiohttp.ClientSession, url: str) -> "json":
     async with session.get(url) as response:
         await rate_limiter.wait_for_token()
+        if response.status != 200:
+            return {}
         return await response.json()
 
 
