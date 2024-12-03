@@ -146,3 +146,21 @@ async def delete_character_from_server(
     await CharacterServer.filter(
         character_id=character_id, server_id=server_id
     ).delete()
+
+
+async def get_sorted_characters_by_server():
+    """
+    Get sorted characters by server.
+
+    Returns:
+    --------
+    List[CharacterServer]
+        A list of CharacterServer instances sorted by server and total_rating.
+    """
+    character_servers = (
+        await CharacterServer.all()
+        .select_related("character", "server")
+        .order_by("server__id", "-character__total_rating")
+    )
+
+    return character_servers

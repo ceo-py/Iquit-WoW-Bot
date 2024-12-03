@@ -1,8 +1,10 @@
 from database.service.character_service import get_all_characters
+from database.service.character_server_service import get_sorted_characters_by_server
 from database.service.dungeon_service import get_all_current_season_dungeons
 from database.service.dungeon_run_service import get_all_dungeon_runs_for_character
 from database.models.dungeon_run import DungeonRun
 from database.models.character import Character
+from database.models.character_server import CharacterServer
 from utils.api.request_character_information import get_multiple_wow_characters
 
 
@@ -11,6 +13,43 @@ async def get_current_season_dungeons():
         dungeon.short_name.lower(): dungeon.id
         for dungeon in await get_all_current_season_dungeons()
     }
+
+
+async def update_character_rating(characters: dict) -> list:
+    discord_server_characters = await get_sorted_characters_by_server()
+
+    for discord_character in discord_server_characters:
+        print(
+            f"{discord_character.character_id} {discord_character.server_id} {discord_character.ranking} => {discord_character.character.total_rating}"
+        )
+    return
+
+    output = []
+    characters_update = []
+
+    for discord_character in discord_server_characters:
+        for character in characters:
+            character_id = character.get("change").get("character_id")
+            if discord_character.character != character_id:
+                continue
+
+            characters_update.append(
+                CharacterServer(
+                    character=character_id,
+                    server=discord_character.server,
+                    ranking=0,
+                )
+            )
+
+    await CharacterServer.bulk_create(
+        characters_update,
+        update_fields=[
+            "ranking",
+        ],
+        on_conflict=["character", "server"],
+    )
+
+    return output
 
 
 async def update_dungeon_runs(characters: dict, current_season_dungeons: dict) -> None:
@@ -82,7 +121,7 @@ async def update_dungeon_runs(characters: dict, current_season_dungeons: dict) -
     )
 
 
-def add_dungeon_messages(new_score: int, new_run: dict, updated_runs: list) -> list:
+def add_dungeon_details(new_score: int, new_run: dict, updated_runs: list) -> list:
     updated_runs.append(
         {
             "name": new_run.get("dungeon"),
@@ -106,7 +145,7 @@ async def get_character_updated_dungeon_runs(
         for run in updated_dungeon_runs:
             score = run.get("score", 0)
             if score > 0:
-                add_dungeon_messages(score, run, updated_runs)
+                add_dungeon_details(score, run, updated_runs)
         return updated_runs
 
     for db_run in db_runs:
@@ -119,7 +158,7 @@ async def get_character_updated_dungeon_runs(
             dungeon_id = current_season_dungeons.get(new_run.get("short_name").lower())
             if db_run.dungeon_id == dungeon_id:
                 if score > db_run.score:
-                    add_dungeon_messages(score, new_run, updated_runs)
+                    add_dungeon_details(score, new_run, updated_runs)
             else:
                 remaining_runs.append(new_run)
         updated_dungeon_runs = remaining_runs
@@ -127,7 +166,7 @@ async def get_character_updated_dungeon_runs(
     for run in updated_dungeon_runs:
         score = run.get("score", 0)
         if score > 0:
-            add_dungeon_messages(score, run, updated_runs)
+            add_dungeon_details(score, run, updated_runs)
 
     return updated_runs
 
@@ -201,3 +240,4 @@ async def task_scheduler():
     )
     [print(c["change"]) for c in characters]
     await update_dungeon_runs(characters, current_season_dungeons)
+    await update_character_rating(characters)
