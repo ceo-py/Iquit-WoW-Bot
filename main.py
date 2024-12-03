@@ -64,9 +64,9 @@ class PersistentViewBot(commands.Bot):
         # await load_initial_data()
 
         await self.load_emojis()
-        # await task_scheduler()
         print("Ready")
-        await self.scheduler_rio_every_15_minutes.start()
+        await task_scheduler()
+        # await self.scheduler_rio_every_15_minutes.start()
         # await self.tree.sync()  # once only to sync CRUD slash command
         # print([
         #     channel.id

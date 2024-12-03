@@ -15,41 +15,81 @@ async def get_current_season_dungeons():
     }
 
 
-async def update_character_rating(characters: dict) -> list:
+async def update_character_rating(characters: list) -> list:
     discord_server_characters = await get_sorted_characters_by_server()
+    current_servers = {}  # {"id discord server": [discord_character]}
+    updated_characters = {}  # {"id character": character}
 
     for discord_character in discord_server_characters:
-        print(
-            f"{discord_character.character_id} {discord_character.server_id} {discord_character.ranking} => {discord_character.character.total_rating}"
+        current_servers[discord_character.server_id] = current_servers.get(
+            discord_character.server_id, []
+        ) + [discord_character]
+
+    for update_character in characters:
+        updated_characters[update_character.get("change").get("character_id")] = (
+            update_character
         )
-    return
 
-    output = []
-    characters_update = []
+    for server_id, characters_in_server in current_servers.items():
+        found_characters = []
 
-    for discord_character in discord_server_characters:
-        for character in characters:
-            character_id = character.get("change").get("character_id")
-            if discord_character.character != character_id:
-                continue
-
-            characters_update.append(
-                CharacterServer(
-                    character=character_id,
-                    server=discord_character.server,
-                    ranking=0,
-                )
+        for discord_character in characters_in_server:
+            found_character = updated_characters.get(discord_character.character_id)
+            character_id = (
+                found_character.get("change").get("character_id")
+                if found_character
+                else discord_character.character_id
+            )
+            character_rating = (
+                found_character.get("change").get("new_rating")
+                if found_character
+                else discord_character.character.total_rating
+            )
+            found_characters.append(
+                {
+                    "character": character_id,
+                    "server": server_id,
+                    "rating": character_rating,
+                }
             )
 
-    await CharacterServer.bulk_create(
-        characters_update,
-        update_fields=[
-            "ranking",
-        ],
-        on_conflict=["character", "server"],
-    )
+        old_ratings = sorted(
+            characters_in_server, key=lambda x: -x.character.total_rating
+        )
+        new_ratings = sorted(found_characters, key=lambda x: -x.get("rating"))
 
-    return output
+        print(f"old_ratings: {old_ratings}\nnew_ratings: {new_ratings}")
+
+        # print(
+        #     f"{discord_character.character_id} {discord_character.server_id} {discord_character.ranking} => {discord_character.character.total_rating}"
+        # )
+
+    # output = []
+    # characters_update = []
+
+    # for discord_character in discord_server_characters:
+    #     for character in characters:
+    #         character_id = character.get("change").get("character_id")
+    #         if discord_character.character != character_id:
+    #             continue
+
+    #         characters_update.append(
+    #             CharacterServer(
+    #                 character=character_id,
+    #                 server=discord_character.server,
+    #                 ranking=0,
+    #             )
+    #         )
+
+    # await CharacterServer.bulk_create(
+    #     characters_update,
+    #     update_fields=[
+    #         "ranking",
+    #     ],
+    #     on_conflict=["character", "server"],
+    # )
+
+    # return output
 
 
 async def update_dungeon_runs(characters: dict, current_season_dungeons: dict) -> None:
