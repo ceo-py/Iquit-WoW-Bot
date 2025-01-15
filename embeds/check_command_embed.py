@@ -82,12 +82,12 @@ async def generate_check_embed(
             "inline": False,
         },
         {
-            "name": f"**{keystone_icon} Level**",
+            "name": f"**{keystone_icon}**",
             "value": f"{dungeon_key_lvl}",
             "inline": True,
         },
         {
-            "name": f"**{keystone_icon} Upgrade**",
+            "name": f"**Upgrade**",
             "value": f"{dungeon_upgrade}",
             "inline": True,
         },
