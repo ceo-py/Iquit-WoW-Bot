@@ -4,7 +4,7 @@ from utils.api.request_character_information import get_wow_character
 
 
 class RatingPlannerModal(BaseCharacterModal):
-    TITLE = "Rating Planner: paste URL or type details"
+    TITLE = "Rating Planner: paste Raider IO URL"
 
     def __init__(self, *args, **kwargs):
         super().__init__(title=self.TITLE, *args, **kwargs)
@@ -20,6 +20,9 @@ class RatingPlannerModal(BaseCharacterModal):
             max_length=4,
         )
 
+        self.remove_item(self.region)
+        self.remove_item(self.realm)
+        self.remove_item(self.character_name)
         self.add_item(self.max_key_level)
         self.add_item(self.target_rating)
 
@@ -48,7 +51,7 @@ class RatingPlannerModal(BaseCharacterModal):
                 "Please enter a valid Mythic+ rating you want to achieve."
             )
 
-        character_details_message = f"{interaction.client.character_emojis.get(character.get('class').lower())} {self.character_details_for_discord(interaction)}"
+        character_details_message = f"{interaction.client.character_emojis.get(character.get('class').lower())} {self.character_details_for_discord(interaction)}\n🚧 **EXCITING NEW FEATURE COMING SOON!** 🚧\n✨ We're working hard to bring you something amazing! Stay tuned! ✨"        
         top_character_runs = character.get("mythic_plus_best_runs", [])
 
         if not top_character_runs:
