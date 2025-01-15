@@ -101,7 +101,7 @@ class AddCharacterModal(BaseCharacterModal):
             if not found_character_in_db
             else found_character_in_db
         )
-        character_details_for_message = f"{interaction.client.character_emojis.get(character_class.lower())} {self.character_details_for_discord(interaction)}"
+        character_details_for_message = f"{interaction.client.character_emojis.get(character_class.lower(), '')} {self.character_details_for_discord(interaction)}"
         server = await get_server_by_discord_id(interaction.guild_id)
 
         if not server:
