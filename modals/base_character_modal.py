@@ -80,6 +80,7 @@ class BaseCharacterModal(ABC, discord.ui.Modal):
             f"• Region: Check if you've used the correct abbreviation (US, EU, KR, or TW)\n"
             f"• Realm: Verify the realm name and check for any typos\n"
             f"• Character Name: Confirm the spelling of your character's name\n"
+            f"• Or simply copy and paste your Raider.io character profile URL.\n"
             f"If you're still having issues, try logging into the game to verify your character details.",
             ephemeral=True,
         )

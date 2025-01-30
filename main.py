@@ -65,7 +65,7 @@ class PersistentViewBot(commands.Bot):
 
         await self.load_emojis()
         print("Ready")
-        await task_scheduler()
+        # await task_scheduler()
         # await self.scheduler_rio_every_15_minutes.start()
         # await self.tree.sync()  # once only to sync CRUD slash command
         # print([
