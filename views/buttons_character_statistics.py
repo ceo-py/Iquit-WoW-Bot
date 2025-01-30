@@ -113,7 +113,7 @@ class ButtonsCharacterStatistics(discord.ui.View):
 
     @discord.ui.button(
         label="Add Character to Server",
-        style=discord.ButtonStyle.red,
+        style=discord.ButtonStyle.green,
         custom_id="5",
         emoji=ADD_EMOJI,
     )
