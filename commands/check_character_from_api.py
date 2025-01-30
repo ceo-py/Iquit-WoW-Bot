@@ -5,7 +5,7 @@ from modals.check_character_from_server_modal import CheckCharacterModal
 
 @discord.app_commands.command(
     name="check",
-    description="Displays a WoW character's Ilvl, Mythic+ score, raid progress and last dungeon details.",
+    description="Displays a WoW character's ilvl, Mythic+ score, raid progress and last dungeon details.",
 )
 @in_correct_channel()
 async def check(interaction: discord.Interaction):
