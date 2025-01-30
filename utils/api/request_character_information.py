@@ -1,6 +1,6 @@
 import asyncio
 import aiohttp
-from utils.generate_api_url_for_char_fetch import (
+from utils.api.generate_api_url_for_char_fetch import (
     generate_api_url_for_char_fetch,
     generate_api_url_for_char_fetch_check,
 )

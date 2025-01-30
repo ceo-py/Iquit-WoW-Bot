@@ -1,5 +1,5 @@
 import aiohttp
-from utils.generate_api_url_for_affixes_fetch import (
+from utils.api.generate_api_url_for_affixes_fetch import (
     generate_api_url_for_affixes_fetch,
 )
 from .request_character_information import fetch
