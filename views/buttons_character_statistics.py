@@ -27,7 +27,7 @@ class ButtonsCharacterStatistics(discord.ui.View):
         discord_server_instance = await get_server_by_discord_id(interaction.guild_id)
 
         if not discord_server_instance:
-            return "This server has no characters yet. Please use the /add command to add some and see the ranking."
+            return '''There aren't any characters added yet. To add characters and view rankings, type /add.'''
 
         all_characters_in_discord_server_ids = (
             await get_all_characters_from_discord_server_by_id(
