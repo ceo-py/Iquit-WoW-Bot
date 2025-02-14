@@ -7,18 +7,18 @@ from utils.token.get_token_price import get_token_price
 
 
 @discord.app_commands.command(
-    name="token",
-    description="Check WoW Token price for selected region",
+    name="reset_season",
+    description="Reset all character data for the new season",
 )
-@discord.app_commands.describe(region=f"Pick your region: EU, US, KR, TW")
+@discord.app_commands.describe(region="Reset all character data for the new season")
 @in_correct_channel()
-async def token(interaction: discord.Interaction, region: region_options):
+async def reset_season(interaction: discord.Interaction, region: region_options):
     """
-    Fetches and displays the WoW Token price for the selected region.
+    Resets all character data for the new season in the specified region.
 
     Args:
         interaction (discord.Interaction): The interaction object representing the command invocation.
-        region (token_options): The region to fetch the token price for (EU, US, KR, or TW).
+        region (region_options): The region where to reset the data (EU, US, KR, or TW).
 
     Returns:
         None
@@ -35,4 +35,4 @@ async def token(interaction: discord.Interaction, region: region_options):
 
 
 def setup(client):
-    client.tree.add_command(token)
+    client.tree.add_command(reset_season)

@@ -1,5 +1,5 @@
 import discord
-from utils.in_correct_channel import in_correct_channel
+from utils.permissions.in_correct_channel import in_correct_channel
 from embeds.gear_command_embed import generate_gear_embed
 
 

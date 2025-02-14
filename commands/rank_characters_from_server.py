@@ -1,6 +1,6 @@
 import discord
 from views.buttons_character_statistics import ButtonsCharacterStatistics
-from utils.in_correct_channel import in_correct_channel
+from utils.permissions.in_correct_channel import in_correct_channel
 from embeds.rank_characters_embed import generate_rank_characters_embed
 from database.service.server_service import get_server_by_discord_id
 from database.service.character_server_service import (
