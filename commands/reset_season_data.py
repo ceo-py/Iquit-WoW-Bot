@@ -1,18 +1,15 @@
 import discord
-
-from embeds.wow_token_embed import generate_wow_token_embed_from_battle_net
 from utils.permissions.in_correct_channel import in_correct_channel
-from utils.wow_regions_options import region_options
-from utils.token.get_token_price import get_token_price
+from utils.permissions.is_bot_owner import is_bot_owner
 
 
 @discord.app_commands.command(
     name="reset_season",
     description="Reset all character data for the new season",
 )
-@discord.app_commands.describe(region="Reset all character data for the new season")
 @in_correct_channel()
-async def reset_season(interaction: discord.Interaction, region: region_options):
+@is_bot_owner()
+async def reset_season(interaction: discord.Interaction):
     """
     Resets all character data for the new season in the specified region.
 
@@ -24,14 +21,7 @@ async def reset_season(interaction: discord.Interaction, region: region_options)
         None
     """
     await interaction.response.defer()
-    token_price = await get_token_price(region)
-    token_embed = generate_wow_token_embed_from_battle_net(
-        token_price,
-        interaction.client.common_emojis.get("moneybag"),
-        interaction.client.region_emojis.get(region.lower()),
-    )
-
-    await interaction.followup.send(embed=token_embed)
+    await interaction.followup.send("pass")
 
 
 def setup(client):
