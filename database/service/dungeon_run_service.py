@@ -95,3 +95,14 @@ async def get_all_dungeon_runs_for_character(character_id: int) -> None:
     """
     runs = await DungeonRun.filter(character_id=character_id)
     return runs
+
+
+async def reset_all_character_dungeon_runs() -> int:
+    """
+    Resets all character dungeon runs.
+    
+    Returns:
+        int: Number of characters updated
+    """
+    deleted = await DungeonRun.all().delete()
+    return deleted

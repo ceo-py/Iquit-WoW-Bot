@@ -61,13 +61,3 @@ async def create_dungeon(name: str, short_name: str) -> Dungeon:
         short_name=short_name,
     )
     return dungeon
-
-async def reset_all_character_dungeon_runs() -> int:
-    """
-    Resets all character dungeon runs.
-    
-    Returns:
-        int: Number of characters updated
-    """
-    deleted = await Dungeon.all().delete()
-    return deleted
