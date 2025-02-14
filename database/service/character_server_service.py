@@ -164,3 +164,15 @@ async def get_sorted_characters_by_server():
     )
 
     return character_servers
+
+async def reset_all_character_server_rankings() -> int:
+    """
+    Resets all character ranking in discord servers to 0.
+    
+    Returns:
+        int: Number of characters updated
+    """
+    updated = await CharacterServer.all().update(
+        ranking=0,
+    )
+    return updated

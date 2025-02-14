@@ -183,3 +183,18 @@ async def get_all_characters() -> List[Character]:
     """
     characters = await Character.all()
     return characters
+
+async def reset_all_character_ratings() -> int:
+    """
+    Resets all character ratings to 0.
+    
+    Returns:
+        int: Number of characters updated
+    """
+    updated = await Character.all().update(
+        tank_rating=0,
+        healer_rating=0,
+        dps_rating=0,
+        total_rating=0
+    )
+    return updated
