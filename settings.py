@@ -46,7 +46,7 @@ WOW_LOG_BASE_URL = "https://www.warcraftlogs.com/character/"
 ARCHON_URL = "https://www.archon.gg/wow/tier-list/dps-rankings/mythic-plus/10/all-dungeons/this-week"
 
 # PICTURES
-GEAR_PROGRESSION = "https://raw.githubusercontent.com/ceo-py/Iquit-WoW-Bot/refs/heads/main/pictures/items_progression.png?raw=true"
+GEAR_PROGRESSION = "https://github.com/ceo-py/Iquit-WoW-Bot/blob/main/pictures/tww_s3_items_progression.png?raw=true"
 RANK_THUMBNAIL = "https://github.com/ceo-py/Project-Pictures/blob/main/Iquit/rank_command_thumb.png?raw=true"
 
 # GUIDES LINK
