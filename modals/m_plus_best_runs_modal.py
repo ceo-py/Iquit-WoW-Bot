@@ -1,5 +1,5 @@
 import discord
-from settings import MESSAGE_CHARACTER_LIMIT
+from settings import MESSAGE_CHARACTER_LIMIT, BEST_RUN_FIELDS, CURRENT_SEASON_SCORE
 from .base_character_modal import BaseCharacterModal
 from utils.api.request_character_information import get_wow_character
 from utils.dungeon.calculate_dungeon_time import (
@@ -55,7 +55,7 @@ class MPlusBestRunsModal(BaseCharacterModal):
             await self.send_character_not_exist_message_in_battle_net(interaction)
             return
 
-        dungeon_runs = character.get("mythic_plus_best_runs", [])
+        dungeon_runs = character.get(BEST_RUN_FIELDS, [])
 
         if not dungeon_runs:
             await interaction.followup.send(
@@ -69,7 +69,7 @@ class MPlusBestRunsModal(BaseCharacterModal):
             "class": character.get("class", "").lower(),
             "spec": character.get("active_spec_role"),
             "spec name": character.get("active_spec_name"),
-            "score": character.get("mythic_plus_scores_by_season", [{}])[0]
+            "score": character.get(CURRENT_SEASON_SCORE, [{}])[0]
             .get("scores", {})
             .get("all", 0),
             "dungeon runs": dungeon_runs,
