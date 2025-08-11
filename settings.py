@@ -51,7 +51,7 @@ RANK_THUMBNAIL = "https://github.com/ceo-py/Project-Pictures/blob/main/Iquit/ran
 
 # GUIDES LINK
 WOWHEAD_SEASON_GEAR_GUIDE = (
-    "https://www.wowhead.com/guide/the-war-within/season-1-gearing"
+    "https://www.wowhead.com/guide/mythic-plus-dungeons/the-war-within-season-3/loot-drops-mounts"
 )
 
 # DISCORD
