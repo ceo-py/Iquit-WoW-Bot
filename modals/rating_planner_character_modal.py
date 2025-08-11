@@ -1,7 +1,7 @@
 import discord
-from .base_character_modal import BaseCharacterModal
+from modals.base_character_modal import BaseCharacterModal
 from utils.api.request_character_information import get_wow_character
-from ..settings import BEST_RUN_FIELDS
+from settings import BEST_RUN_FIELDS
 
 
 class RatingPlannerModal(BaseCharacterModal):

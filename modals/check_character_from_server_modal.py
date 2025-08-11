@@ -1,8 +1,8 @@
 import discord
-from .base_character_modal import BaseCharacterModal
+from modals.base_character_modal import BaseCharacterModal
 from utils.api.request_character_information import get_wow_character_check
 from embeds.check_command_embed import generate_check_embed
-from ..settings import (
+from settings import (
     WOW_CURRENT_RAID_NAME,
     WOW_CURRENT_RAID_SLUG,
     MYTHIC_PLUS_RECENT_RUNS,

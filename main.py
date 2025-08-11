@@ -61,7 +61,7 @@ class PersistentViewBot(commands.Bot):
         await init_db()
 
         # use only for initial data loading when first time creating database make sure you update json files in icons folder
-        # await load_initial_data()
+        await load_initial_data()
 
         await self.load_emojis()
         print("Ready")
