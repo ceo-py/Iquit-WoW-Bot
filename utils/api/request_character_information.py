@@ -4,7 +4,7 @@ from utils.api.generate_api_url_for_char_fetch import (
     generate_api_url_for_char_fetch,
     generate_api_url_for_char_fetch_check,
 )
-from .rate_limiter import rate_limiter
+from api.rate_limiter import rate_limiter
 from typing import List
 
 

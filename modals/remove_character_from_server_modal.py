@@ -1,5 +1,5 @@
 import discord
-from .base_character_modal import BaseCharacterModal
+from modals.base_character_modal import BaseCharacterModal
 from database.service.character_server_service import (
     get_character_by_id_with_server_id,
     delete_character_from_server,

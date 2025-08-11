@@ -50,9 +50,7 @@ GEAR_PROGRESSION = "https://github.com/ceo-py/Iquit-WoW-Bot/blob/main/pictures/t
 RANK_THUMBNAIL = "https://github.com/ceo-py/Project-Pictures/blob/main/Iquit/rank_command_thumb.png?raw=true"
 
 # GUIDES LINK
-WOWHEAD_SEASON_GEAR_GUIDE = (
-    "https://www.wowhead.com/guide/mythic-plus-dungeons/the-war-within-season-3/loot-drops-mounts"
-)
+WOWHEAD_SEASON_GEAR_GUIDE = "https://www.wowhead.com/guide/mythic-plus-dungeons/the-war-within-season-3/loot-drops-mounts"
 
 # DISCORD
 MESSAGE_CHARACTER_LIMIT = 2000
