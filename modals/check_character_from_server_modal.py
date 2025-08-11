@@ -2,7 +2,14 @@ import discord
 from .base_character_modal import BaseCharacterModal
 from utils.api.request_character_information import get_wow_character_check
 from embeds.check_command_embed import generate_check_embed
-from ..settings import WOW_CURRENT_RAID_NAME, WOW_CURRENT_RAID_SLUG, MYTHIC_PLUS_RECENT_RUNS,CURRENT_SEASON_SCORE, RAID_PROGRESSION
+from ..settings import (
+    WOW_CURRENT_RAID_NAME,
+    WOW_CURRENT_RAID_SLUG,
+    MYTHIC_PLUS_RECENT_RUNS,
+    CURRENT_SEASON_SCORE,
+    RAID_PROGRESSION,
+)
+
 
 class CheckCharacterModal(BaseCharacterModal):
 
@@ -25,9 +32,7 @@ class CheckCharacterModal(BaseCharacterModal):
         else:
             dungeon_name, dungeon_key, dungeon_upgrade, dungeon_score = (
                 character.get(MYTHIC_PLUS_RECENT_RUNS, [{}])[0].get("dungeon", ""),
-                character.get(MYTHIC_PLUS_RECENT_RUNS, [{}])[0].get(
-                    "mythic_level", ""
-                ),
+                character.get(MYTHIC_PLUS_RECENT_RUNS, [{}])[0].get("mythic_level", ""),
                 character.get(MYTHIC_PLUS_RECENT_RUNS, [{}])[0].get(
                     "num_keystone_upgrades", ""
                 ),

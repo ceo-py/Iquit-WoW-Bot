@@ -100,7 +100,7 @@ async def get_all_dungeon_runs_for_character(character_id: int) -> None:
 async def reset_all_character_dungeon_runs() -> int:
     """
     Resets all character dungeon runs.
-    
+
     Returns:
         int: Number of characters updated
     """
