@@ -93,10 +93,22 @@ async def generate_rank_characters_embed(
     )
     embed.set_thumbnail(url=RANK_THUMBNAIL)
 
-    characters_with_total_rating = format_ranks_for_embed(characters, "total", 9)
-    characters_with_dps_rating = format_ranks_for_embed(characters, "dps", 3)
-    characters_with_heal_rating = format_ranks_for_embed(characters, "heal", 3)
-    characters_with_tank_rating = format_ranks_for_embed(characters, "tank", 3)
+    ratings = (
+        {"type": "total", "total_characters": 9},
+        {"type": "dps", "total_characters": 3},
+        {"type": "heal", "total_characters": 3},
+        {"type": "tank", "total_characters": 3},
+    )
+
+    (
+        characters_with_total_rating,
+        characters_with_dps_rating,
+        characters_with_heal_rating,
+        characters_with_tank_rating,
+    ) = [
+        format_ranks_for_embed(characters, rating["type"], rating["total_characters"])
+        for rating in ratings
+    ]
 
     cut_offs = await get_wow_cut_offs(
         region, WOW_CURRENT_EXPANSION.lower(), WOW_CURRENT_SEASON
