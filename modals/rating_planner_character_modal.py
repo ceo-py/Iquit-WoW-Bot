@@ -1,7 +1,7 @@
 import discord
 from .base_character_modal import BaseCharacterModal
 from utils.api.request_character_information import get_wow_character
-
+from ..settings import BEST_RUN_FIELDS
 
 class RatingPlannerModal(BaseCharacterModal):
     TITLE = "Rating Planner: paste Raider IO URL"
@@ -52,7 +52,7 @@ class RatingPlannerModal(BaseCharacterModal):
             )
 
         character_details_message = f"{interaction.client.character_emojis.get(character.get('class').lower())} {self.character_details_for_discord(interaction)}\n🚧 **EXCITING NEW FEATURE COMING SOON!** 🚧\n✨ We're working hard to bring you something amazing! Stay tuned! ✨"        
-        top_character_runs = character.get("mythic_plus_best_runs", [])
+        top_character_runs = character.get(BEST_RUN_FIELDS, [])
 
         if not top_character_runs:
             not_correct_input_fields_error_message.append(
