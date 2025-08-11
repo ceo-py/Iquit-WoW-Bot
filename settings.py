@@ -3,9 +3,11 @@ from dotenv import dotenv_values, find_dotenv
 CONFIG = dotenv_values(find_dotenv())
 
 
-# CURRENT SEASON AND EXPANSION
+# CURRENT SEASON EXPANSION AND RAID
 WOW_CURRENT_SEASON = 3
 WOW_CURRENT_EXPANSION = "TWW"
+WOW_CURRENT_RAID_NAME = "Manaforge Omega"
+WOW_CURRENT_RAID_SLUG = "manaforge-omega"
 
 # DB LOGIN URL
 DB_URL = f'postgres://{CONFIG["DB_USER"]}:{CONFIG["DB_PASSWORD"]}@{CONFIG["DB_HOST"]}/{CONFIG["DB_NAME"]}'
