@@ -14,6 +14,7 @@ from database.service.dungeon_service import get_all_current_season_dungeons
 
 class AddCharacterModal(BaseCharacterModal):
     TITLE = "Add character: paste URL or type details"
+    ALL_ROLES = ("all", "dps", "healer", "tank")
 
     def __init__(self, *args, **kwargs):
         super().__init__(title=self.TITLE, *args, **kwargs)
@@ -25,10 +26,7 @@ class AddCharacterModal(BaseCharacterModal):
         scores_data = character.get("mythic_plus_scores_by_season", [{}])[0].get(
             "scores", {}
         )
-        total_rating = scores_data.get("all", 0)
-        dps_rating = scores_data.get("dps", 0)
-        healer_rating = scores_data.get("healer", 0)
-        tank_rating = scores_data.get("tank", 0)
+        all_roles_rating = [scores_data.get(role, 0) for role in self.ALL_ROLES]
 
         return await create_character(
             **self.create_character_dict(
@@ -36,10 +34,7 @@ class AddCharacterModal(BaseCharacterModal):
                 [
                     *list(character_main_fields.values()),
                     character_class,
-                    total_rating,
-                    dps_rating,
-                    healer_rating,
-                    tank_rating,
+                    *all_roles_rating,
                 ],
             )
         )
