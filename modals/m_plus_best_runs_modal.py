@@ -6,7 +6,7 @@ from utils.dungeon.calculate_dungeon_time import (
     generate_calculated_dungeon_time_message_for_discord as generate_time_message,
 )
 from utils.super_scripts_text import generate_superscript_stars
-from utils import get_nested_dict_or_return_empty
+from utils.get_nested_dict_or_return_empty import get_nested_dict_or_return_empty
 
 
 class MPlusBestRunsModal(BaseCharacterModal):
@@ -70,7 +70,7 @@ class MPlusBestRunsModal(BaseCharacterModal):
             "class": character.get("class", "").lower(),
             "spec": character.get("active_spec_role"),
             "spec name": character.get("active_spec_name"),
-            "score": character.get(current_score).get("scores", {}).get("all", 0),
+            "score": current_score.get("scores", {}).get("all", 0),
             "dungeon runs": dungeon_runs,
         }
 

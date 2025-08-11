@@ -1,7 +1,7 @@
 import discord
 from modals.base_character_modal import BaseCharacterModal
 from utils.api.request_character_information import get_wow_character_check
-from utils import get_nested_dict_or_return_empty
+from utils.get_nested_dict_or_return_empty import get_nested_dict_or_return_empty
 from embeds.check_command_embed import generate_check_embed
 from settings import (
     WOW_CURRENT_RAID_NAME,
@@ -38,10 +38,10 @@ class CheckCharacterModal(BaseCharacterModal):
                 character, CURRENT_SEASON_SCORE
             )
             dungeon_name, dungeon_key, dungeon_upgrade, dungeon_score = (
-                character.get(recent_runs).get("dungeon", ""),
-                character.get(recent_runs).get("mythic_level", ""),
-                character.get(recent_runs).get("num_keystone_upgrades", ""),
-                character.get(recent_runs).get("score", ""),
+                recent_runs.get("dungeon", ""),
+                recent_runs.get("mythic_level", ""),
+                recent_runs.get("num_keystone_upgrades", ""),
+                recent_runs.get("score", ""),
             )
         check_embed = await generate_check_embed(
             character.get("name", ""),
@@ -56,9 +56,9 @@ class CheckCharacterModal(BaseCharacterModal):
             dungeon_key,
             dungeon_upgrade,
             dungeon_score,
-            character.get(season_score).get("scores", {}).get("tank", ""),
-            character.get(season_score).get("scores", {}).get("dps", ""),
-            character.get(season_score).get("scores", {}).get("healer", ""),
+            season_score.get("scores", {}).get("tank", ""),
+            season_score.get("scores", {}).get("dps", ""),
+            season_score.get("scores", {}).get("healer", ""),
             WOW_CURRENT_RAID_NAME,
             character.get(RAID_PROGRESSION, {})
             .get(WOW_CURRENT_RAID_SLUG, {})
