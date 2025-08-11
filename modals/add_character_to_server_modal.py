@@ -1,7 +1,8 @@
 import discord
-from .base_character_modal import BaseCharacterModal
+from modals.base_character_modal import BaseCharacterModal
 from database.models.character import Character
 from utils.api.request_character_information import get_wow_character
+from utils import get_nested_dict_or_return_empty
 from database.service.server_service import get_server_by_discord_id, create_server
 from database.service.character_server_service import (
     get_character_by_id_with_server_id,
@@ -23,9 +24,10 @@ class AddCharacterModal(BaseCharacterModal):
         self, character: dict, character_main_fields: dict
     ) -> Character:
         character_class = character.get("class")
-        scores_data = character.get("mythic_plus_scores_by_season", [{}])[0].get(
-            "scores", {}
-        )
+        scores_data = character.get(
+            get_nested_dict_or_return_empty(character, "mythic_plus_scores_by_season")
+        ).get("scores", {})
+
         all_roles_rating = [scores_data.get(role, 0) for role in self.ALL_ROLES]
 
         return await create_character(
@@ -44,7 +46,7 @@ class AddCharacterModal(BaseCharacterModal):
     ):
 
         dungeon_runs = character_fetch_data.get("mythic_plus_best_runs", [])
-        if not dungeon_runs:
+        if len(dungeon_runs) == 0:
             return
 
         all_dungeons = {

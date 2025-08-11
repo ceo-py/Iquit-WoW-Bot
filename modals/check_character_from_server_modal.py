@@ -1,6 +1,7 @@
 import discord
 from modals.base_character_modal import BaseCharacterModal
 from utils.api.request_character_information import get_wow_character_check
+from utils import get_nested_dict_or_return_empty
 from embeds.check_command_embed import generate_check_embed
 from settings import (
     WOW_CURRENT_RAID_NAME,
@@ -30,13 +31,17 @@ class CheckCharacterModal(BaseCharacterModal):
         if not character.get(MYTHIC_PLUS_RECENT_RUNS, []):
             dungeon_name = dungeon_score = dungeon_upgrade = dungeon_key = ""
         else:
+            recent_runs = get_nested_dict_or_return_empty(
+                character, MYTHIC_PLUS_RECENT_RUNS
+            )
+            season_score = get_nested_dict_or_return_empty(
+                character, CURRENT_SEASON_SCORE
+            )
             dungeon_name, dungeon_key, dungeon_upgrade, dungeon_score = (
-                character.get(MYTHIC_PLUS_RECENT_RUNS, [{}])[0].get("dungeon", ""),
-                character.get(MYTHIC_PLUS_RECENT_RUNS, [{}])[0].get("mythic_level", ""),
-                character.get(MYTHIC_PLUS_RECENT_RUNS, [{}])[0].get(
-                    "num_keystone_upgrades", ""
-                ),
-                character.get(MYTHIC_PLUS_RECENT_RUNS, [{}])[0].get("score", ""),
+                character.get(recent_runs).get("dungeon", ""),
+                character.get(recent_runs).get("mythic_level", ""),
+                character.get(recent_runs).get("num_keystone_upgrades", ""),
+                character.get(recent_runs).get("score", ""),
             )
         check_embed = await generate_check_embed(
             character.get("name", ""),
@@ -51,15 +56,9 @@ class CheckCharacterModal(BaseCharacterModal):
             dungeon_key,
             dungeon_upgrade,
             dungeon_score,
-            character.get(CURRENT_SEASON_SCORE, [{}])[0]
-            .get("scores", {})
-            .get("tank", ""),
-            character.get(CURRENT_SEASON_SCORE, [{}])[0]
-            .get("scores", {})
-            .get("dps", ""),
-            character.get(CURRENT_SEASON_SCORE, [{}])[0]
-            .get("scores", {})
-            .get("healer", ""),
+            character.get(season_score).get("scores", {}).get("tank", ""),
+            character.get(season_score).get("scores", {}).get("dps", ""),
+            character.get(season_score).get("scores", {}).get("healer", ""),
             WOW_CURRENT_RAID_NAME,
             character.get(RAID_PROGRESSION, {})
             .get(WOW_CURRENT_RAID_SLUG, {})

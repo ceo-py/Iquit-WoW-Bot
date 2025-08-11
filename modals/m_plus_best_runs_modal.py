@@ -1,11 +1,12 @@
 import discord
 from settings import MESSAGE_CHARACTER_LIMIT, BEST_RUN_FIELDS, CURRENT_SEASON_SCORE
-from .base_character_modal import BaseCharacterModal
+from modals.base_character_modal import BaseCharacterModal
 from utils.api.request_character_information import get_wow_character
 from utils.dungeon.calculate_dungeon_time import (
     generate_calculated_dungeon_time_message_for_discord as generate_time_message,
 )
 from utils.super_scripts_text import generate_superscript_stars
+from utils import get_nested_dict_or_return_empty
 
 
 class MPlusBestRunsModal(BaseCharacterModal):
@@ -63,15 +64,13 @@ class MPlusBestRunsModal(BaseCharacterModal):
                 f"**{character['name']}** hasn't completed any Mythic+ dungeons yet.",
             )
             return
-
+        current_score = get_nested_dict_or_return_empty(character, CURRENT_SEASON_SCORE)
         character_data = {
             "name": character.get("name", ""),
             "class": character.get("class", "").lower(),
             "spec": character.get("active_spec_role"),
             "spec name": character.get("active_spec_name"),
-            "score": character.get(CURRENT_SEASON_SCORE, [{}])[0]
-            .get("scores", {})
-            .get("all", 0),
+            "score": character.get(current_score).get("scores", {}).get("all", 0),
             "dungeon runs": dungeon_runs,
         }
 

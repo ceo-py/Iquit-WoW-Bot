@@ -15,7 +15,7 @@ def base_url(character: dict):
 
 def generate_api_url_for_char_fetch(character: dict) -> str:
     url = base_url(character)
-    return f"{url}{ALTERNATIVE_RUN_FIELDS},{BEST_RUN_FIELDS},{CURRENT_SEASON_SCORE}"
+    return f"{url}{ALTERNATIVE_RUN_FIELDS},{BEST_RUN_FIELDS},{CURRENT_SEASON_SCORE}:current"
 
 
 def generate_api_url_for_char_fetch_check(character: dict) -> str:

@@ -6,6 +6,8 @@ from database.models.dungeon_run import DungeonRun
 from database.models.character import Character
 from database.models.character_server import CharacterServer
 from utils.api.request_character_information import get_multiple_wow_characters
+from utils import get_nested_dict_or_return_empty
+from settings import CURRENT_SEASON_SCORE
 
 
 async def get_current_season_dungeons():
@@ -113,23 +115,25 @@ async def update_dungeon_runs(characters: dict, current_season_dungeons: dict) -
                     ],
                 )
             )
-
+            scores_by_season = get_nested_dict_or_return_empty(
+                character, CURRENT_SEASON_SCORE
+            )
             updated_character_ratings.append(
                 Character(
                     region=character.get("region").lower(),
                     realm=character.get("realm").lower(),
                     name=character.get("name").lower(),
                     character_class=character.get("class"),
-                    total_rating=character.get("mythic_plus_scores_by_season", [{}])[0]
+                    total_rating=character.get(scores_by_season)
                     .get("scores", {})
                     .get("all", 0),
-                    dps_rating=character.get("mythic_plus_scores_by_season", [{}])[0]
+                    dps_rating=character.get(scores_by_season)
                     .get("scores", {})
                     .get("dps", 0),
-                    healer_rating=character.get("mythic_plus_scores_by_season", [{}])[0]
+                    healer_rating=character.get(scores_by_season)
                     .get("scores", {})
                     .get("healer", 0),
-                    tank_rating=character.get("mythic_plus_scores_by_season", [{}])[0]
+                    tank_rating=character.get(scores_by_season)
                     .get("scores", {})
                     .get("tank", 0),
                 )
@@ -234,8 +238,10 @@ async def add_score_differs_to_characters(
             if any(c is None for c in db_character_data):
                 db_characters.pop(index)
                 continue
+
+            current_score = get_nested_dict_or_return_empty(character, CURRENT_SEASON_SCORE)
             current_character_score = (
-                character.get("mythic_plus_scores_by_season", [{}])[0]
+                character.get(current_score)
                 .get("scores", {})
                 .get("all", 0)
             )
