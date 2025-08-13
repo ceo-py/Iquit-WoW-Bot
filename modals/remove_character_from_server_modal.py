@@ -67,9 +67,9 @@ class RemoveCharacterModal(BaseCharacterModal):
         try:
             async with in_transaction() as tx:
                 await tx.execute_query("SELECT pg_advisory_xact_lock($1);", [server.id])
-                await CharacterServer.using_db(tx).filter(
+                await CharacterServer.filter(
                     character_id=found_character_in_db.id, server_id=server.id
-                ).delete()
+                ).using_db(tx).delete()
                 await recompute_server_rankings(server.id, conn=tx)
         except Exception:
             await interaction.followup.send(
