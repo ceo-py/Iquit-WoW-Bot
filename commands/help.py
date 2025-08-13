@@ -1,8 +1,7 @@
 import discord
 from utils.permissions.in_correct_channel import in_correct_channel
 
-HELP_TEXT = (
-    """
+HELP_TEXT = """
 **Iquit-WoW-Bot Commands**
 
 Here’s a quick guide to what you can do:
@@ -18,7 +17,7 @@ Here’s a quick guide to what you can do:
 
 _Type a command with `/` to get started!_
 """
-)
+
 
 @discord.app_commands.command(
     name="iquithelp",

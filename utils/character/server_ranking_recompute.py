@@ -43,7 +43,9 @@ RETURNING cs.server_id, cs.character_id, ch.old_ranking, ch.new_ranking;
 """
 
 
-async def recompute_server_rankings(server_id: int, conn: Optional[Any] = None) -> List[Dict[str, Any]]:
+async def recompute_server_rankings(
+    server_id: int, conn: Optional[Any] = None
+) -> List[Dict[str, Any]]:
     """
     Recompute rankings for a single server atomically and return changed rows.
 
@@ -60,7 +62,9 @@ async def recompute_server_rankings(server_id: int, conn: Optional[Any] = None) 
         List of dicts: {server_id, character_id, old_ranking, new_ranking}
     """
     if in_transaction is None and conn is None:
-        raise RuntimeError("recompute_server_rankings requires tortoise in_transaction or a connection")
+        raise RuntimeError(
+            "recompute_server_rankings requires tortoise in_transaction or a connection"
+        )
 
     sql = _rank_sql_single_server()
     if conn is not None:

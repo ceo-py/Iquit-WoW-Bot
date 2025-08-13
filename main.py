@@ -53,7 +53,7 @@ class PersistentViewBot(commands.Bot):
     @tasks.loop(time=times)
     async def scheduler_rio_every_15_minutes(self):
         print("Scheduler started")
-        await task_scheduler()
+        # await task_scheduler()
 
     async def on_ready(self):
         load_commands(self)
@@ -67,7 +67,7 @@ class PersistentViewBot(commands.Bot):
         await self.load_emojis()
         print("Ready")
         # await task_scheduler()
-        # await scheduler_beta()
+        await scheduler_beta()
         # await self.scheduler_rio_every_15_minutes.start()
         # await self.tree.sync()  # once only to sync CRUD slash command
         # print([
