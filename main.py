@@ -2,8 +2,9 @@ import datetime
 import discord
 import settings
 from discord.ext import commands, tasks
-from database.db import init_db, load_initial_data
+from database.db import init_db
 from utils.scheduler.scheduler import task_scheduler
+from utils.scheduler.scheduler_beta import scheduler_beta
 from commands import load_commands
 from views.buttons_character_statistics import ButtonsCharacterStatistics
 from utils.emojis import get_emojis
@@ -66,6 +67,7 @@ class PersistentViewBot(commands.Bot):
         await self.load_emojis()
         print("Ready")
         # await task_scheduler()
+        await scheduler_beta()
         # await self.scheduler_rio_every_15_minutes.start()
         # await self.tree.sync()  # once only to sync CRUD slash command
         # print([

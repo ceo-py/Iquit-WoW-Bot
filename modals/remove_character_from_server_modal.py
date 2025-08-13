@@ -1,13 +1,15 @@
 import discord
 from modals.base_character_modal import BaseCharacterModal
+from database.models.character_server import CharacterServer
 from database.service.character_server_service import (
     get_character_by_id_with_server_id,
-    delete_character_from_server,
 )
 from database.service.server_service import get_server_by_discord_id
 from database.service.character_server_service import get_character_by_id
 from database.service.character_service import delete_character
 from database.service.dungeon_run_service import delete_dungeon_run
+from utils.character.server_ranking_recompute import recompute_server_rankings
+from tortoise.transactions import in_transaction
 
 
 class RemoveCharacterModal(BaseCharacterModal):
@@ -61,7 +63,20 @@ class RemoveCharacterModal(BaseCharacterModal):
             await self.send_character_not_exist_message_in_db(interaction)
             return
 
-        await delete_character_from_server(found_character_in_db.id, server.id)
+        # Transaction: delete link and recompute ranks atomically (per-server lock)
+        try:
+            async with in_transaction() as tx:
+                await tx.execute_query("SELECT pg_advisory_xact_lock($1);", [server.id])
+                await CharacterServer.using_db(tx).filter(
+                    character_id=found_character_in_db.id, server_id=server.id
+                ).delete()
+                await recompute_server_rankings(server.id, conn=tx)
+        except Exception:
+            await interaction.followup.send(
+                "Failed to remove character due to a database error.", ephemeral=True
+            )
+            raise
+
         await self.send_success_message(interaction, found_character_in_db)
         await self.delete_character_from_db_if_no_discord_server(
             found_character_in_db.id

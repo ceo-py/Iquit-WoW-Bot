@@ -1,16 +1,18 @@
 import discord
 from modals.base_character_modal import BaseCharacterModal
 from database.models.character import Character
+from database.models.character_server import CharacterServer
 from utils.api.request_character_information import get_wow_character
 from utils.get_nested_dict_or_return_empty import get_nested_dict_or_return_empty
+from utils.character.server_ranking_recompute import recompute_server_rankings
 from database.service.server_service import get_server_by_discord_id, create_server
 from database.service.character_server_service import (
     get_character_by_id_with_server_id,
-    create_character_server,
 )
 from database.service.character_service import create_character
 from database.service.dungeon_run_service import update_or_create_dungeon_run
 from database.service.dungeon_service import get_all_current_season_dungeons
+from tortoise.transactions import in_transaction
 
 
 class AddCharacterModal(BaseCharacterModal):
@@ -115,7 +117,22 @@ class AddCharacterModal(BaseCharacterModal):
             )
             return
 
-        await create_character_server(character.id, server.id, 0)
+        # Transaction: create link and recompute ranks atomically (per-server lock)
+        try:
+            async with in_transaction() as tx:
+                await tx.execute_query("SELECT pg_advisory_xact_lock($1);", [server.id])
+                await CharacterServer.using_db(tx).create(
+                    character_id=character.id,
+                    server_id=server.id,
+                    ranking=0,
+                )
+                await recompute_server_rankings(server.id, conn=tx)
+        except Exception as e:
+            # Surface DB errors and do not send success message
+            await interaction.followup.send(
+                f"Failed to add character due to a database error.", ephemeral=True
+            )
+            raise
 
         if not found_character_in_db:
             await self.create_character_dungeon_runs_in_db(
