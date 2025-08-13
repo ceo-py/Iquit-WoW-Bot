@@ -8,6 +8,7 @@ from database.models.character import Character
 from database.models.character_server import CharacterServer
 from utils.api.request_character_information import get_multiple_wow_characters
 from utils.get_nested_dict_or_return_empty import get_nested_dict_or_return_empty
+from utils.super_scripts_text import generate_superscript_stars
 from settings import CURRENT_SEASON_SCORE, ADVISORY_LOCK_KEY
 
 from utils.dungeon.calculate_dungeon_time import (
@@ -19,7 +20,6 @@ try:
     from tortoise.transactions import in_transaction
 except ImportError:  # Fallback if transaction manager is not available
     in_transaction = None  # type: ignore
-
 
 
 async def get_current_season_dungeons() -> Dict[str, int]:
@@ -249,7 +249,7 @@ def ordinal(n: int) -> str:
 
 def pluses(n: int) -> str:
     try:
-        return "⁺" * max(0, int(n or 0))
+        return generate_superscript_stars(max(0, int(n or 0)))
     except Exception:
         return ""
 
@@ -302,6 +302,8 @@ async def send_change_messages(
     Send messages only for characters that changed.
     Include server ranking delta (rise/drop/stay) and improved dungeon runs.
     Compare pre vs post rankings to avoid stale reads or missed deltas.
+
+    Additionally, ensure messages per server are ordered by highest rating first.
     """
 
     # Build maps {char_id: {server_id: rank}}
@@ -324,6 +326,9 @@ async def send_change_messages(
     char_to_servers: Dict[int, List[int]] = {
         cid: list(smap.keys()) for cid, smap in post_map.items()
     }
+
+    # Collect messages per server to allow sorting by rating before sending
+    per_server_msgs: Dict[int, List[dict]] = {}
 
     for c in changed:
         ch = c.get("change", {})
@@ -353,9 +358,31 @@ async def send_change_messages(
 
             header = f"**{c.get('name')}** {gain_txt} rating reaching **{int(new_rating)}**{rank_txt}"
             text = f"{header}\n\n{runs_txt}" if runs_txt else header
+
+            per_server_msgs.setdefault(server_id, []).append(
+                {
+                    "new_rating": int(new_rating),
+                    "rank": int(new_r),
+                    "name": c.get("name") or "",
+                    "character_id": char_id,
+                    "text": text,
+                }
+            )
+
+    # Send sorted by highest rating first (then rank asc, then name asc for stability)
+    for server_id, items in per_server_msgs.items():
+        try:
+            items.sort(key=lambda x: (-x["new_rating"], x["rank"], x["name"].lower()))
+        except Exception:
+            items.sort(key=lambda x: -int(x.get("new_rating", 0)))
+        for it in items:
             await send_to_server(
                 server_id,
-                {"text": text, "character_id": char_id, "server_id": server_id},
+                {
+                    "text": it["text"],
+                    "character_id": it["character_id"],
+                    "server_id": server_id,
+                },
             )
 
 
